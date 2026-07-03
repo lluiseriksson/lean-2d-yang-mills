@@ -31,7 +31,7 @@ structure Lean2dYangMills.HeatKernelCharacterPackage (G : Type u) [Group G]
 theorem Lean2dYangMills.heatKernel_character_series_converges
 theorem Lean2dYangMills.heatKernel_character_series_eq
 theorem Lean2dYangMills.heatKernel_conj_invariant
-theorem Lean2dYangMills.heatKernel_semigroup_statement
+def Lean2dYangMills.heatKernel_semigroup_statement
 ```
 
 `CharacterTable.heatWeight t lam` is the explicit data slot for the intended factor

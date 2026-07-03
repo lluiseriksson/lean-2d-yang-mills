@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Data.Complex.Basic
 import Mathlib.LinearAlgebra.UnitaryGroup
 import Mathlib.Topology.Algebra.InfiniteSum.Defs
@@ -50,14 +51,14 @@ structure CharacterTable (G : Type u) where
 The field `T.heatWeight t lam` is intended to be `exp(-t * C2(lam))`; it is
 kept as data until the Casimir/heat-kernel layer is formalized.
 -/
-def heatKernelTerm {G : Type u} (T : CharacterTable G) (t : Real) (g : G)
+def heatKernelTerm {G : Type u} (T : CharacterTable.{u, v} G) (t : Real) (g : G)
     (lam : T.Label) : Complex :=
   (T.dim lam : Complex) * T.char lam g * T.heatWeight t lam
 
 /-- The formal heat-kernel character series `sum dim(lambda) chi_lambda(g) exp(-t C2(lambda))`. -/
-def heatKernelCharacterSeries {G : Type u} (T : CharacterTable G) (t : Real) (g : G) :
+def heatKernelCharacterSeries {G : Type u} (T : CharacterTable.{u, v} G) (t : Real) (g : G) :
     Complex :=
-  sum' fun lam : T.Label => heatKernelTerm T t g lam
+  tsum fun lam : T.Label => heatKernelTerm T t g lam
 
 /-- Conditional heat-kernel package.
 
@@ -69,7 +70,7 @@ References: Migdal (1975, Sov. Phys. JETP 42, 413-418); Driver (1989,
 Commun. Math. Phys. 123, 575-616).
 -/
 structure HeatKernelCharacterPackage (G : Type u) [Group G] where
-  table : CharacterTable G
+  table : CharacterTable.{u, v} G
   heatKernel : Real -> G -> Complex
   heatKernel_summable :
     forall {t : Real}, 0 < t -> forall g : G, Summable (heatKernelTerm table t g)
@@ -81,10 +82,10 @@ structure HeatKernelCharacterPackage (G : Type u) [Group G] where
   heatKernel_semigroup : Prop
 
 abbrev SU2CharacterTable :=
-  CharacterTable SU2
+  CharacterTable.{0, 0} SU2
 
 abbrev SU2HeatKernelPackage :=
-  HeatKernelCharacterPackage SU2
+  HeatKernelCharacterPackage.{0, 0} SU2
 
 /-- Convergence of the heat-kernel character expansion, conditional on the package.
 
@@ -93,7 +94,7 @@ two dimensions; Driver (1989, Commun. Math. Phys. 123, 575-616), lattice and
 continuum expectations.
 -/
 theorem heatKernel_character_series_converges {G : Type u} [Group G]
-    (P : HeatKernelCharacterPackage G) {t : Real} (ht : 0 < t) (g : G) :
+    (P : HeatKernelCharacterPackage.{u, v} G) {t : Real} (ht : 0 < t) (g : G) :
     Summable (heatKernelTerm P.table t g) :=
   P.heatKernel_summable ht g
 
@@ -102,19 +103,19 @@ theorem heatKernel_character_series_converges {G : Type u} [Group G]
 Reference target: Driver (1989, Commun. Math. Phys. 123, 575-616).
 -/
 theorem heatKernel_character_series_eq {G : Type u} [Group G]
-    (P : HeatKernelCharacterPackage G) {t : Real} (ht : 0 < t) (g : G) :
+    (P : HeatKernelCharacterPackage.{u, v} G) {t : Real} (ht : 0 < t) (g : G) :
     P.heatKernel t g = heatKernelCharacterSeries P.table t g :=
   P.heatKernel_eq_tsum ht g
 
 /-- Heat-kernel class-function invariance, conditional on the package. -/
 theorem heatKernel_conj_invariant {G : Type u} [Group G]
-    (P : HeatKernelCharacterPackage G) {t : Real} (ht : 0 < t) (x g : G) :
+    (P : HeatKernelCharacterPackage.{u, v} G) {t : Real} (ht : 0 < t) (x g : G) :
     P.heatKernel t (x * g * x⁻¹) = P.heatKernel t g :=
   P.heatKernel_conj_invariant ht x g
 
-/-- The heat-kernel convolution semigroup statement carried by the package. -/
-theorem heatKernel_semigroup_statement {G : Type u} [Group G]
-    (P : HeatKernelCharacterPackage G) : P.heatKernel_semigroup :=
+/-- The heat-kernel convolution semigroup proposition carried by the package. -/
+def heatKernel_semigroup_statement {G : Type u} [Group G]
+    (P : HeatKernelCharacterPackage.{u, v} G) : Prop :=
   P.heatKernel_semigroup
 
 /-- Minimal finite-lattice expectation interface for heat-kernel Yang-Mills.
@@ -128,7 +129,7 @@ structure FiniteLatticeTheory (G : Type u) [Group G] where
   expectation : (L : Lattice) -> Observable L -> Complex
 
 /-- A plaquette subdivision map between two finite lattices. -/
-structure PlaquetteSubdivision {G : Type u} [Group G] (T : FiniteLatticeTheory G) where
+structure PlaquetteSubdivision {G : Type u} [Group G] (T : FiniteLatticeTheory.{u, v, w} G) where
   coarse : T.Lattice
   fine : T.Lattice
   pullObservable : T.Observable coarse -> T.Observable fine
@@ -138,13 +139,14 @@ structure PlaquetteSubdivision {G : Type u} [Group G] (T : FiniteLatticeTheory G
 Reference target: Migdal (1975, Sov. Phys. JETP 42, 413-418), where the
 recursion relation becomes exact in two dimensions.
 -/
-structure MigdalSelfSimilarityPackage {G : Type u} [Group G] (T : FiniteLatticeTheory G) where
+structure MigdalSelfSimilarityPackage {G : Type u} [Group G]
+    (T : FiniteLatticeTheory.{u, v, w} G) where
   self_similarity :
     forall (S : PlaquetteSubdivision T) (O : T.Observable S.coarse),
       T.expectation S.fine (S.pullObservable O) = T.expectation S.coarse O
 
 /-- Invariance of finite-lattice expectations under plaquette subdivision, conditional on M1. -/
-theorem migdal_self_similarity {G : Type u} [Group G] {T : FiniteLatticeTheory G}
+theorem migdal_self_similarity {G : Type u} [Group G] {T : FiniteLatticeTheory.{u, v, w} G}
     (P : MigdalSelfSimilarityPackage T) (S : PlaquetteSubdivision T)
     (O : T.Observable S.coarse) :
     T.expectation S.fine (S.pullObservable O) = T.expectation S.coarse O :=
@@ -158,7 +160,7 @@ structure PlaneSimpleLoopTheory where
   stringTension : Real
 
 /-- The expected exact area-law value `exp(-sigma * area(C))`. -/
-def areaLawValue (T : PlaneSimpleLoopTheory) (C : T.Loop) : Complex :=
+def areaLawValue (T : PlaneSimpleLoopTheory.{u}) (C : T.Loop) : Complex :=
   Complex.exp (((-T.stringTension * T.area C : Real) : Complex))
 
 /-- Conditional exact area-law package for simple planar loops.
@@ -171,19 +173,19 @@ expectations; Sengupta (1997, Mem. Amer. Math. Soc. 126, no. 600), compact
 surface gauge theory; Levy (2003, Mem. Amer. Math. Soc. 166, no. 790), compact
 surface Yang-Mills measure.
 -/
-structure ExactAreaLawPackage (T : PlaneSimpleLoopTheory) where
+structure ExactAreaLawPackage (T : PlaneSimpleLoopTheory.{u}) where
   area_nonnegative : forall C : T.Loop, 0 <= T.area C
   stringTension_nonnegative : 0 <= T.stringTension
   wilson_eq_areaLaw : forall C : T.Loop, T.wilsonExpectation C = areaLawValue T C
 
 /-- Exact simple-loop Wilson area law, conditional on M2. -/
-theorem simpleLoop_areaLaw_exact {T : PlaneSimpleLoopTheory}
+theorem simpleLoop_areaLaw_exact {T : PlaneSimpleLoopTheory.{u}}
     (P : ExactAreaLawPackage T) (C : T.Loop) :
     T.wilsonExpectation C = areaLawValue T C :=
   P.wilson_eq_areaLaw C
 
 /-- Nonnegativity of the explicit string tension carried by the area-law package. -/
-theorem simpleLoop_stringTension_nonnegative {T : PlaneSimpleLoopTheory}
+theorem simpleLoop_stringTension_nonnegative {T : PlaneSimpleLoopTheory.{u}}
     (P : ExactAreaLawPackage T) : 0 <= T.stringTension :=
   P.stringTension_nonnegative
 
@@ -207,7 +209,7 @@ structure ContinuumLimitPackage where
           Filter.atTop (nhds (continuumExpectation A O))
 
 /-- Lattice-to-continuum convergence statement, conditional on M3. -/
-theorem continuum_limit_statement (P : ContinuumLimitPackage)
+theorem continuum_limit_statement (P : ContinuumLimitPackage.{u, v, w})
     (a : Nat -> P.LatticeState) (A : P.ContinuumState) (O : P.Observable)
     (h : P.convergesTo a A) :
     Filter.Tendsto (fun n : Nat => P.latticeExpectation (a n) O)
@@ -227,12 +229,12 @@ The field `Z.zetaTerm s lam` is intended to be `dim(lam)^(-s)`. It is data
 for now, rather than importing the full complex-power API into the interface
 layer.
 -/
-def wittenZetaTerm (Z : WittenZetaData) (s : Complex) (lam : Z.Label) : Complex :=
+def wittenZetaTerm (Z : WittenZetaData.{u}) (s : Complex) (lam : Z.Label) : Complex :=
   Z.zetaTerm s lam
 
 /-- The formal Witten zeta series `sum_lambda dim(lambda)^(-s)`. -/
-def wittenZetaSeries (Z : WittenZetaData) (s : Complex) : Complex :=
-  sum' fun lam : Z.Label => wittenZetaTerm Z s lam
+def wittenZetaSeries (Z : WittenZetaData.{u}) (s : Complex) : Complex :=
+  tsum fun lam : Z.Label => wittenZetaTerm Z s lam
 
 /-- The usual genus argument `2g - 2` for the Witten zeta bridge. -/
 def genusZetaArgument (genus : Nat) : Complex :=
@@ -243,7 +245,7 @@ def genusZetaArgument (genus : Nat) : Complex :=
 Reference target: Witten (1991, Commun. Math. Phys. 141, 153-209); Zagier
 (1994, First European Congress of Mathematics, Vol. II, 497-512).
 -/
-structure WittenZetaPackage (Z : WittenZetaData) where
+structure WittenZetaPackage (Z : WittenZetaData.{u}) where
   zeta : Complex -> Complex
   zeta_summable :
     forall {s : Complex}, 1 < s.re -> Summable (wittenZetaTerm Z s)
@@ -251,13 +253,13 @@ structure WittenZetaPackage (Z : WittenZetaData) where
     forall {s : Complex}, 1 < s.re -> zeta s = wittenZetaSeries Z s
 
 /-- Convergence of the Witten zeta series in the supplied half-plane. -/
-theorem wittenZeta_converges {Z : WittenZetaData} (P : WittenZetaPackage Z)
+theorem wittenZeta_converges {Z : WittenZetaData.{u}} (P : WittenZetaPackage Z)
     {s : Complex} (hs : 1 < s.re) :
     Summable (wittenZetaTerm Z s) :=
   P.zeta_summable hs
 
 /-- Equality between the Witten zeta function and its representation-dimension series. -/
-theorem wittenZeta_eq_tsum {Z : WittenZetaData} (P : WittenZetaPackage Z)
+theorem wittenZeta_eq_tsum {Z : WittenZetaData.{u}} (P : WittenZetaPackage Z)
     {s : Complex} (hs : 1 < s.re) :
     P.zeta s = wittenZetaSeries Z s :=
   P.zeta_eq_tsum hs
@@ -267,7 +269,7 @@ theorem wittenZeta_eq_tsum {Z : WittenZetaData} (P : WittenZetaPackage Z)
 Reference target: Witten (1991, Commun. Math. Phys. 141, 153-209) and
 Sengupta (1997, Mem. Amer. Math. Soc. 126, no. 600).
 -/
-structure WittenZetaSurfacePackage (Z : WittenZetaData) where
+structure WittenZetaSurfacePackage (Z : WittenZetaData.{u}) where
   Surface : Type v
   partitionFunction : Surface -> Complex
   zetaArgument : Surface -> Complex
@@ -276,7 +278,7 @@ structure WittenZetaSurfacePackage (Z : WittenZetaData) where
     forall S : Surface, partitionFunction S = wittenZetaSeries Z (zetaArgument S)
 
 /-- Surface partition function as a Witten-zeta representation series, conditional on M4. -/
-theorem surfacePartitionFunction_eq_wittenZeta {Z : WittenZetaData}
+theorem surfacePartitionFunction_eq_wittenZeta {Z : WittenZetaData.{u}}
     (P : WittenZetaSurfacePackage Z) (S : P.Surface) :
     P.partitionFunction S = wittenZetaSeries Z (P.zetaArgument S) :=
   P.partition_eq_zeta S
