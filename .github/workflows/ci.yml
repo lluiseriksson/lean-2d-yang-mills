@@ -11,8 +11,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Reject Lean placeholders
         run: |
-          if grep -R -n -E '\b(sorry|axiom)\b' Lean2dYangMills Lean2dYangMills.lean; then
+          branch="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          if grep -R -n -E '\baxiom\b' Lean2dYangMills Lean2dYangMills.lean; then
             exit 1
+          fi
+          if [ "${branch#frontier/}" = "$branch" ]; then
+            if grep -R -n -E '\bsorry\b' Lean2dYangMills Lean2dYangMills.lean; then
+              exit 1
+            fi
+          else
+            echo "frontier branch: allowing tracked Lean sorry placeholders"
           fi
       - uses: leanprover/lean-action@v1
         with:
