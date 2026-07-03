@@ -1,0 +1,15 @@
+/.lake/
+/lake-packages/
+/build/
+/.direnv/
+/.envrc
+*.olean
+*.ilean
+*.c
+*.o
+*.so
+*.dll
+*.dylib
+*.trace
+*.tmp
+*~

@@ -1,0 +1,45 @@
+# lean-2d-yang-mills
+
+Lean 4 + Mathlib satellite for the THE-ERIKSSON-PROGRAMME 2D Yang-Mills sandbox.
+
+This repository is about the exactly soluble two-dimensional model: heat-kernel lattice Yang-Mills, Migdal subdivision self-similarity, exact Wilson loop area law for simple planar loops, continuum-limit statements, and the Witten zeta/partition-function bridge.
+
+What this is:
+
+- A small, buildable interface layer for 2D Yang-Mills statements.
+- A place to make every hard analytic input explicit as a hypothesis.
+- A benchmark for the parent repository's lattice-to-continuum and area-law pipeline.
+
+What this is not:
+
+- It is not a proof of the four-dimensional Yang-Mills mass gap.
+- It is not a construction of continuum 4D Yang-Mills.
+- It is not a replacement for the Balaban/Kotecky-Preiss frontier in the parent repo.
+- It does not claim Peter-Weyl, compact Lie heat-kernel convergence, or Levy/Sengupta continuum limits unless those inputs are supplied explicitly.
+
+## Build
+
+The toolchain and Mathlib commit are copied from the parent repository:
+
+- Lean toolchain: `leanprover/lean4:v4.29.0-rc6`
+- Mathlib commit: `07642720480157414db592fa85b626dafb71355b`
+
+```bash
+lake build
+```
+
+## Discipline
+
+`main` is intended to stay free of `sorry` and project-local axioms. Frontier work may live on `frontier/*` branches, with every open statement mirrored in `HYPOTHESIS_FRONTIER.md`.
+
+The current `main` interface is conditional: theorem statements project explicit fields from structures such as `HeatKernelCharacterPackage`, `MigdalSelfSimilarityPackage`, and `ExactAreaLawPackage`. This keeps the import surface stable without pretending the analytic theorems are already formalized.
+
+## Public Interface
+
+The parent repo should import only the contract module:
+
+```lean
+import Interfaces
+```
+
+The stable signatures are listed in `INTERFACES.md`, re-exported by `Interfaces.lean`, and implemented in `Lean2dYangMills/Interfaces.lean`.

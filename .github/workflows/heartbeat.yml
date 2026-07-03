@@ -1,0 +1,78 @@
+name: heartbeat
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push: { branches: [main] }
+  pull_request:
+
+permissions: { contents: write, issues: write }
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MADRE: lluiseriksson/THE-ERIKSSON-PROGRAMME
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0, fetch-tags: true }
+
+      - name: Deriva de toolchain
+        id: drift
+        run: |
+          curl -sf https://raw.githubusercontent.com/$MADRE/main/lean-toolchain -o /tmp/m
+          if diff -q /tmp/m lean-toolchain >/dev/null; then echo ok=true >> $GITHUB_OUTPUT
+          else echo ok=false >> $GITHUB_OUTPUT; fi
+
+      - name: Build main (sin sorry, sin axiom)
+        id: build
+        run: |
+          curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain none
+          export PATH=$HOME/.elan/bin:$PATH
+          set +e
+          lake exe cache get && lake build 2>&1 | tee build.log
+          if [ ${PIPESTATUS[0]} -eq 0 ] && ! grep -q "uses 'sorry'" build.log \
+             && ! grep -rqE "^\s*axiom " --include="*.lean" --exclude-dir=".lake" .; then
+            echo state=green >> $GITHUB_OUTPUT
+          else echo state=red >> $GITHUB_OUTPUT; fi
+
+      - name: Métricas de frontera
+        id: front
+        run: |
+          BR=$(git branch -r | grep -o 'origin/frontier/[^ ]*' | head -1 || true)
+          S=0
+          [ -n "$BR" ] && S=$( (git grep -c "\bsorry\b" $BR -- '*.lean') 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
+          echo sorries=$S >> $GITHUB_OUTPUT
+          echo milestone=$(git tag -l 'vM*' --sort=-v:refname | head -1) >> $GITHUB_OUTPUT
+
+      - name: Bloqueos abiertos
+        id: blk
+        run: echo n=$(gh issue list --label blocked --state open --json number --jq length) >> $GITHUB_OUTPUT
+
+      - name: Publicar STATUS.json en rama status
+        if: github.event_name != 'pull_request'
+        run: |
+          cat > STATUS.json <<EOF
+          {"repo":"${{ github.repository }}","updated":"$(date -u +%FT%TZ)",
+           "toolchain_ok": ${{ steps.drift.outputs.ok }},
+           "build_main": "${{ steps.build.outputs.state }}",
+           "milestone": "${{ steps.front.outputs.milestone }}",
+           "sorries_frontier": ${{ steps.front.outputs.sorries }},
+           "blocked_open": ${{ steps.blk.outputs.n }}}
+          EOF
+          git checkout --orphan status
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          git add STATUS.json
+          git -c user.name=bot -c user.email=bot@users.noreply.github.com commit -m "status [skip ci]"
+          git push -f origin status
+
+      - name: Asignar siguiente tarea si no hay ninguna
+        if: github.event_name == 'schedule'
+        run: |
+          OPEN=$(gh issue list --label agent-task --state open --json number --jq length)
+          if [ "$OPEN" = "0" ] && [ "${{ steps.blk.outputs.n }}" = "0" ]; then
+            gh issue create -l agent-task -t "agent-task: siguiente unidad hacia el próximo milestone" \
+              -b "Heartbeat: build=${{ steps.build.outputs.state }}, toolchain_ok=${{ steps.drift.outputs.ok }}, sorries_frontier=${{ steps.front.outputs.sorries }}, milestone=${{ steps.front.outputs.milestone }}. Ejecuta tu bucle §B2: UNA unidad mínima, informe aquí."
+          fi

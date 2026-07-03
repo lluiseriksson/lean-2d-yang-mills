@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject Lean placeholders
+        run: |
+          if grep -R -n -E '\b(sorry|axiom)\b' Lean2dYangMills Lean2dYangMills.lean; then
+            exit 1
+          fi
+      - uses: leanprover/lean-action@v1
+        with:
+          use-mathlib-cache: true
+          build-args: Lean2dYangMills
