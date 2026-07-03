@@ -1,6 +1,6 @@
 # Hypothesis Frontier
 
-Date: 2026-07-03
+Date: 2026-07-03 (second iteration)
 
 ## Main Branch Status
 
@@ -8,32 +8,64 @@ Date: 2026-07-03
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Explicit Hypothesis Packages
+## Closed facts on `main` (new this iteration)
 
-The following fields are not proofs supplied by this repository. They are honest interfaces for future proofs or imported results:
+Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 
-- `HeatKernelCharacterPackage.heatKernel_summable`: convergence of the compact-group heat-kernel character expansion.
-- `HeatKernelCharacterPackage.heatKernel_eq_tsum`: equality between the supplied heat kernel and the character series.
-- `HeatKernelCharacterPackage.heatKernel_conj_invariant`: conjugation invariance of the supplied heat kernel.
-- `HeatKernelCharacterPackage.heatKernel_semigroup`: heat-kernel convolution semigroup law, recorded as an explicit proposition.
-- `MigdalSelfSimilarityPackage.self_similarity`: invariance of finite-lattice expectations under plaquette subdivision.
-- `ExactAreaLawPackage.wilson_eq_areaLaw`: exact simple-loop Wilson expectation area law with an explicit string tension.
-- `ExactAreaLawPackage.area_nonnegative`: nonnegativity of the loop area input.
-- `ExactAreaLawPackage.stringTension_nonnegative`: nonnegativity of the supplied string tension.
-- `ContinuumLimitPackage.convergence`: lattice-to-continuum convergence statement.
-- `WittenZetaPackage.zeta_summable`: convergence of the Witten zeta series in the supplied half-plane.
-- `WittenZetaPackage.zeta_eq_tsum`: equality between the supplied zeta function and the representation-dimension series.
-- `WittenZetaSurfacePackage.partition_summable`: convergence of the surface partition series.
-- `WittenZetaSurfacePackage.partition_eq_zeta`: appearance of the Witten zeta series in surface partition functions.
+- `su2WittenZetaData`: SU(2) dimensions `1, 2, 3, ...` with terms `(n+1)^(-s)`.
+- `summable_su2WittenZetaTerm`: convergence for `1 < Re s`.
+- `su2WittenZetaPackage`: `WittenZetaPackage` instantiated with
+  `zeta := riemannZeta`, BOTH hypothesis fields discharged — the first fully
+  unconditional package instance of this repository.
+- `su2_wittenZetaSeries_eq_riemannZeta`: **the Witten zeta function of SU(2)
+  IS the Riemann zeta function** on the convergence half-plane.
+- `su2ZeroAreaSurfaceModel` and `su2ZeroArea_partition_eq_riemannZeta`:
+  zero-area genus-g partition functions are `zeta(2g-2)` (the partition
+  function is DEFINED as the series in this topological-limit model — a
+  declared consumer test; its summability field is genuine content).
+
+Convergence engine (`ConvergenceEngine.lean`) — the M0 analytic engine:
+
+- `summable_pow_mul_exp_neg`: `(n+1)^k exp(-t n)` summable for `t > 0`.
+- `summable_pow_mul_exp_neg_casimir`: the Casimir-decay variant
+  `(n+1)^k exp(-t n(n+2)/4)`.
+
+Consumer test (`TrivialModel.lean`):
+
+- `trivialHeatKernelPackage`: `HeatKernelCharacterPackage` with EVERY field
+  a theorem; its semigroup proposition is the honest convolution law,
+  stated and proved (`trivialHeatKernelPackage_semigroup`).
+
+## Explicit Hypothesis Packages (unchanged, still open for real models)
+
+- `HeatKernelCharacterPackage.*` for SU(2): summability, tsum equality,
+  conjugation invariance, semigroup law.
+- `MigdalSelfSimilarityPackage.self_similarity`.
+- `ExactAreaLawPackage.*`.
+- `ContinuumLimitPackage.convergence`.
+- `WittenZetaSurfacePackage` at positive area (the zero-area model above
+  does not close the analytic M4).
+
+## Frontier obligations (branch `frontier/M0-su2`, statement-first, sorried)
+
+`Frontier/SU2Character.lean`:
+
+- `su2CharacterChebyshev` (DEFINED today via `Polynomial.Chebyshev.U` at
+  half the trace) and `su2CharacterTable` with Casimir `n(n+2)/4`.
+- `su2CharacterChebyshev_one` (`U_n(1) = n+1`).
+- `abs_su2CharacterChebyshev_le` (Weyl bound; spectral input: SU(2)
+  eigenvalues on the unit circle, `|tr g| <= 2`).
+- `summable_su2HeatKernelTerm` (route: Weyl bound + the Casimir engine
+  already proved on main).
+- `exists_su2HeatKernelPackage`.
 
 ## Distance To Goal
 
-This repo currently provides a stable, compilable contract. It does not yet close M0-M4 mathematically.
+M4's convergence layer is closed and identifies the Riemann bridge
+unconditionally. M0 now has its convergence engine and its character
+DEFINITION; what remains for M0 is the Weyl bound (one spectral fact about
+SU(2)) plus orthogonality for the semigroup. M1 (Migdal), M2 (area law),
+M3 (continuum) remain open as before.
 
-- M0 needs the shared Peter-Weyl/character/Haar layer, including concrete `SU(2)` irreps and Casimir eigenvalues.
-- M1 needs a finite lattice heat-kernel convolution formalization and Migdal subdivision proof.
-- M2 needs a formal Wilson-loop expectation computation for simple planar loops.
-- M3 needs statements-first continuum limit formalization following Driver/Levy/Sengupta.
-- M4 needs Witten-zeta convergence and the representation-sum partition-function theorem.
-
-Any branch that introduces `sorry` must be named `frontier/*` and must update this file with exact theorem names and remaining assumptions.
+Any branch that introduces `sorry` must be named `frontier/*` and must
+update this file with exact theorem names and remaining assumptions.

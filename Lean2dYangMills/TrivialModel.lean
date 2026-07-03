@@ -1,0 +1,74 @@
+import Lean2dYangMills.Interfaces
+
+/-!
+# Consumer test: the trivial-group heat-kernel package, fully discharged
+
+The trivial group with one representation label instantiates
+`HeatKernelCharacterPackage` with EVERY hypothesis field a theorem, and its
+`heatKernel_semigroup` proposition is stated as the genuine finite
+convolution law and proved.  This has no physical content; its purpose is
+doctrinal: it certifies the M0 interface is instantiable with zero carried
+hypotheses, so any future difficulty lies in the mathematics, not in the
+contract shape.
+-/
+
+noncomputable section
+
+namespace Lean2dYangMills
+
+abbrev TrivialGaugeGroup : Type :=
+  PUnit
+
+/-- The trivial character table: one label, dimension one. -/
+def trivialCharacterTable : CharacterTable TrivialGaugeGroup where
+  Label := Fin 1
+  dim := fun _ => 1
+  dim_pos := fun _ => Nat.one_pos
+  char := fun _ _ => 1
+  casimir := fun _ => 0
+  heatWeight := fun _ _ => 1
+
+/-- The trivial heat kernel: constantly one. -/
+def trivialHeatKernel : Real -> TrivialGaugeGroup -> Complex :=
+  fun _ _ => 1
+
+/-- The finite convolution semigroup law of the trivial heat kernel, stated
+as the honest proposition (not `True`). -/
+def trivialConvolutionLaw : Prop :=
+  ∀ (t s : Real) (g : TrivialGaugeGroup),
+    (∑ x : TrivialGaugeGroup, trivialHeatKernel t x * trivialHeatKernel s (x⁻¹ * g))
+      = trivialHeatKernel (t + s) g
+
+theorem trivialConvolutionLaw_holds : trivialConvolutionLaw := by
+  intro t s g
+  rw [Fintype.sum_unique]
+  simp [trivialHeatKernel]
+
+/-- The trivial heat-kernel package: every field discharged. -/
+def trivialHeatKernelPackage : HeatKernelCharacterPackage TrivialGaugeGroup where
+  table := trivialCharacterTable
+  heatKernel := trivialHeatKernel
+  heatKernel_summable := by
+    intro t _ g
+    haveI : Fintype trivialCharacterTable.Label := by
+      unfold trivialCharacterTable
+      infer_instance
+    exact (hasSum_fintype (heatKernelTerm trivialCharacterTable t g)).summable
+  heatKernel_eq_tsum := by
+    intro t _ g
+    haveI : Fintype trivialCharacterTable.Label := by
+      unfold trivialCharacterTable
+      infer_instance
+    rw [heatKernelCharacterSeries, tsum_fintype]
+    simp [trivialHeatKernel, heatKernelTerm, trivialCharacterTable]
+  heatKernel_conj_invariant := fun _ _ _ => rfl
+  heatKernel_semigroup := trivialConvolutionLaw
+
+/-- The semigroup proposition carried by the trivial package is true. -/
+theorem trivialHeatKernelPackage_semigroup :
+    heatKernel_semigroup_statement trivialHeatKernelPackage :=
+  by
+    simpa [heatKernel_semigroup_statement, trivialHeatKernelPackage] using
+      trivialConvolutionLaw_holds
+
+end Lean2dYangMills

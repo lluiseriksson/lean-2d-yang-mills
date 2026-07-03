@@ -1,1 +1,4 @@
 import Lean2dYangMills.Interfaces
+import Lean2dYangMills.ConvergenceEngine
+import Lean2dYangMills.WittenZetaSU2
+import Lean2dYangMills.TrivialModel
