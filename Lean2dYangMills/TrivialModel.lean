@@ -98,4 +98,10 @@ theorem trivialSimpleLoop_areaLaw_exact (C : trivialPlaneSimpleLoopTheory.Loop) 
   have h := simpleLoop_areaLaw_exact trivialExactAreaLawPackage C
   simpa [trivialExactAreaLawPackage, trivialPlaneSimpleLoopTheory, areaLawValue] using h
 
+/-- Consumer theorem: the public zero-area area-law API lemma reduces the
+trivial model's area-law value to `1`. -/
+theorem trivialAreaLawValue_zero_area (C : trivialPlaneSimpleLoopTheory.Loop) :
+    areaLawValue trivialPlaneSimpleLoopTheory C = 1 :=
+  areaLawValue_zero_area trivialPlaneSimpleLoopTheory (by simp [trivialPlaneSimpleLoopTheory])
+
 end Lean2dYangMills

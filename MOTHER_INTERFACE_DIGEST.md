@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #8, commit `30cec90` (2026-07-04).
+Snapshot: `main` after PR #9, commit `3d264b0` (2026-07-04).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -123,13 +123,15 @@ theorem Lean2dYangMills.trivialHeatKernelPackage_semigroup
 def Lean2dYangMills.trivialPlaneSimpleLoopTheory
 def Lean2dYangMills.trivialExactAreaLawPackage
 theorem Lean2dYangMills.trivialSimpleLoop_areaLaw_exact
+theorem Lean2dYangMills.trivialAreaLawValue_zero_area
 ```
 
 Interpretation: these are zero-content interface oracles over `PUnit`. They
 show that `HeatKernelCharacterPackage` and `ExactAreaLawPackage` can be
 consumed with all fields discharged in a one-point model. They do not prove
 the SU(2) heat kernel, a physical plane-loop area law, or any continuum
-statement.
+statement. `trivialAreaLawValue_zero_area` is a consumer check for the public
+`areaLawValue_zero_area` API lemma.
 
 Area-law API normalization, in `Lean2dYangMills/Interfaces.lean`:
 
