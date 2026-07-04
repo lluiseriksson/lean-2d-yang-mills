@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #6, commit `4d93b11` (2026-07-04).
+Snapshot: `main` after PR #8, commit `30cec90` (2026-07-04).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -130,6 +130,17 @@ show that `HeatKernelCharacterPackage` and `ExactAreaLawPackage` can be
 consumed with all fields discharged in a one-point model. They do not prove
 the SU(2) heat kernel, a physical plane-loop area law, or any continuum
 statement.
+
+Area-law API normalization, in `Lean2dYangMills/Interfaces.lean`:
+
+```lean
+theorem Lean2dYangMills.areaLawValue_zero_area
+```
+
+Interpretation: this is a definitional consumer lemma for the public
+`areaLawValue` function under the explicit hypothesis `T.area C = 0`. It does
+not supply an `ExactAreaLawPackage` and does not prove any nontrivial Wilson
+expectation identity.
 
 ## Explicitly Open Inputs
 
