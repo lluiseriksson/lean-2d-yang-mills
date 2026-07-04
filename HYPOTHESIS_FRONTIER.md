@@ -1,6 +1,6 @@
 # Hypothesis Frontier
 
-Date: 2026-07-03 (second iteration)
+Date: 2026-07-04
 
 ## Main Branch Status
 
@@ -38,6 +38,12 @@ Consumer test (`TrivialModel.lean`):
 - `trivialExactAreaLawPackage`: `ExactAreaLawPackage` for a one-loop,
   zero-area model with EVERY field discharged; the public M2 wrapper is
   exercised by `trivialSimpleLoop_areaLaw_exact`.
+
+Area-law API normalization (`Interfaces.lean`):
+
+- `areaLawValue_zero_area`: definitional lemma proving `areaLawValue T C = 1`
+  from the explicit hypothesis `T.area C = 0`. It is only public-interface
+  glue and does not discharge `ExactAreaLawPackage.*`.
 
 ## Explicit Hypothesis Packages (unchanged, still open for real models)
 
