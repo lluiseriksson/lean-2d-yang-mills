@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #3, commit `6a071e1` (2026-07-03).
+Snapshot: `main` after PR #6, commit `4d93b11` (2026-07-04).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -113,12 +113,22 @@ theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel consumer test, in `Lean2dYangMills/TrivialModel.lean`:
+Trivial heat-kernel and area-law consumer tests, in
+`Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
 def Lean2dYangMills.trivialHeatKernelPackage
 theorem Lean2dYangMills.trivialHeatKernelPackage_semigroup
+def Lean2dYangMills.trivialPlaneSimpleLoopTheory
+def Lean2dYangMills.trivialExactAreaLawPackage
+theorem Lean2dYangMills.trivialSimpleLoop_areaLaw_exact
 ```
+
+Interpretation: these are zero-content interface oracles over `PUnit`. They
+show that `HeatKernelCharacterPackage` and `ExactAreaLawPackage` can be
+consumed with all fields discharged in a one-point model. They do not prove
+the SU(2) heat kernel, a physical plane-loop area law, or any continuum
+statement.
 
 ## Explicitly Open Inputs
 
@@ -127,7 +137,7 @@ Still carried as hypotheses for real gauge models:
 - SU(2) heat-kernel character expansion equality and semigroup.
 - Migdal plaquette-subdivision self-similarity.
 - Positive-area surface partition functions.
-- Exact simple-loop area law.
+- Exact simple-loop area law for nontrivial or physical loop models.
 - Continuum limit statements.
 
 Current frontier branch `frontier/M0-su2` records the next M0 targets:
