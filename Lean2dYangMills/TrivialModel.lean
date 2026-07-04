@@ -71,4 +71,31 @@ theorem trivialHeatKernelPackage_semigroup :
     simpa [heatKernel_semigroup_statement, trivialHeatKernelPackage] using
       trivialConvolutionLaw_holds
 
+/-- The one-loop zero-area planar theory: the Wilson expectation is constantly
+one and the string tension is zero.  This is a consumer test for the M2
+area-law interface only, not a physical plane-loop construction. -/
+def trivialPlaneSimpleLoopTheory : PlaneSimpleLoopTheory where
+  Loop := PUnit
+  area := fun _ => 0
+  wilsonExpectation := fun _ => 1
+  stringTension := 0
+
+/-- The trivial exact-area-law package: every field is discharged. -/
+def trivialExactAreaLawPackage : ExactAreaLawPackage trivialPlaneSimpleLoopTheory where
+  area_nonnegative := by
+    intro C
+    simp [trivialPlaneSimpleLoopTheory]
+  stringTension_nonnegative := by
+    simp [trivialPlaneSimpleLoopTheory]
+  wilson_eq_areaLaw := by
+    intro C
+    simp [trivialPlaneSimpleLoopTheory, areaLawValue]
+
+/-- Consumer theorem: in the trivial area-law model, the public M2 wrapper
+returns Wilson expectation `1`. -/
+theorem trivialSimpleLoop_areaLaw_exact (C : trivialPlaneSimpleLoopTheory.Loop) :
+    trivialPlaneSimpleLoopTheory.wilsonExpectation C = 1 := by
+  have h := simpleLoop_areaLaw_exact trivialExactAreaLawPackage C
+  simpa [trivialExactAreaLawPackage, trivialPlaneSimpleLoopTheory, areaLawValue] using h
+
 end Lean2dYangMills

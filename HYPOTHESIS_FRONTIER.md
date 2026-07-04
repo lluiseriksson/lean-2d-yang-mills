@@ -35,6 +35,9 @@ Consumer test (`TrivialModel.lean`):
 - `trivialHeatKernelPackage`: `HeatKernelCharacterPackage` with EVERY field
   a theorem; its semigroup proposition is the honest convolution law,
   stated and proved (`trivialHeatKernelPackage_semigroup`).
+- `trivialExactAreaLawPackage`: `ExactAreaLawPackage` for a one-loop,
+  zero-area model with EVERY field discharged; the public M2 wrapper is
+  exercised by `trivialSimpleLoop_areaLaw_exact`.
 
 ## Explicit Hypothesis Packages (unchanged, still open for real models)
 
