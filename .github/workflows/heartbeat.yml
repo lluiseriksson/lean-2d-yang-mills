@@ -41,9 +41,13 @@ jobs:
       - name: Métricas de frontera
         id: front
         run: |
-          BR=$(git branch -r | grep -o 'origin/frontier/[^ ]*' | head -1 || true)
+          git fetch --no-tags origin '+refs/heads/frontier/*:refs/remotes/origin/frontier/*' || true
           S=0
-          [ -n "$BR" ] && S=$( (git grep -c "\bsorry\b" $BR -- '*.lean') 2>/dev/null | awk -F: '{s+=$2} END{print s+0}')
+          while read -r BR; do
+            [ -z "$BR" ] && continue
+            N=$(git grep -h -E '^[[:space:]]*sorry\b' "$BR" -- '*.lean' 2>/dev/null | wc -l)
+            S=$((S + N))
+          done < <(git for-each-ref --format='%(refname:short)' refs/remotes/origin/frontier)
           echo sorries=$S >> $GITHUB_OUTPUT
           echo milestone=$(git tag -l 'vM*' --sort=-v:refname | head -1) >> $GITHUB_OUTPUT
 
