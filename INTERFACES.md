@@ -53,6 +53,7 @@ theorem Lean2dYangMills.migdal_self_similarity
 structure Lean2dYangMills.PlaneSimpleLoopTheory
 
 def Lean2dYangMills.areaLawValue
+theorem Lean2dYangMills.areaLawValue_zero_area
 
 structure Lean2dYangMills.ExactAreaLawPackage
 

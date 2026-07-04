@@ -163,6 +163,14 @@ structure PlaneSimpleLoopTheory where
 def areaLawValue (T : PlaneSimpleLoopTheory.{u}) (C : T.Loop) : Complex :=
   Complex.exp (((-T.stringTension * T.area C : Real) : Complex))
 
+/-- A zero-area loop has area-law value `1`, by the definition of
+`areaLawValue`. This is a definitional API lemma, not a physical area-law
+theorem. -/
+theorem areaLawValue_zero_area (T : PlaneSimpleLoopTheory.{u}) {C : T.Loop}
+    (hC : T.area C = 0) :
+    areaLawValue T C = 1 := by
+  simp [areaLawValue, hC]
+
 /-- Conditional exact area-law package for simple planar loops.
 
 The string tension is explicit as the field `T.stringTension`; this file does

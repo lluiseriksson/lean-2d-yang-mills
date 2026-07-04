@@ -60,6 +60,7 @@ Plane-loop area-law interface:
 ```lean
 structure Lean2dYangMills.PlaneSimpleLoopTheory
 def Lean2dYangMills.areaLawValue
+theorem Lean2dYangMills.areaLawValue_zero_area
 structure Lean2dYangMills.ExactAreaLawPackage
 theorem Lean2dYangMills.simpleLoop_areaLaw_exact
 theorem Lean2dYangMills.simpleLoop_stringTension_nonnegative
