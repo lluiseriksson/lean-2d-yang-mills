@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #11, commit `844fb23` (2026-07-04).
+Snapshot: `main` after PR #12, commit `f4ea492` (2026-07-05).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
