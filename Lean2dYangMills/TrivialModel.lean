@@ -122,6 +122,13 @@ theorem trivialSimpleLoop_areaLaw_exact (C : trivialPlaneSimpleLoopTheory.Loop) 
   have h := simpleLoop_areaLaw_exact trivialExactAreaLawPackage C
   simpa [trivialExactAreaLawPackage, trivialPlaneSimpleLoopTheory, areaLawValue] using h
 
+/-- Consumer theorem: the public M2 string-tension wrapper returns
+nonnegativity for the trivial exact-area-law package. -/
+theorem trivialSimpleLoop_stringTension_nonnegative :
+    0 <= trivialPlaneSimpleLoopTheory.stringTension := by
+  simpa [trivialExactAreaLawPackage, trivialPlaneSimpleLoopTheory] using
+    simpleLoop_stringTension_nonnegative trivialExactAreaLawPackage
+
 /-- Consumer theorem: the public zero-area area-law API lemma reduces the
 trivial model's area-law value to `1`. -/
 theorem trivialAreaLawValue_zero_area (C : trivialPlaneSimpleLoopTheory.Loop) :
