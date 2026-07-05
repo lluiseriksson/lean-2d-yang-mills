@@ -71,6 +71,14 @@ theorem trivialHeatKernelPackage_semigroup :
     simpa [heatKernel_semigroup_statement, trivialHeatKernelPackage] using
       trivialConvolutionLaw_holds
 
+/-- Consumer theorem: the public M0 equality wrapper reduces the trivial
+heat-kernel character series to `1`. -/
+theorem trivialHeatKernelCharacterSeries_eq_one {t : Real} (ht : 0 < t)
+    (g : TrivialGaugeGroup) :
+    heatKernelCharacterSeries trivialCharacterTable t g = 1 := by
+  have h := heatKernel_character_series_eq trivialHeatKernelPackage ht g
+  simpa [trivialHeatKernelPackage, trivialHeatKernel] using h.symm
+
 /-- The one-loop zero-area planar theory: the Wilson expectation is constantly
 one and the string tension is zero.  This is a consumer test for the M2
 area-law interface only, not a physical plane-loop construction. -/
