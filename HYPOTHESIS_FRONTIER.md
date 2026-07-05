@@ -46,6 +46,9 @@ Consumer test (`TrivialModel.lean`):
 - `trivialExactAreaLawPackage`: `ExactAreaLawPackage` for a one-loop,
   zero-area model with EVERY field discharged; the public M2 wrapper is
   exercised by `trivialSimpleLoop_areaLaw_exact`.
+- `trivialSimpleLoop_stringTension_nonnegative`: consumer check that the
+  public `simpleLoop_stringTension_nonnegative` wrapper applies to the
+  trivial exact-area-law package.
 - `trivialAreaLawValue_zero_area`: consumer check that the public
   `areaLawValue_zero_area` API lemma reduces the trivial model's area-law
   value to `1`.
