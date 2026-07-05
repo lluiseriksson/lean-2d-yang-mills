@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #13, commit `8c84347` (2026-07-05).
+Snapshot: `main` after PR #15, commit `41c6e29` (2026-07-05).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -114,12 +114,13 @@ theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel and area-law consumer tests, current through PR #10, in
+Trivial heat-kernel and area-law consumer tests, current through PR #15, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
 def Lean2dYangMills.trivialHeatKernelPackage
 theorem Lean2dYangMills.trivialHeatKernelPackage_semigroup
+theorem Lean2dYangMills.trivialHeatKernelCharacterSeries_eq_one
 def Lean2dYangMills.trivialPlaneSimpleLoopTheory
 def Lean2dYangMills.trivialExactAreaLawPackage
 theorem Lean2dYangMills.trivialSimpleLoop_areaLaw_exact
@@ -130,8 +131,10 @@ Interpretation: these are zero-content interface oracles over `PUnit`. They
 show that `HeatKernelCharacterPackage` and `ExactAreaLawPackage` can be
 consumed with all fields discharged in a one-point model. They do not prove
 the SU(2) heat kernel, a physical plane-loop area law, or any continuum
-statement. `trivialAreaLawValue_zero_area` is a consumer check for the public
-`areaLawValue_zero_area` API lemma.
+statement. `trivialHeatKernelCharacterSeries_eq_one` is a consumer check for
+the public `heatKernel_character_series_eq` wrapper specialized to the
+trivial package. `trivialAreaLawValue_zero_area` is a consumer check for the
+public `areaLawValue_zero_area` API lemma.
 
 Area-law API normalization, in `Lean2dYangMills/Interfaces.lean`:
 
