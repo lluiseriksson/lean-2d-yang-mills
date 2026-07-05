@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #15, commit `41c6e29` (2026-07-05).
+Snapshot: `main` after PR #17, commit `7bac413` (2026-07-05).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -114,7 +114,7 @@ theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel and area-law consumer tests, current through PR #15, in
+Trivial heat-kernel and area-law consumer tests, current through PR #17, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
