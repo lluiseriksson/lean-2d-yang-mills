@@ -87,6 +87,14 @@ theorem trivialHeatKernelCharacterSeries_eq_one {t : Real} (ht : 0 < t)
   have h := heatKernel_character_series_eq trivialHeatKernelPackage ht g
   simpa [trivialHeatKernelPackage, trivialHeatKernel] using h.symm
 
+/-- Consumer theorem: the public M0 conjugation-invariance wrapper applies to
+the trivial heat kernel. -/
+theorem trivialHeatKernel_conj_invariant {t : Real} (ht : 0 < t)
+    (x g : TrivialGaugeGroup) :
+    trivialHeatKernel t (x * g * x⁻¹) = trivialHeatKernel t g := by
+  simpa [trivialHeatKernelPackage] using
+    heatKernel_conj_invariant trivialHeatKernelPackage ht x g
+
 /-- The one-loop zero-area planar theory: the Wilson expectation is constantly
 one and the string tension is zero.  This is a consumer test for the M2
 area-law interface only, not a physical plane-loop construction. -/
