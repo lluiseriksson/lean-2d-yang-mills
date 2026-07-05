@@ -35,6 +35,9 @@ Consumer test (`TrivialModel.lean`):
 - `trivialHeatKernelPackage`: `HeatKernelCharacterPackage` with EVERY field
   a theorem; its semigroup proposition is the honest convolution law,
   stated and proved (`trivialHeatKernelPackage_semigroup`).
+- `trivialHeatKernelCharacterSeries_converges`: consumer check that the public
+  `heatKernel_character_series_converges` wrapper applies to the trivial
+  model's character series.
 - `trivialHeatKernelCharacterSeries_eq_one`: consumer check that the public
   `heatKernel_character_series_eq` wrapper reduces the trivial model's
   character series to `1`.
