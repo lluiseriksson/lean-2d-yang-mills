@@ -41,6 +41,8 @@ Consumer test (`TrivialModel.lean`):
 - `trivialHeatKernelCharacterSeries_eq_one`: consumer check that the public
   `heatKernel_character_series_eq` wrapper reduces the trivial model's
   character series to `1`.
+- `trivialHeatKernel_conj_invariant`: consumer check that the public
+  `heatKernel_conj_invariant` wrapper applies to the trivial heat kernel.
 - `trivialExactAreaLawPackage`: `ExactAreaLawPackage` for a one-loop,
   zero-area model with EVERY field discharged; the public M2 wrapper is
   exercised by `trivialSimpleLoop_areaLaw_exact`.
