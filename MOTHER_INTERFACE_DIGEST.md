@@ -120,6 +120,7 @@ Trivial heat-kernel and area-law consumer tests, current through PR #15, in
 ```lean
 def Lean2dYangMills.trivialHeatKernelPackage
 theorem Lean2dYangMills.trivialHeatKernelPackage_semigroup
+theorem Lean2dYangMills.trivialHeatKernelCharacterSeries_converges
 theorem Lean2dYangMills.trivialHeatKernelCharacterSeries_eq_one
 def Lean2dYangMills.trivialPlaneSimpleLoopTheory
 def Lean2dYangMills.trivialExactAreaLawPackage
@@ -133,8 +134,10 @@ consumed with all fields discharged in a one-point model. They do not prove
 the SU(2) heat kernel, a physical plane-loop area law, or any continuum
 statement. `trivialHeatKernelCharacterSeries_eq_one` is a consumer check for
 the public `heatKernel_character_series_eq` wrapper specialized to the
-trivial package. `trivialAreaLawValue_zero_area` is a consumer check for the
-public `areaLawValue_zero_area` API lemma.
+trivial package. `trivialHeatKernelCharacterSeries_converges` is the matching
+consumer check for the public `heatKernel_character_series_converges` wrapper.
+`trivialAreaLawValue_zero_area` is a consumer check for the public
+`areaLawValue_zero_area` API lemma.
 
 Area-law API normalization, in `Lean2dYangMills/Interfaces.lean`:
 

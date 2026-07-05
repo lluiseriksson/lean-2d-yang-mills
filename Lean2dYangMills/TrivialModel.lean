@@ -71,6 +71,14 @@ theorem trivialHeatKernelPackage_semigroup :
     simpa [heatKernel_semigroup_statement, trivialHeatKernelPackage] using
       trivialConvolutionLaw_holds
 
+/-- Consumer theorem: the public M0 convergence wrapper applies to the
+trivial heat-kernel character series. -/
+theorem trivialHeatKernelCharacterSeries_converges {t : Real} (ht : 0 < t)
+    (g : TrivialGaugeGroup) :
+    Summable (heatKernelTerm trivialCharacterTable t g) := by
+  simpa [trivialHeatKernelPackage] using
+    heatKernel_character_series_converges trivialHeatKernelPackage ht g
+
 /-- Consumer theorem: the public M0 equality wrapper reduces the trivial
 heat-kernel character series to `1`. -/
 theorem trivialHeatKernelCharacterSeries_eq_one {t : Real} (ht : 0 < t)
