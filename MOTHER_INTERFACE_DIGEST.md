@@ -1,7 +1,7 @@
 # Mother Interface Digest
 
-Snapshot: current through the area nonnegative wrapper branch, based on `main`
-after PR #30, commit `fabe1fb` (2026-07-06).
+Snapshot: current through PR #31, based on `main` commit `2ade1aa`
+(2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -130,7 +130,7 @@ theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel and area-law consumer tests, current through PR #24, in
+Trivial heat-kernel and area-law consumer tests, current through PR #31, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
@@ -166,15 +166,19 @@ package.
 `trivialAreaLawValue_zero_area` is a consumer check for the public
 `areaLawValue_zero_area` API lemma.
 
-Area-law API normalization, in `Lean2dYangMills/Interfaces.lean`:
+Area-law API normalization, current through PR #31, in
+`Lean2dYangMills/Interfaces.lean`:
 
 ```lean
 theorem Lean2dYangMills.areaLawValue_zero_area
+theorem Lean2dYangMills.simpleLoop_area_nonnegative
 ```
 
-Interpretation: this is a definitional consumer lemma for the public
-`areaLawValue` function under the explicit hypothesis `T.area C = 0`. It does
-not supply an `ExactAreaLawPackage` and does not prove any nontrivial Wilson
+Interpretation: `areaLawValue_zero_area` is a definitional consumer lemma for
+the public `areaLawValue` function under the explicit hypothesis
+`T.area C = 0`. `simpleLoop_area_nonnegative` is public-interface glue
+projecting the explicit `ExactAreaLawPackage.area_nonnegative` field. Neither
+lemma supplies an `ExactAreaLawPackage` or proves any nontrivial Wilson
 expectation identity.
 
 ## Explicitly Open Inputs
