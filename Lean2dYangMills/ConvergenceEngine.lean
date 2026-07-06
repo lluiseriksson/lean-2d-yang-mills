@@ -61,4 +61,12 @@ theorem summable_pow_mul_exp_neg_casimir {t : Real} (ht : 0 < t) (k : Nat) :
   have hpow : (0 : Real) ≤ ((n : Real) + 1) ^ k := by positivity
   exact mul_le_mul_of_nonneg_left hbase hpow
 
+/-- SU(2)-shaped dimension-square Casimir decay is summable for every
+positive heat time.  This is a specialization of the convergence engine only;
+it does not construct the SU(2) heat kernel or character table. -/
+theorem summable_su2_dim_sq_exp_neg_casimir {t : Real} (ht : 0 < t) :
+    Summable (fun n : Nat =>
+      ((n : Real) + 1) ^ 2 * Real.exp (-t * ((n : Real) * ((n : Real) + 2)) / 4)) :=
+  summable_pow_mul_exp_neg_casimir ht 2
+
 end Lean2dYangMills
