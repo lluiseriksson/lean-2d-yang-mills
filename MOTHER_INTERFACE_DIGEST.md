@@ -1,7 +1,7 @@
 # Mother Interface Digest
 
-Snapshot: current through the surface partition summability wrapper branch,
-based on `main` after PR #27, commit `93514c9` (2026-07-06).
+Snapshot: current through PR #28, based on `main` commit `0a25b89`
+(2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -90,7 +90,7 @@ those inputs as axioms.
 
 ## Unconditional Benchmarks On Main
 
-Witten-zeta/Riemann-zeta bridge, current through PR #26, in
+Witten-zeta/Riemann-zeta bridge, current through PR #28, in
 `Lean2dYangMills/WittenZetaSU2.lean`:
 
 ```lean
