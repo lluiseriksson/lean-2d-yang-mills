@@ -98,14 +98,17 @@ theorem Lean2dYangMills.su2_wittenZetaSeries_eq_riemannZeta
 theorem Lean2dYangMills.genusZetaArgument_re
 theorem Lean2dYangMills.one_lt_genusZetaArgument_re
 def Lean2dYangMills.su2ZeroAreaSurfaceModel
+theorem Lean2dYangMills.su2ZeroArea_partition_eq_wittenZetaSeries
 theorem Lean2dYangMills.su2ZeroArea_partition_eq_riemannZeta
 ```
 
 Interpretation: for the SU(2) representation dimensions `1, 2, 3, ...`, the
 Witten-zeta series is identified with Mathlib's `riemannZeta` on `1 < s.re`.
 The zero-area genus model is a consumer test where the partition function is
-defined as the representation-dimension series. This does not close the
-positive-area analytic surface Yang-Mills partition function.
+defined as the representation-dimension series. `su2ZeroArea_partition_eq_wittenZetaSeries`
+is the matching consumer check for the public `surfacePartitionFunction_eq_wittenZeta`
+wrapper. This does not close the positive-area analytic surface Yang-Mills
+partition function.
 
 M0 convergence engine, in `Lean2dYangMills/ConvergenceEngine.lean`:
 

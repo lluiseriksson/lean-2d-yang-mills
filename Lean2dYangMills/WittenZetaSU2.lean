@@ -97,6 +97,15 @@ def su2ZeroAreaSurfaceModel : WittenZetaSurfacePackage su2WittenZetaData where
     summable_su2WittenZetaTerm (one_lt_genusZetaArgument_re S.2)
   partition_eq_zeta := fun _ => rfl
 
+/-- Consumer theorem: the public M4 surface-partition wrapper applies to the
+zero-area SU(2) genus model. -/
+theorem su2ZeroArea_partition_eq_wittenZetaSeries (S : {g : Nat // 2 ≤ g}) :
+    su2ZeroAreaSurfaceModel.partitionFunction S
+      = wittenZetaSeries su2WittenZetaData (genusZetaArgument S.1) := by
+  change su2ZeroAreaSurfaceModel.partitionFunction S
+    = wittenZetaSeries su2WittenZetaData (su2ZeroAreaSurfaceModel.zetaArgument S)
+  exact surfacePartitionFunction_eq_wittenZeta su2ZeroAreaSurfaceModel S
+
 /-- Zero-area genus-`g` partition functions are special values of the
 Riemann zeta function: `Z_g = ζ(2g - 2)`. -/
 theorem su2ZeroArea_partition_eq_riemannZeta (S : {g : Nat // 2 ≤ g}) :
