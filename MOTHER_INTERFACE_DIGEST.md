@@ -1,7 +1,7 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #37, based on `main` commit `550bd1c`
-(2026-07-06).
+Snapshot: current through PR #40, based on `main` commit `573b496`
+(2026-07-07).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -145,6 +145,9 @@ dimension-square specialization
 engine, for `0 < t`. It is intended as a small M0 consumer oracle for future
 Weyl-bound work; it does not construct the SU(2) heat kernel or character
 table.
+
+PR #40 was a digest/status refresh after PR #37; it did not add or rename
+Lean theorems.
 
 Trivial heat-kernel and area-law consumer tests, current through PR #34, in
 `Lean2dYangMills/TrivialModel.lean`:
