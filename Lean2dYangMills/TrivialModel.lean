@@ -132,9 +132,8 @@ theorem trivialSimpleLoop_stringTension_nonnegative :
 /-- Consumer theorem: the trivial exact-area-law package also discharges the
 explicit nonnegative-area hypothesis for its only loop model. -/
 theorem trivialSimpleLoop_area_nonnegative (C : trivialPlaneSimpleLoopTheory.Loop) :
-    0 <= trivialPlaneSimpleLoopTheory.area C := by
-  simpa [trivialExactAreaLawPackage, trivialPlaneSimpleLoopTheory] using
-    trivialExactAreaLawPackage.area_nonnegative C
+    0 <= trivialPlaneSimpleLoopTheory.area C :=
+  simpleLoop_area_nonnegative trivialExactAreaLawPackage C
 
 /-- Consumer theorem: the public zero-area area-law API lemma reduces the
 trivial model's area-law value to `1`. -/

@@ -59,6 +59,7 @@ structure Lean2dYangMills.ExactAreaLawPackage
 
 theorem Lean2dYangMills.simpleLoop_areaLaw_exact
 theorem Lean2dYangMills.simpleLoop_stringTension_nonnegative
+theorem Lean2dYangMills.simpleLoop_area_nonnegative
 ```
 
 ## Continuum Limit
