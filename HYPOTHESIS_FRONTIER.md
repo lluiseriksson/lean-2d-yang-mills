@@ -10,8 +10,7 @@ Date: 2026-07-06
 
 ## Closed facts on `main` through PR #37
 
-Current audited base commit: PR #35 at `main` commit `f3eaf91`; this branch
-adds one M0 convergence-engine specialization.
+Current audited base commit: PR #37 at `main` commit `550bd1c`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
@@ -123,10 +122,10 @@ Area-law API normalization (`Interfaces.lean`):
 ## Distance To Goal
 
 M4's convergence layer is closed and identifies the Riemann bridge
-unconditionally. M0 now has its convergence engine and its character
-DEFINITION; what remains for M0 is the Weyl bound (one spectral fact about
-SU(2)) plus orthogonality for the semigroup. M1 (Migdal), M2 (area law),
-M3 (continuum) remain open as before.
+unconditionally. M0 now has its convergence engine, the dimension-square
+Casimir specialization, and its character DEFINITION; what remains for M0 is
+the Weyl bound (one spectral fact about SU(2)) plus orthogonality for the
+semigroup. M1 (Migdal), M2 (area law), M3 (continuum) remain open as before.
 
 Any branch that introduces `sorry` must be named `frontier/*` and must
 update this file with exact theorem names and remaining assumptions.
