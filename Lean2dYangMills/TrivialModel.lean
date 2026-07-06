@@ -135,6 +135,13 @@ theorem trivialSimpleLoop_area_nonnegative (C : trivialPlaneSimpleLoopTheory.Loo
     0 <= trivialPlaneSimpleLoopTheory.area C :=
   simpleLoop_area_nonnegative trivialExactAreaLawPackage C
 
+/-- Consumer theorem: the public zero-area Wilson wrapper reduces the
+trivial model's Wilson expectation to `1`. -/
+theorem trivialSimpleLoop_wilsonExpectation_zero_area (C : trivialPlaneSimpleLoopTheory.Loop) :
+    trivialPlaneSimpleLoopTheory.wilsonExpectation C = 1 :=
+  simpleLoop_wilsonExpectation_zero_area trivialExactAreaLawPackage
+    (by simp [trivialPlaneSimpleLoopTheory])
+
 /-- Consumer theorem: the public zero-area area-law API lemma reduces the
 trivial model's area-law value to `1`. -/
 theorem trivialAreaLawValue_zero_area (C : trivialPlaneSimpleLoopTheory.Loop) :

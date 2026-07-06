@@ -8,9 +8,9 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through PR #31
+## Closed facts on `main` through proposed PR #33
 
-Current audited main commit: PR #31 at `main` commit `2ade1aa`.
+Current audited base commit: PR #32 at `main` commit `506f7e9`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
@@ -65,6 +65,10 @@ Consumer test (`TrivialModel.lean`):
 - `trivialSimpleLoop_area_nonnegative`: consumer check that the explicit
   `ExactAreaLawPackage.area_nonnegative` field is available through the public
   `simpleLoop_area_nonnegative` wrapper for the trivial exact-area-law package.
+- `trivialSimpleLoop_wilsonExpectation_zero_area`: consumer check that the
+  public `simpleLoop_wilsonExpectation_zero_area` wrapper combines an exact
+  area-law package with an explicit zero-area hypothesis to reduce the Wilson
+  expectation to `1`.
 - `trivialAreaLawValue_zero_area`: consumer check that the public
   `areaLawValue_zero_area` API lemma reduces the trivial model's area-law
   value to `1`.
@@ -77,6 +81,10 @@ Area-law API normalization (`Interfaces.lean`):
 - `simpleLoop_area_nonnegative`: public-interface glue projecting the explicit
   `ExactAreaLawPackage.area_nonnegative` field. It does not discharge an
   `ExactAreaLawPackage` for any nontrivial model.
+- `simpleLoop_wilsonExpectation_zero_area`: conditional public-interface glue
+  combining an already supplied `ExactAreaLawPackage` with an explicit
+  zero-area hypothesis. It does not supply the package or prove a physical
+  area law.
 
 ## Explicit Hypothesis Packages (unchanged, still open for real models)
 

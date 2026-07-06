@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #31, based on `main` commit `2ade1aa`
+Snapshot: current through proposed PR #33, based on `main` commit `506f7e9`
 (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
@@ -66,6 +66,7 @@ structure Lean2dYangMills.ExactAreaLawPackage
 theorem Lean2dYangMills.simpleLoop_areaLaw_exact
 theorem Lean2dYangMills.simpleLoop_stringTension_nonnegative
 theorem Lean2dYangMills.simpleLoop_area_nonnegative
+theorem Lean2dYangMills.simpleLoop_wilsonExpectation_zero_area
 ```
 
 Continuum and Witten-zeta interfaces:
@@ -130,7 +131,7 @@ theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel and area-law consumer tests, current through PR #31, in
+Trivial heat-kernel and area-law consumer tests, current through proposed PR #33, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
@@ -144,6 +145,7 @@ def Lean2dYangMills.trivialExactAreaLawPackage
 theorem Lean2dYangMills.trivialSimpleLoop_areaLaw_exact
 theorem Lean2dYangMills.trivialSimpleLoop_stringTension_nonnegative
 theorem Lean2dYangMills.trivialSimpleLoop_area_nonnegative
+theorem Lean2dYangMills.trivialSimpleLoop_wilsonExpectation_zero_area
 theorem Lean2dYangMills.trivialAreaLawValue_zero_area
 ```
 
@@ -163,15 +165,20 @@ trivial exact-area-law package.
 `trivialSimpleLoop_area_nonnegative` is the matching consumer check for the
 public `simpleLoop_area_nonnegative` wrapper over the trivial exact-area-law
 package.
+`trivialSimpleLoop_wilsonExpectation_zero_area` is the matching consumer
+check for the public `simpleLoop_wilsonExpectation_zero_area` wrapper: exact
+area law plus an explicit zero-area hypothesis reduces the Wilson expectation
+to `1`.
 `trivialAreaLawValue_zero_area` is a consumer check for the public
 `areaLawValue_zero_area` API lemma.
 
-Area-law API normalization, current through PR #31, in
+Area-law API normalization, current through proposed PR #33, in
 `Lean2dYangMills/Interfaces.lean`:
 
 ```lean
 theorem Lean2dYangMills.areaLawValue_zero_area
 theorem Lean2dYangMills.simpleLoop_area_nonnegative
+theorem Lean2dYangMills.simpleLoop_wilsonExpectation_zero_area
 ```
 
 Interpretation: `areaLawValue_zero_area` is a definitional consumer lemma for
@@ -179,7 +186,9 @@ the public `areaLawValue` function under the explicit hypothesis
 `T.area C = 0`. `simpleLoop_area_nonnegative` is public-interface glue
 projecting the explicit `ExactAreaLawPackage.area_nonnegative` field. Neither
 lemma supplies an `ExactAreaLawPackage` or proves any nontrivial Wilson
-expectation identity.
+expectation identity. `simpleLoop_wilsonExpectation_zero_area` is conditional
+glue combining an already supplied `ExactAreaLawPackage` with an explicit
+zero-area hypothesis to expose the normalized value `1`.
 
 ## Explicitly Open Inputs
 
