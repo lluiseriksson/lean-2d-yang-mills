@@ -8,7 +8,7 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` (current through PR #22 / `3ca00fc`)
+## Closed facts on `main` (current through PR #24 / `31827f8`)
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 
@@ -51,6 +51,9 @@ Consumer test (`TrivialModel.lean`):
 - `trivialSimpleLoop_stringTension_nonnegative`: consumer check that the
   public `simpleLoop_stringTension_nonnegative` wrapper applies to the
   trivial exact-area-law package.
+- `trivialSimpleLoop_area_nonnegative`: consumer check that the explicit
+  `ExactAreaLawPackage.area_nonnegative` field is available from the trivial
+  exact-area-law package.
 - `trivialAreaLawValue_zero_area`: consumer check that the public
   `areaLawValue_zero_area` API lemma reduces the trivial model's area-law
   value to `1`.
