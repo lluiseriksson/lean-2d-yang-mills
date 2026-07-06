@@ -8,9 +8,9 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through the area nonnegative wrapper branch
+## Closed facts on `main` through PR #31
 
-Base before this branch: PR #30 at `main` commit `fabe1fb`.
+Current audited main commit: PR #31 at `main` commit `2ade1aa`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
@@ -74,6 +74,9 @@ Area-law API normalization (`Interfaces.lean`):
 - `areaLawValue_zero_area`: definitional lemma proving `areaLawValue T C = 1`
   from the explicit hypothesis `T.area C = 0`. It is only public-interface
   glue and does not discharge `ExactAreaLawPackage.*`.
+- `simpleLoop_area_nonnegative`: public-interface glue projecting the explicit
+  `ExactAreaLawPackage.area_nonnegative` field. It does not discharge an
+  `ExactAreaLawPackage` for any nontrivial model.
 
 ## Explicit Hypothesis Packages (unchanged, still open for real models)
 
