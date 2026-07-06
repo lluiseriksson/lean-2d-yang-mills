@@ -8,14 +8,18 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through PR #34
+## Closed facts on `main` through PR #37
 
-Current audited base commit: PR #34 at `main` commit `91c9ab4`.
+Current audited base commit: PR #35 at `main` commit `f3eaf91`; this branch
+adds one M0 convergence-engine specialization.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
 
 PR #34 was a digest/status refresh after PR #33; it did not add or rename Lean
+theorems.
+
+PR #35 was a digest/status refresh after PR #34; it did not add or rename Lean
 theorems.
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
@@ -45,6 +49,10 @@ Convergence engine (`ConvergenceEngine.lean`) — the M0 analytic engine:
 - `summable_pow_mul_exp_neg`: `(n+1)^k exp(-t n)` summable for `t > 0`.
 - `summable_pow_mul_exp_neg_casimir`: the Casimir-decay variant
   `(n+1)^k exp(-t n(n+2)/4)`.
+- `summable_su2_dim_sq_exp_neg_casimir`: the `k = 2` specialization
+  `((n+1)^2) exp(-t n(n+2)/4)`, useful after a future Weyl bound reduces
+  SU(2) heat-kernel terms to dimension-square Casimir decay. This does not
+  construct the SU(2) heat kernel or character table.
 
 Consumer test (`TrivialModel.lean`):
 
