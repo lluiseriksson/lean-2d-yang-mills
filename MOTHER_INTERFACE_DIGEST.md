@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #33, based on `main` commit `753b4ad`
+Snapshot: current through PR #34, based on `main` commit `91c9ab4`
 (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
@@ -124,14 +124,18 @@ function.
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
 
-M0 convergence engine, in `Lean2dYangMills/ConvergenceEngine.lean`:
+PR #34 was a digest/status refresh after PR #33; it did not add or rename Lean
+theorems.
+
+M0 convergence engine, current through PR #34, in
+`Lean2dYangMills/ConvergenceEngine.lean`:
 
 ```lean
 theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel and area-law consumer tests, current through PR #33, in
+Trivial heat-kernel and area-law consumer tests, current through PR #34, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
@@ -172,7 +176,7 @@ to `1`.
 `trivialAreaLawValue_zero_area` is a consumer check for the public
 `areaLawValue_zero_area` API lemma.
 
-Area-law API normalization, current through PR #33, in
+Area-law API normalization, current through PR #34, in
 `Lean2dYangMills/Interfaces.lean`:
 
 ```lean
