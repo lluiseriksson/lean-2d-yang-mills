@@ -20,11 +20,13 @@ Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 - `su2_wittenZetaSeries_eq_riemannZeta`: **the Witten zeta function of SU(2)
   IS the Riemann zeta function** on the convergence half-plane.
 - `su2ZeroAreaSurfaceModel`, `su2ZeroArea_partition_eq_wittenZetaSeries`,
-  and `su2ZeroArea_partition_eq_riemannZeta`: zero-area genus-g partition
-  functions are consumed through the public M4 surface wrapper and then
-  identified with `zeta(2g-2)` (the partition function is DEFINED as the
-  series in this topological-limit model — a declared consumer test; its
-  summability field is genuine content).
+  `su2ZeroArea_wittenZetaSeries_converges`, and
+  `su2ZeroArea_partition_eq_riemannZeta`: zero-area genus-g partition
+  functions are consumed through the public M4 surface wrapper; the public
+  `wittenZeta_converges` wrapper supplies convergence at the genus argument
+  `2g-2`; and the same series is identified with `zeta(2g-2)` (the partition
+  function is DEFINED as the series in this topological-limit model — a
+  declared consumer test).
 
 Convergence engine (`ConvergenceEngine.lean`) — the M0 analytic engine:
 

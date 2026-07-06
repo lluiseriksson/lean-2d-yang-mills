@@ -106,6 +106,12 @@ theorem su2ZeroArea_partition_eq_wittenZetaSeries (S : {g : Nat // 2 ≤ g}) :
     = wittenZetaSeries su2WittenZetaData (su2ZeroAreaSurfaceModel.zetaArgument S)
   exact surfacePartitionFunction_eq_wittenZeta su2ZeroAreaSurfaceModel S
 
+/-- Consumer theorem: the public M4 Witten-zeta convergence wrapper applies
+to the zero-area SU(2) genus model's zeta argument. -/
+theorem su2ZeroArea_wittenZetaSeries_converges (S : {g : Nat // 2 ≤ g}) :
+    Summable (wittenZetaTerm su2WittenZetaData (genusZetaArgument S.1)) :=
+  wittenZeta_converges su2WittenZetaPackage (one_lt_genusZetaArgument_re S.2)
+
 /-- Zero-area genus-`g` partition functions are special values of the
 Riemann zeta function: `Z_g = ζ(2g - 2)`. -/
 theorem su2ZeroArea_partition_eq_riemannZeta (S : {g : Nat // 2 ≤ g}) :
