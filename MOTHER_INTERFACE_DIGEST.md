@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #37, based on `main` commit `f3eaf91`
+Snapshot: current through PR #37, based on `main` commit `550bd1c`
 (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
