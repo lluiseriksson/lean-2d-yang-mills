@@ -1,7 +1,7 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #29, based on `main` commit `76659a8`
-(2026-07-06).
+Snapshot: current through the area nonnegative wrapper branch, based on `main`
+after PR #30, commit `fabe1fb` (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -65,6 +65,7 @@ theorem Lean2dYangMills.areaLawValue_zero_area
 structure Lean2dYangMills.ExactAreaLawPackage
 theorem Lean2dYangMills.simpleLoop_areaLaw_exact
 theorem Lean2dYangMills.simpleLoop_stringTension_nonnegative
+theorem Lean2dYangMills.simpleLoop_area_nonnegative
 ```
 
 Continuum and Witten-zeta interfaces:
@@ -160,8 +161,8 @@ public `heatKernel_conj_invariant` wrapper.
 for the public `simpleLoop_stringTension_nonnegative` wrapper over the
 trivial exact-area-law package.
 `trivialSimpleLoop_area_nonnegative` is the matching consumer check for the
-explicit `ExactAreaLawPackage.area_nonnegative` field over the trivial
-exact-area-law package.
+public `simpleLoop_area_nonnegative` wrapper over the trivial exact-area-law
+package.
 `trivialAreaLawValue_zero_area` is a consumer check for the public
 `areaLawValue_zero_area` API lemma.
 

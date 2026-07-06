@@ -8,7 +8,9 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through PR #29
+## Closed facts on `main` through the area nonnegative wrapper branch
+
+Base before this branch: PR #30 at `main` commit `fabe1fb`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
@@ -61,8 +63,8 @@ Consumer test (`TrivialModel.lean`):
   public `simpleLoop_stringTension_nonnegative` wrapper applies to the
   trivial exact-area-law package.
 - `trivialSimpleLoop_area_nonnegative`: consumer check that the explicit
-  `ExactAreaLawPackage.area_nonnegative` field is available from the trivial
-  exact-area-law package.
+  `ExactAreaLawPackage.area_nonnegative` field is available through the public
+  `simpleLoop_area_nonnegative` wrapper for the trivial exact-area-law package.
 - `trivialAreaLawValue_zero_area`: consumer check that the public
   `areaLawValue_zero_area` API lemma reduces the trivial model's area-law
   value to `1`.

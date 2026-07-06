@@ -197,6 +197,11 @@ theorem simpleLoop_stringTension_nonnegative {T : PlaneSimpleLoopTheory.{u}}
     (P : ExactAreaLawPackage T) : 0 <= T.stringTension :=
   P.stringTension_nonnegative
 
+/-- Nonnegativity of the explicit loop area carried by the area-law package. -/
+theorem simpleLoop_area_nonnegative {T : PlaneSimpleLoopTheory.{u}}
+    (P : ExactAreaLawPackage T) (C : T.Loop) : 0 <= T.area C :=
+  P.area_nonnegative C
+
 /-- Statements-first continuum limit package.
 
 Reference target: Driver (1989, Commun. Math. Phys. 123, 575-616); Levy
