@@ -202,6 +202,15 @@ theorem simpleLoop_area_nonnegative {T : PlaneSimpleLoopTheory.{u}}
     (P : ExactAreaLawPackage T) (C : T.Loop) : 0 <= T.area C :=
   P.area_nonnegative C
 
+/-- A zero-area loop in an exact area-law package has Wilson expectation `1`.
+
+This is conditional interface glue: the package supplies the exact area law,
+and the caller supplies the zero-area hypothesis. -/
+theorem simpleLoop_wilsonExpectation_zero_area {T : PlaneSimpleLoopTheory.{u}}
+    (P : ExactAreaLawPackage T) {C : T.Loop} (hC : T.area C = 0) :
+    T.wilsonExpectation C = 1 := by
+  rw [simpleLoop_areaLaw_exact P C, areaLawValue_zero_area T hC]
+
 /-- Statements-first continuum limit package.
 
 Reference target: Driver (1989, Commun. Math. Phys. 123, 575-616); Levy
