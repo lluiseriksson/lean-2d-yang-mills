@@ -83,6 +83,7 @@ structure Lean2dYangMills.WittenZetaSurfacePackage
 
 theorem Lean2dYangMills.wittenZeta_converges
 theorem Lean2dYangMills.wittenZeta_eq_tsum
+theorem Lean2dYangMills.surfacePartitionFunction_summable
 theorem Lean2dYangMills.surfacePartitionFunction_eq_wittenZeta
 ```
 

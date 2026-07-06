@@ -8,7 +8,7 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` (current through PR #26 / `b0002a2`)
+## Closed facts on `main` plus current surface summability wrapper branch
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 
@@ -21,11 +21,14 @@ Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
   IS the Riemann zeta function** on the convergence half-plane.
 - `su2ZeroAreaSurfaceModel`, `su2ZeroArea_partition_eq_wittenZetaSeries`,
   `su2ZeroArea_wittenZetaSeries_converges` (PR #26 consumer check for the
-  public `wittenZeta_converges` wrapper), and
+  public `wittenZeta_converges` wrapper),
+  `su2ZeroArea_surfacePartitionSeries_summable` (consumer check for the
+  public `surfacePartitionFunction_summable` wrapper), and
   `su2ZeroArea_partition_eq_riemannZeta`: zero-area genus-g partition
   functions are consumed through the public M4 surface wrapper; the public
   `wittenZeta_converges` wrapper supplies convergence at the genus argument
-  `2g-2`; and the same series is identified with `zeta(2g-2)` (the partition
+  `2g-2`; the public surface summability wrapper exposes the same package
+  field; and the same series is identified with `zeta(2g-2)` (the partition
   function is DEFINED as the series in this topological-limit model — a
   declared consumer test).
 

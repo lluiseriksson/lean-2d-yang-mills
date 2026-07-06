@@ -112,6 +112,13 @@ theorem su2ZeroArea_wittenZetaSeries_converges (S : {g : Nat // 2 ≤ g}) :
     Summable (wittenZetaTerm su2WittenZetaData (genusZetaArgument S.1)) :=
   wittenZeta_converges su2WittenZetaPackage (one_lt_genusZetaArgument_re S.2)
 
+/-- Consumer theorem: the public M4 surface summability wrapper applies to
+the zero-area SU(2) genus model. -/
+theorem su2ZeroArea_surfacePartitionSeries_summable (S : {g : Nat // 2 ≤ g}) :
+    Summable
+      (wittenZetaTerm su2WittenZetaData (su2ZeroAreaSurfaceModel.zetaArgument S)) :=
+  surfacePartitionFunction_summable su2ZeroAreaSurfaceModel S
+
 /-- Zero-area genus-`g` partition functions are special values of the
 Riemann zeta function: `Z_g = ζ(2g - 2)`. -/
 theorem su2ZeroArea_partition_eq_riemannZeta (S : {g : Nat // 2 ≤ g}) :

@@ -1,6 +1,7 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #26, commit `b0002a2` (2026-07-06).
+Snapshot: current through the surface partition summability wrapper branch,
+based on `main` after PR #27, commit `93514c9` (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -79,6 +80,7 @@ structure Lean2dYangMills.WittenZetaPackage
 structure Lean2dYangMills.WittenZetaSurfacePackage
 theorem Lean2dYangMills.wittenZeta_converges
 theorem Lean2dYangMills.wittenZeta_eq_tsum
+theorem Lean2dYangMills.surfacePartitionFunction_summable
 theorem Lean2dYangMills.surfacePartitionFunction_eq_wittenZeta
 ```
 
@@ -101,6 +103,7 @@ theorem Lean2dYangMills.one_lt_genusZetaArgument_re
 def Lean2dYangMills.su2ZeroAreaSurfaceModel
 theorem Lean2dYangMills.su2ZeroArea_partition_eq_wittenZetaSeries
 theorem Lean2dYangMills.su2ZeroArea_wittenZetaSeries_converges
+theorem Lean2dYangMills.su2ZeroArea_surfacePartitionSeries_summable
 theorem Lean2dYangMills.su2ZeroArea_partition_eq_riemannZeta
 ```
 
@@ -111,8 +114,10 @@ defined as the representation-dimension series. `su2ZeroArea_partition_eq_witten
 is the matching consumer check for the public `surfacePartitionFunction_eq_wittenZeta`
 wrapper. `su2ZeroArea_wittenZetaSeries_converges` is the PR #26 matching
 consumer check for the public `wittenZeta_converges` wrapper at the genus argument
-`2g - 2`. This does not close the positive-area analytic surface Yang-Mills
-partition function.
+`2g - 2`. `su2ZeroArea_surfacePartitionSeries_summable` is the matching
+consumer check for the public `surfacePartitionFunction_summable` wrapper.
+This does not close the positive-area analytic surface Yang-Mills partition
+function.
 
 M0 convergence engine, in `Lean2dYangMills/ConvergenceEngine.lean`:
 

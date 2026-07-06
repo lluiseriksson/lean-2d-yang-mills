@@ -285,6 +285,13 @@ structure WittenZetaSurfacePackage (Z : WittenZetaData.{u}) where
   partition_eq_zeta :
     forall S : Surface, partitionFunction S = wittenZetaSeries Z (zetaArgument S)
 
+/-- Summability of the surface partition-function representation series,
+conditional on M4. -/
+theorem surfacePartitionFunction_summable {Z : WittenZetaData.{u}}
+    (P : WittenZetaSurfacePackage Z) (S : P.Surface) :
+    Summable (wittenZetaTerm Z (P.zetaArgument S)) :=
+  P.partition_summable S
+
 /-- Surface partition function as a Witten-zeta representation series, conditional on M4. -/
 theorem surfacePartitionFunction_eq_wittenZeta {Z : WittenZetaData.{u}}
     (P : WittenZetaSurfacePackage Z) (S : P.Surface) :
