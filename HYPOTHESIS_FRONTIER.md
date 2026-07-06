@@ -8,11 +8,14 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through PR #33
+## Closed facts on `main` through PR #34
 
-Current audited base commit: PR #33 at `main` commit `753b4ad`.
+Current audited base commit: PR #34 at `main` commit `91c9ab4`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
+theorems.
+
+PR #34 was a digest/status refresh after PR #33; it did not add or rename Lean
 theorems.
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
