@@ -8,9 +8,9 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through proposed PR #33
+## Closed facts on `main` through PR #33
 
-Current audited base commit: PR #32 at `main` commit `506f7e9`.
+Current audited base commit: PR #33 at `main` commit `753b4ad`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
