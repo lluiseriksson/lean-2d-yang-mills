@@ -8,7 +8,7 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` plus current surface summability wrapper branch
+## Closed facts on `main` through PR #28
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 
