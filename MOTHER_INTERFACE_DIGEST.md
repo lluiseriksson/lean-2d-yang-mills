@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #28, based on `main` commit `0a25b89`
+Snapshot: current through PR #29, based on `main` commit `76659a8`
 (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
@@ -90,7 +90,7 @@ those inputs as axioms.
 
 ## Unconditional Benchmarks On Main
 
-Witten-zeta/Riemann-zeta bridge, current through PR #28, in
+Witten-zeta/Riemann-zeta bridge, current through PR #29, in
 `Lean2dYangMills/WittenZetaSU2.lean`:
 
 ```lean
@@ -118,6 +118,9 @@ consumer check for the public `wittenZeta_converges` wrapper at the genus argume
 consumer check for the public `surfacePartitionFunction_summable` wrapper.
 This does not close the positive-area analytic surface Yang-Mills partition
 function.
+
+PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
+theorems.
 
 M0 convergence engine, in `Lean2dYangMills/ConvergenceEngine.lean`:
 
