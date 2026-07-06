@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #22, commit `3ca00fc` (2026-07-06).
+Snapshot: `main` after PR #24, commit `31827f8` (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -117,7 +117,7 @@ theorem Lean2dYangMills.summable_pow_mul_exp_neg
 theorem Lean2dYangMills.summable_pow_mul_exp_neg_casimir
 ```
 
-Trivial heat-kernel and area-law consumer tests, current through PR #22, in
+Trivial heat-kernel and area-law consumer tests, current through PR #24, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
@@ -130,6 +130,7 @@ def Lean2dYangMills.trivialPlaneSimpleLoopTheory
 def Lean2dYangMills.trivialExactAreaLawPackage
 theorem Lean2dYangMills.trivialSimpleLoop_areaLaw_exact
 theorem Lean2dYangMills.trivialSimpleLoop_stringTension_nonnegative
+theorem Lean2dYangMills.trivialSimpleLoop_area_nonnegative
 theorem Lean2dYangMills.trivialAreaLawValue_zero_area
 ```
 
@@ -146,6 +147,9 @@ public `heatKernel_conj_invariant` wrapper.
 `trivialSimpleLoop_stringTension_nonnegative` is the matching consumer check
 for the public `simpleLoop_stringTension_nonnegative` wrapper over the
 trivial exact-area-law package.
+`trivialSimpleLoop_area_nonnegative` is the matching consumer check for the
+explicit `ExactAreaLawPackage.area_nonnegative` field over the trivial
+exact-area-law package.
 `trivialAreaLawValue_zero_area` is a consumer check for the public
 `areaLawValue_zero_area` API lemma.
 
