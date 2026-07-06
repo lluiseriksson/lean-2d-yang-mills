@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: `main` after PR #24, commit `31827f8` (2026-07-06).
+Snapshot: `main` after PR #26, commit `b0002a2` (2026-07-06).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -88,7 +88,8 @@ those inputs as axioms.
 
 ## Unconditional Benchmarks On Main
 
-Witten-zeta/Riemann-zeta bridge, in `Lean2dYangMills/WittenZetaSU2.lean`:
+Witten-zeta/Riemann-zeta bridge, current through PR #26, in
+`Lean2dYangMills/WittenZetaSU2.lean`:
 
 ```lean
 def Lean2dYangMills.su2WittenZetaData
@@ -108,8 +109,8 @@ Witten-zeta series is identified with Mathlib's `riemannZeta` on `1 < s.re`.
 The zero-area genus model is a consumer test where the partition function is
 defined as the representation-dimension series. `su2ZeroArea_partition_eq_wittenZetaSeries`
 is the matching consumer check for the public `surfacePartitionFunction_eq_wittenZeta`
-wrapper. `su2ZeroArea_wittenZetaSeries_converges` is the matching consumer
-check for the public `wittenZeta_converges` wrapper at the genus argument
+wrapper. `su2ZeroArea_wittenZetaSeries_converges` is the PR #26 matching
+consumer check for the public `wittenZeta_converges` wrapper at the genus argument
 `2g - 2`. This does not close the positive-area analytic surface Yang-Mills
 partition function.
 

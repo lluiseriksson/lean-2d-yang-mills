@@ -8,7 +8,7 @@ Date: 2026-07-06
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` (current through PR #24 / `31827f8`)
+## Closed facts on `main` (current through PR #26 / `b0002a2`)
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 
@@ -20,7 +20,8 @@ Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
 - `su2_wittenZetaSeries_eq_riemannZeta`: **the Witten zeta function of SU(2)
   IS the Riemann zeta function** on the convergence half-plane.
 - `su2ZeroAreaSurfaceModel`, `su2ZeroArea_partition_eq_wittenZetaSeries`,
-  `su2ZeroArea_wittenZetaSeries_converges`, and
+  `su2ZeroArea_wittenZetaSeries_converges` (PR #26 consumer check for the
+  public `wittenZeta_converges` wrapper), and
   `su2ZeroArea_partition_eq_riemannZeta`: zero-area genus-g partition
   functions are consumed through the public M4 surface wrapper; the public
   `wittenZeta_converges` wrapper supplies convergence at the genus argument
