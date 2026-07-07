@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #40, based on `main` commit `573b496`
+Snapshot: current through PR #41, based on `main` commit `1de519d`
 (2026-07-07).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
@@ -147,6 +147,9 @@ Weyl-bound work; it does not construct the SU(2) heat kernel or character
 table.
 
 PR #40 was a digest/status refresh after PR #37; it did not add or rename
+Lean theorems.
+
+PR #41 was a digest/status refresh after PR #40; it did not add or rename
 Lean theorems.
 
 Trivial heat-kernel and area-law consumer tests, current through PR #34, in
