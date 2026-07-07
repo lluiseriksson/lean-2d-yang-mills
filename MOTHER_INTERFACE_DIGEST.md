@@ -1,6 +1,6 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #43, based on `main` commit `6eae14e`
+Snapshot: current through PR #44, based on `main` commit `71422d8`
 (2026-07-07).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
@@ -156,6 +156,9 @@ PR #42 was a digest/status refresh after PR #41; it did not add or rename
 Lean theorems.
 
 PR #43 was a digest/status refresh after PR #42; it did not add or rename
+Lean theorems.
+
+PR #44 was a digest/status refresh after PR #43; it did not add or rename
 Lean theorems.
 
 Trivial heat-kernel and area-law consumer tests, current through PR #34, in
