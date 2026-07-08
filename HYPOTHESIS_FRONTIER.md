@@ -1,6 +1,6 @@
 # Hypothesis Frontier
 
-Date: 2026-07-07
+Date: 2026-07-08
 
 ## Main Branch Status
 
@@ -8,9 +8,9 @@ Date: 2026-07-07
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
-## Closed facts on `main` through PR #44
+## Closed facts through PR #45 plus this branch
 
-Current audited base commit: PR #44 at `main` commit `71422d8`.
+Current audited base commit: PR #45 at `main` commit `4fa90b5`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
 theorems.
@@ -34,6 +34,9 @@ PR #43 was a digest/status refresh after PR #42; it did not add or rename Lean
 theorems.
 
 PR #44 was a digest/status refresh after PR #43; it did not add or rename Lean
+theorems.
+
+PR #45 was a digest/status refresh after PR #44; it did not add or rename Lean
 theorems.
 
 Witten zeta layer (`WittenZetaSU2.lean`) — milestone M4 convergence closed:
@@ -97,6 +100,11 @@ Consumer test (`TrivialModel.lean`):
 - `trivialAreaLawValue_zero_area`: consumer check that the public
   `areaLawValue_zero_area` API lemma reduces the trivial model's area-law
   value to `1`.
+- `trivialContinuumLimitPackage`: one-state `ContinuumLimitPackage` whose
+  lattice and continuum expectations are constantly `1`.
+- `trivialContinuumLimit_statement`: consumer check that the public
+  `continuum_limit_statement` wrapper applies to the one-state package. This
+  is interface glue only and does not prove a nontrivial continuum limit.
 
 Area-law API normalization (`Interfaces.lean`):
 
