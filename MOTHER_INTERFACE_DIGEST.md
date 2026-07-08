@@ -1,7 +1,7 @@
 # Mother Interface Digest
 
-Snapshot: current through PR #44, based on `main` commit `71422d8`
-(2026-07-07).
+Snapshot: current through PR #45, based on `main` commit `4fa90b5`
+(2026-07-08).
 
 Audience: `lluiseriksson/THE-ERIKSSON-PROGRAMME`.
 
@@ -161,7 +161,11 @@ Lean theorems.
 PR #44 was a digest/status refresh after PR #43; it did not add or rename
 Lean theorems.
 
-Trivial heat-kernel and area-law consumer tests, current through PR #34, in
+PR #45 was a digest/status refresh after PR #44; it did not add or rename
+Lean theorems.
+
+Trivial heat-kernel, area-law, and continuum consumer tests, current through
+PR #45 plus this branch, in
 `Lean2dYangMills/TrivialModel.lean`:
 
 ```lean
@@ -177,13 +181,16 @@ theorem Lean2dYangMills.trivialSimpleLoop_stringTension_nonnegative
 theorem Lean2dYangMills.trivialSimpleLoop_area_nonnegative
 theorem Lean2dYangMills.trivialSimpleLoop_wilsonExpectation_zero_area
 theorem Lean2dYangMills.trivialAreaLawValue_zero_area
+def Lean2dYangMills.trivialContinuumLimitPackage
+theorem Lean2dYangMills.trivialContinuumLimit_statement
 ```
 
 Interpretation: these are zero-content interface oracles over `PUnit`. They
-show that `HeatKernelCharacterPackage` and `ExactAreaLawPackage` can be
-consumed with all fields discharged in a one-point model. They do not prove
-the SU(2) heat kernel, a physical plane-loop area law, or any continuum
-statement. `trivialHeatKernelCharacterSeries_eq_one` is a consumer check for
+show that `HeatKernelCharacterPackage`, `ExactAreaLawPackage`, and
+`ContinuumLimitPackage` can be consumed with all fields discharged in a
+one-point model. They do not prove the SU(2) heat kernel, a physical
+plane-loop area law, or any nontrivial continuum statement.
+`trivialHeatKernelCharacterSeries_eq_one` is a consumer check for
 the public `heatKernel_character_series_eq` wrapper specialized to the
 trivial package. `trivialHeatKernelCharacterSeries_converges` is the matching
 consumer check for the public `heatKernel_character_series_converges` wrapper.
@@ -200,9 +207,11 @@ check for the public `simpleLoop_wilsonExpectation_zero_area` wrapper: exact
 area law plus an explicit zero-area hypothesis reduces the Wilson expectation
 to `1`.
 `trivialAreaLawValue_zero_area` is a consumer check for the public
-`areaLawValue_zero_area` API lemma.
+`areaLawValue_zero_area` API lemma. `trivialContinuumLimit_statement` is the
+matching consumer check for the public `continuum_limit_statement` wrapper
+over a one-state constant-expectation package.
 
-Area-law API normalization, current through PR #34, in
+Area-law API normalization, current through PR #45, in
 `Lean2dYangMills/Interfaces.lean`:
 
 ```lean

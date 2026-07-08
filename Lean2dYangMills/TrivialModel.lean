@@ -148,4 +148,31 @@ theorem trivialAreaLawValue_zero_area (C : trivialPlaneSimpleLoopTheory.Loop) :
     areaLawValue trivialPlaneSimpleLoopTheory C = 1 :=
   areaLawValue_zero_area trivialPlaneSimpleLoopTheory (by simp [trivialPlaneSimpleLoopTheory])
 
+/-- The one-state continuum package: lattice and continuum expectations are
+constantly one. This is a consumer test for the M3 interface only, not a
+continuum Yang-Mills construction. -/
+def trivialContinuumLimitPackage : ContinuumLimitPackage where
+  LatticeState := PUnit
+  ContinuumState := PUnit
+  Observable := PUnit
+  convergesTo := fun _ _ => True
+  latticeExpectation := fun _ _ => 1
+  continuumExpectation := fun _ _ => 1
+  convergence := by
+    intro _ _ _ _
+    simp
+
+/-- Consumer theorem: the public M3 continuum-limit wrapper applies to the
+trivial one-state package. -/
+theorem trivialContinuumLimit_statement
+    (a : Nat -> trivialContinuumLimitPackage.LatticeState)
+    (A : trivialContinuumLimitPackage.ContinuumState)
+    (O : trivialContinuumLimitPackage.Observable)
+    (h : trivialContinuumLimitPackage.convergesTo a A) :
+    Filter.Tendsto
+      (fun n : Nat => trivialContinuumLimitPackage.latticeExpectation (a n) O)
+      Filter.atTop
+      (nhds (trivialContinuumLimitPackage.continuumExpectation A O)) :=
+  continuum_limit_statement trivialContinuumLimitPackage a A O h
+
 end Lean2dYangMills
