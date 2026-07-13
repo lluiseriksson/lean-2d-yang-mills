@@ -31,6 +31,11 @@ by the following unconditional concrete theorems on `main`:
 - `SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected`;
 - `SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving`;
 - `SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving`.
+- `SU2FiniteDiskCellulation.RootedSpanningTree.treeEdge_injective`;
+- `SU2FiniteDiskCellulation.RootedSpanningTree.globalEdgeGaugeEquiv_measurePreserving`;
+- `SU2FiniteDiskCellulation.RootedSpanningTree.gaugeTransform_eq_gaugeFixedEdgeConfiguration`;
+- `SU2EdgeConnectedDiskCellulation.allFaceHolonomies_gaugeTransform`;
+- `SU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral_eq_chordGaugeFixedIntegral`.
 
 The generic hypothesis packages remain useful interfaces, but none of the
 conclusions above is obtained by projecting a field from such a package.  The
@@ -46,9 +51,12 @@ identity-slice integral are uniform in the finite index type.  The global
 vertex-coordinate layer is now closed as well: every finite connected primal
 graph has a construction-ordered spanning tree, and every primal-connected
 cellulation admits one root-plus-tree-increments equivalence preserving all
-vertex product Haar.  The remaining planar frontier is to lift this coordinate
-theorem to the full edge configuration, prove the resulting facial-holonomy
-identification, and compare with embedded planar isotopy classes.
+vertex product Haar.  The full edge lift and facial-holonomy identification are
+now closed as well: the selected tree edges are injective, the global
+edge/chord equivalence preserves Haar, every tree edge is fixed to the identity,
+all face holonomies transform simultaneously, and the unreduced Haar integral
+equals the chord integral.  The remaining planar frontier is comparison with
+embedded planar isotopy classes.
 Continuum construction and the positive-area higher-genus layer also remain
 open.  The detailed pre-closure history is retained below for provenance only.
 

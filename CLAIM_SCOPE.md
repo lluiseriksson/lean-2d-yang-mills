@@ -59,24 +59,29 @@ No acyclicity hypothesis is imposed on the dual graph. This closes finite
 choice-independent reduction of the explicitly defined post-gauge-fixed
 amplitude, including schedules supported on dual graphs with cycles.
 
-The first nontrivial product-Haar bridge is also closed for the concrete
-three-spoke disk whose face dual is the three-cycle.  Starting from three
-original edge variables, the formalization proves that
-`(x,y,z) |-> (x,x^-1*y,x^-1*z)` preserves triple normalized Haar, that the
-density loses the pure-gauge coordinate, and that the unreduced integral is
-the heat kernel at total area.  This is not yet a theorem for every finite
-cellulation.
+The product-Haar bridge is now uniform for the full original edge space.  For
+every primal-connected finite disk cellulation, a construction-ordered rooted
+spanning tree selects exactly `V-1` distinct physical edges.  The formalization
+constructs the literal measurable equivalence
 
-The product-Haar gauge step itself is now uniform in arbitrary finite valence:
-for every finite type `I`, the diagonal action and the triangular change on
-`SU2 × (I -> SU2)` are measure preserving, and every diagonally invariant
-density admits exact identity-slice integration.  What is not yet proved is the
-global vertex-coordinate composition is now also closed.  Every finite
-connected primal graph admits a construction-ordered rooted spanning tree;
-each parent edge is certified by an actual half-edge incidence, and the single
-root-plus-increments equivalence on all cellulation vertex variables preserves
-product Haar.  What is not yet proved is the corresponding equivalence on all
-original edge variables, together with the induced formula for every face
-holonomy.  Nor does the development identify the abstract combinatorial
-disks with isotopy classes of piecewise-smooth planar embeddings, treat
-nonsimple/intersecting Wilson loops, or construct a continuum measure.
+`SU2^Edge ≃ SU2^(V-{root}) × SU2^(Edge-Tree)`
+
+(with the non-root vertices represented by their construction indices), proves
+that it preserves normalized product Haar, reconstructs the rooted vertex
+potentials, and proves that the transformed configuration sets every tree edge
+to `1` while retaining precisely the gauge-fixed chord coordinates.
+
+`SU2EdgeConnectedDiskCellulation` records the additional physical
+well-formedness that every bounded face has one finite, once-around boundary
+enumeration.  For this object, all facial holonomies are defined simultaneously
+on the original edge variables and are proved to transform by conjugation at
+their respective boundary basepoints.  Consequently the complete heat-kernel
+density factors through the chord coordinates, and
+`unreducedEdgeIntegral_eq_chordGaugeFixedIntegral` proves equality of the full
+`SU2^Edge` Haar integral with the gauge-fixed chord integral, with no residual
+gauge-volume factor.
+
+This closes the edge-model/gauge-reduction gap.  The development still does not
+identify abstract combinatorial disks with isotopy classes of piecewise-smooth
+planar embeddings, treat nonsimple/intersecting Wilson loops, or construct a
+continuum measure.

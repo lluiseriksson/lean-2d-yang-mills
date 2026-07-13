@@ -73,11 +73,14 @@ schedule reduces to the heat kernel at total area, and any two choices give
 the same amplitude.  For the first cyclic unreduced lattice, a three-face disk,
 we additionally construct a triangular gauge-fixing equivalence that preserves
 the original triple product Haar measure and prove equality with the reduced
-amplitude.  The same measure-theoretic construction is then proved uniformly
-for one vertex of arbitrary finite valence.  We further construct a rooted
-spanning-tree order for every finite connected primal graph and a single
-global root-plus-edge-increments equivalence on all cellulation vertex
-variables, with exact product-Haar preservation.  The schedule is hidden from the public loop object,
+amplitude.  We then close the global edge model: for every primal-connected,
+facially well-formed finite disk cellulation, a rooted spanning tree selects
+$V-1$ distinct physical edges and induces an explicit measurable equivalence
+$SU(2)^E\simeq SU(2)^{V\setminus\{r\}}\times SU(2)^{E\setminus T}$ preserving
+product Haar.  All facial holonomies transform simultaneously by basepoint
+conjugation, the heat-kernel density loses every tree/gauge coordinate, and
+the unreduced edge integral equals the gauge-fixed chord integral exactly.
+The schedule is hidden from the public loop object,
 which supplies a nontrivial exact-area-law package.  Combined with all-label
 coefficient extraction, this yields the exact normalized simple-loop identity
 \[
@@ -315,11 +318,10 @@ su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
 su2ThreeSpoke_unreducedIntegral_eq_heatKernel
 \end{lstlisting}
 
-Equation~\eqref{eq:three-spoke-result} is a genuine product-Haar theorem for a
-cyclic dual, but it is intentionally not stated as a theorem for arbitrary
-finite cellulations.  That uniform generalization requires a global spanning
-tree gauge fixing compatible with the incidence data of the independent disk
-object.
+Equation~\eqref{eq:three-spoke-result} is the first concrete product-Haar
+instance.  It is now subsumed by the uniform original-edge theorem below,
+whose spanning-tree gauge fixing is constructed directly from the incidence
+data of the independent disk object.
 
 \subsection{Uniform finite-valence theorem}
 
@@ -363,10 +365,9 @@ su2FiniteStar_integral_eq_identitySlice
 \end{lstlisting}
 
 Equations~\eqref{eq:finite-valence-mp}--\eqref{eq:identity-slice} remove the
-fixed-valence limitation of the gauge step.  Their composition requires a
-separate combinatorial theorem selecting and ordering a spanning tree.  The
-next subsection closes that global coordinate theorem at the vertex level;
-facial holonomies remain a further edge-model statement.
+fixed-valence limitation of the local gauge step.  The next two subsections
+compose them with an ordered spanning tree, first for vertex coordinates and
+then for all original edge variables and all facial holonomies simultaneously.
 
 \subsection{Global rooted-tree vertex coordinates}
 
@@ -414,15 +415,49 @@ SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserv
 SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
 \end{lstlisting}
 
-This closes global composition and product-Haar preservation for the vertex
-gauge coordinates.  It does \emph{not} yet prove the stronger edge-space
-decomposition
+The edge module consumes this tree and proves the stronger decomposition
 \[
  SU(2)^E\simeq SU(2)^{V\setminus\{r\}}\times SU(2)^{E\setminus T},
 \]
-nor the simultaneous transformation formula for every facial holonomy.  Those
-are the remaining ingredients for equality between the unreduced edge model
-and the schedule-independent amplitude for every cellulation.
+as a literal measurable equivalence.  Each construction step chooses an
+oriented parent--child half-edge; strict ordering of parents before children
+proves that the resulting physical tree edges are injective.  The complement
+$E\setminus T$ is therefore an actual finite subtype, not a cardinality-only
+placeholder.  After correcting the stored orientation of each tree edge, the
+map reconstructs potentials $g_r=1$ and
+$g_k=g_{p(k)}a_k$, and sends each chord to
+\[
+  X_e=g_{s(e)}U_e g_{t(e)}^{-1}.
+\]
+Finite-product relabelling, coordinatewise inversion and a Haar-preserving
+skew product prove preservation of normalized product Haar.
+
+The physical edge record \texttt{SU2EdgeConnectedDiskCellulation} additionally
+requires an explicit once-around, duplicate-free boundary enumeration for
+each bounded face.  This condition is stated because the older combinatorial
+record did not exclude a formally declared face with no incident half-edge.
+For every well-formed face $f$, Lean proves simultaneously
+\[
+  H_f(g\mathbin{\cdot}U)
+  =g_{v_f}H_f(U)g_{v_f}^{-1}.
+\]
+Consequently the complete heat-kernel density is gauge invariant.  Under the
+inverse edge equivalence it factors only through the chord block, and the
+normalized gauge coordinates integrate to one:
+\begin{equation}\label{eq:unreduced-global-edge}
+ \int_{SU(2)^E}\prod_f K_{t_f}(H_f(U))\,dU
+ =\int_{SU(2)^{E\setminus T}}
+   \prod_f K_{t_f}(H_f(U_T=1,X))\,dX.
+\end{equation}
+The principal new endpoints are:
+\begin{lstlisting}
+SU2FiniteDiskCellulation.RootedSpanningTree.treeEdge_injective
+SU2FiniteDiskCellulation.RootedSpanningTree.globalEdgeGaugeEquiv_measurePreserving
+SU2FiniteDiskCellulation.RootedSpanningTree.gaugeTransform_eq_gaugeFixedEdgeConfiguration
+SU2EdgeConnectedDiskCellulation.allFaceHolonomies_gaugeTransform
+SU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity_globalEdgeFactorization
+SU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral_eq_chordGaugeFixedIntegral
+\end{lstlisting}
 
 \section{Independent finite cellulations and elimination}
 
@@ -491,11 +526,12 @@ package remains assumed.  The trivial-label case also proves the normalization
   \int_{SU(2)} A_C(1,g)\,dg=1.
 \]
 
-For a general dual graph with cycles, this theorem concerns the explicitly
-defined post-gauge-fixed schedule amplitude.  The preceding section proves
-equality with the unreduced product-Haar integral for the concrete three-cycle,
-but equality over every original edge of an arbitrary cellulation is not yet
-asserted.
+For a general dual graph with cycles, the schedule theorem concerns the
+explicitly defined post-gauge-fixed amplitude.  Equation
+\eqref{eq:unreduced-global-edge} now supplies the uniform original-edge gauge
+reduction for every facially well-formed, primal- and dual-connected disk
+cellulation; the earlier three-cycle computation remains a concrete diagnostic
+instance of the general construction.
 
 \section{Exact simple-loop coefficient}
 
@@ -597,6 +633,10 @@ SU2RootedTreeOrder.coordinateEquiv_measurePreserving
 SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
 SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
 SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.RootedSpanningTree.globalEdgeGaugeEquiv_measurePreserving
+SU2FiniteDiskCellulation.RootedSpanningTree.gaugeTransform_eq_gaugeFixedEdgeConfiguration
+SU2EdgeConnectedDiskCellulation.allFaceHolonomies_gaugeTransform
+SU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral_eq_chordGaugeFixedIntegral
 \end{lstlisting}
 
 \section{Scope and next frontier}
@@ -605,19 +645,16 @@ The present artifact closes the compact-group analytic chain, introduces an
 independent finite oriented disk-cellulation object, constructs elimination
 schedules for every connected dual graph, and proves independence of the
 schedule for the reduced amplitude.  Dual cycles are allowed at this level,
-and the three-face cycle is additionally linked to its original product-Haar
-edge integral by a formal lattice gauge-fixing change of variables.  The local
-measure-preserving change and identity-slice theorem hold for arbitrary finite
-valence.  The global vertex-coordinate transformation is now constructed over
-a certified primal spanning tree and preserves the full vertex product Haar.
+and the full original-edge model is linked to its gauge-fixed chord integral by
+a global lattice gauge-fixing equivalence.  The construction is uniform in the
+finite cellulation, proves simultaneous facial covariance and removes all
+$V-1$ gauge coordinates exactly.
 
-It does not yet lift this transformation to all original edge variables or
-identify all transformed face holonomies.  It also does not identify the
-abstract combinatorial maps with planar isotopy classes, treat nonsimple or
-intersecting loops, construct a continuum measure, or evaluate higher-genus
-partition functions.  The next precise frontier is therefore a uniform
-spanning-tree gauge-fixing theorem from the unreduced edge model of an
-arbitrary connected disk to the schedule-independent face model.
+The artifact does not identify the abstract combinatorial maps with planar
+isotopy classes, treat nonsimple or intersecting loops, construct a continuum
+measure, or evaluate positive-area higher-genus partition functions.  Those
+geometric and continuum questions, rather than another finite gauge-coordinate
+wrapper, form the remaining frontier.
 
 \begin{thebibliography}{9}
 \bibitem{Migdal}
