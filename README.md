@@ -53,7 +53,8 @@ even selector `∫χ₂=0`. The full Weyl pushforward formula and all-order even
 sector remain open. The algebraic equivalence and homeomorphism between
 concrete SU(2) and the complex-coordinate unit 3-sphere are now proved; the
 live frontier is precisely the equality of the pushed Haar measure with the
-normalized spherical measure.
+normalized spherical measure. The pushed measure is already constructed as a
+probability and proved invariant under the full transported SU(2) action.
 
 ## Public Interface
 

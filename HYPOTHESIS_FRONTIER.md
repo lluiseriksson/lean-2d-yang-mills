@@ -53,6 +53,12 @@ Concrete SU(2) character layer (current post-PR #44 work):
   explicitly and proved special unitary. The remaining measure-theoretic
   step is to identify the pushforward of normalized Haar with normalized
   spherical measure.
+- `su2RowSphereHaar`, `measurePreserving_su2ToRowSphere`, and
+  `measurePreserving_su2RowSphereLeft`: Haar is transported through that
+  homeomorphism to a probability measure on the unit 3-sphere, and the
+  transported measure is proved invariant under the full SU(2) action. What
+  remains is its identification with Mathlib's canonical normalized
+  `volume.toSphere`, not invariance of the transported measure itself.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 

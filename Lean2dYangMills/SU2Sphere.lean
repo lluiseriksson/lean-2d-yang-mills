@@ -117,4 +117,42 @@ def su2HomeomorphRowSphere : SU2 ≃ₜ SU2RowSphere where
   continuous_toFun := continuous_su2ToRowSphere
   continuous_invFun := continuous_rowSphereToSU2
 
+/-- Normalized SU(2) Haar transported to the concrete unit 3-sphere. -/
+def su2RowSphereHaar : MeasureTheory.Measure SU2RowSphere :=
+  su2HaarProb.map su2ToRowSphere
+
+instance : MeasureTheory.IsProbabilityMeasure su2RowSphereHaar := by
+  constructor
+  rw [su2RowSphereHaar, MeasureTheory.Measure.map_apply
+    continuous_su2ToRowSphere.measurable MeasurableSet.univ]
+  simp
+
+/-- The concrete SU(2)-to-sphere homeomorphism preserves Haar by definition
+of the transported measure. -/
+theorem measurePreserving_su2ToRowSphere :
+    MeasureTheory.MeasurePreserving su2ToRowSphere su2HaarProb
+      su2RowSphereHaar where
+  measurable := continuous_su2ToRowSphere.measurable
+  map_eq := rfl
+
+theorem measurePreserving_rowSphereToSU2 :
+    MeasureTheory.MeasurePreserving rowSphereToSU2 su2RowSphereHaar
+      su2HaarProb :=
+  MeasureTheory.MeasurePreserving.symm
+    su2HomeomorphRowSphere.toMeasurableEquiv
+    measurePreserving_su2ToRowSphere
+
+/-- Left SU(2) action transported to the unit-row sphere. -/
+def su2RowSphereLeft (h : SU2) (z : SU2RowSphere) : SU2RowSphere :=
+  su2ToRowSphere (h * rowSphereToSU2 z)
+
+/-- The transported spherical Haar probability is invariant under the full
+left SU(2) action, not merely under the finite rotations used for low moments. -/
+theorem measurePreserving_su2RowSphereLeft (h : SU2) :
+    MeasureTheory.MeasurePreserving (su2RowSphereLeft h)
+      su2RowSphereHaar su2RowSphereHaar := by
+  exact measurePreserving_su2ToRowSphere.comp
+    ((MeasureTheory.measurePreserving_mul_left su2HaarProb h).comp
+      measurePreserving_rowSphereToSU2)
+
 end Lean2dYangMills

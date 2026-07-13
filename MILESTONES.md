@@ -10,8 +10,10 @@
   `E|g₀₀|²=1/2`, `E(Re g₀₀)²=1/4`, la normalización fundamental y el primer
   carácter par `∫χ₂=0`. Falta la fórmula de Weyl completa y la identidad
   matricial de convolución. La equivalencia y el homeomorfismo concretos
-  `SU(2) ≃ S³` ya están cerrados; falta identificar las medidas. Coordina con
-  el PETER_WEYL_ROADMAP.
+  `SU(2) ≃ S³` ya están cerrados. Haar ya se transporta a una probabilidad
+  sobre la esfera y su invariancia bajo la acción SU(2) completa está probada;
+  falta identificarla con `volume.toSphere`. Coordina con el
+  PETER_WEYL_ROADMAP.
 - M1: invariancia de la acción heat-kernel bajo subdivisión (Migdal).
 - M2: Wilson loop exacto en el plano: área law con tensión explícita
   (benchmark del área law en volumen finito del madre).
