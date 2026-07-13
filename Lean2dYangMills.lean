@@ -7,6 +7,7 @@ import Lean2dYangMills.SU2Sphere
 import Lean2dYangMills.SU2Weyl
 import Lean2dYangMills.SU2Conjugacy
 import Lean2dYangMills.SU2Convolution
+import Lean2dYangMills.SU2ExactAreaLaw
 import Lean2dYangMills.SU2ClassHeatKernel
 import Lean2dYangMills.WittenZetaSU2
 import Lean2dYangMills.TrivialModel
