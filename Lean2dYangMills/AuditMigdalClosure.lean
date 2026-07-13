@@ -3,6 +3,7 @@ import Lean2dYangMills.SU2CyclicEdgeElimination
 import Lean2dYangMills.SU2PhysicalBoundaryElimination
 import Lean2dYangMills.SU2CyclicWordSplicing
 import Lean2dYangMills.SU2PhysicalEliminationSchedule
+import Lean2dYangMills.SU2PhysicalEliminationIntegral
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -98,5 +99,8 @@ namespace Lean2dYangMills
 #print axioms SU2RootedTreeOrder.constructionSchedule_locallyValidGraph
 #print axioms SU2DualRootedEliminationTree.physicalSchedule_valid
 #print axioms SU2DualRootedEliminationTree.physicalSchedule_amplitude_eq_heatKernel_totalArea
+#print axioms su2SplitLastEquiv_measurePreserving
+#print axioms su2FiniteProductHaar_integral_splitLast
+#print axioms SU2PhysicalBoundaryEliminationChart.conditionedChordIntegral_eq_indexedIntegral
 
 end Lean2dYangMills
