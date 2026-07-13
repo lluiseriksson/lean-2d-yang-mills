@@ -1,6 +1,6 @@
 # Hypothesis Frontier
 
-Date: 2026-07-07
+Date: 2026-07-13
 
 ## Main Branch Status
 
@@ -36,6 +36,13 @@ Concrete SU(2) character layer (current post-PR #44 work):
   instances proved in the satellite.
 - `integral_su2CharacterChebyshev_eq_zero_of_odd`: the first concrete Haar
   selector; every odd character has zero Haar mean by translation with `-I`.
+- `integral_su2_normSq_zero_zero` and `integral_su2_re_zero_zero_sq`: exact
+  normalized Haar moments `E|g₀₀|² = 1/2` and `E(Re g₀₀)² = 1/4`, proved by
+  explicit SU(2) translation symmetries.
+- `integral_su2FundamentalCharacter_re_sq`: the first nontrivial Schur
+  normalization, `∫χ₁² = 1`.
+- `integral_su2CharacterChebyshev_two_eq_zero`: the first even Haar selector,
+  `∫χ₂ = 0`, obtained from the exact coordinate moment.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 
@@ -166,10 +173,12 @@ Former `Frontier/SU2Character.lean` obligations:
 ## Distance To Goal
 
 M4's convergence layer is closed and identifies the Riemann bridge
-unconditionally. M0 now has its convergence engine, the dimension-square
-Casimir specialization, and its character DEFINITION; what remains for M0 is
-the Weyl bound (one spectral fact about SU(2)) plus orthogonality for the
-semigroup. M1 (Migdal), M2 (area law), M3 (continuum) remain open as before.
+unconditionally. M0 now has its concrete character definition, sharp Weyl
+bound, uniform heat-series convergence, angular orthogonality, normalized
+Haar measure, all odd Haar selectors, and the first even selector. What
+remains for M0 is the general Haar/Weyl pushforward theorem and
+matrix-coefficient orthogonality needed for the semigroup. M1 (Migdal), M2
+(area law), M3 (continuum) remain open as before.
 
 Any branch that introduces `sorry` must be named `frontier/*` and must
 update this file with exact theorem names and remaining assumptions.

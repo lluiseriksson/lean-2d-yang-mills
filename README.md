@@ -47,8 +47,10 @@ frontier.
 
 The repository now constructs that normalized Haar probability measure
 internally (including compactness and topological-group instances) and proves
-that every odd Chebyshev character has zero Haar mean. The full Weyl
-pushforward formula, including the even sector, remains open.
+that every odd Chebyshev character has zero Haar mean. Explicit translation
+symmetries also give `E|g₀₀|²=1/2`, `E(Re g₀₀)²=1/4`, `∫χ₁²=1`, and the first
+even selector `∫χ₂=0`. The full Weyl pushforward formula and all-order even
+sector remain open.
 
 ## Public Interface
 

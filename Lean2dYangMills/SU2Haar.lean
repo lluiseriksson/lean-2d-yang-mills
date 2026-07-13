@@ -5,6 +5,7 @@ import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 import Mathlib.MeasureTheory.Group.Integral
+import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Topology.Algebra.Star.Unitary
 import Mathlib.Topology.Instances.Matrix
@@ -183,5 +184,195 @@ theorem integral_su2CharacterChebyshev_eq_zero_of_odd
 theorem integral_su2FundamentalCharacter_eq_zero :
     (∫ g : SU2, su2CharacterChebyshev 1 g ∂su2HaarProb) = 0 :=
   integral_su2CharacterChebyshev_eq_zero_of_odd (by exact odd_one)
+
+/-- Diagonal phase rotation `diag(i,-i)` in SU(2). -/
+def su2PhaseI : SU2 := by
+  refine ⟨!![Complex.I, 0; 0, -Complex.I], ?_⟩
+  rw [mem_specialUnitaryGroup_iff]
+  constructor
+  · rw [mem_unitaryGroup_iff]
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.star_eq_conjTranspose]
+  · simp [Matrix.det_fin_two]
+
+/-- Quarter-turn matrix exchanging the two row coordinates. -/
+def su2QuarterTurn : SU2 := by
+  refine ⟨!![0, -1; 1, 0], ?_⟩
+  rw [mem_specialUnitaryGroup_iff]
+  constructor
+  · rw [mem_unitaryGroup_iff]
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.star_eq_conjTranspose]
+  · simp [Matrix.det_fin_two]
+
+theorem su2PhaseI_mul_apply_zero_zero (g : SU2) :
+    ((su2PhaseI * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0 =
+      Complex.I * (g : Matrix (Fin 2) (Fin 2) Complex) 0 0 := by
+  simp [su2PhaseI, Matrix.mul_apply, Fin.sum_univ_two]
+
+theorem su2QuarterTurn_mul_apply_zero_zero (g : SU2) :
+    ((su2QuarterTurn * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0 =
+      star ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1) := by
+  rw [show ((su2QuarterTurn * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0 =
+      -(g : Matrix (Fin 2) (Fin 2) Complex) 1 0 by
+    simp [su2QuarterTurn, Matrix.mul_apply, Fin.sum_univ_two]]
+  rw [su2_apply_one_zero_eq_neg_conj_apply_zero_one]
+  simp
+
+/-- Every continuous real-valued observable on compact SU(2) is Haar
+integrable. -/
+theorem integrable_continuous_su2_real {f : SU2 -> Real} (hf : Continuous f) :
+    Integrable f su2HaarProb :=
+  hf.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+
+theorem continuous_su2_entry (i j : Fin 2) :
+    Continuous (fun g : SU2 =>
+      (g : Matrix (Fin 2) (Fin 2) Complex) i j) :=
+  (continuous_apply j).comp ((continuous_apply i).comp continuous_subtype_val)
+
+/-- Haar symmetry exchanges the squared norms of the two entries in the
+first row. -/
+theorem integral_su2_normSq_zero_zero_eq_zero_one :
+    (∫ g : SU2,
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0) ∂su2HaarProb) =
+    ∫ g : SU2,
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1) ∂su2HaarProb := by
+  have hinv := integral_mul_left_eq_self (μ := su2HaarProb)
+    (fun g : SU2 =>
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0))
+    su2QuarterTurn
+  symm
+  simpa [su2QuarterTurn_mul_apply_zero_zero, Complex.star_def,
+    Complex.normSq_conj] using hinv
+
+/-- Exact first coordinate moment of normalized SU(2) Haar. -/
+theorem integral_su2_normSq_zero_zero :
+    (∫ g : SU2,
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0) ∂su2HaarProb) =
+      1 / 2 := by
+  have hA : Integrable (fun g : SU2 =>
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0)) su2HaarProb :=
+    integrable_continuous_su2_real (by
+      simp_rw [Complex.normSq_apply]
+      exact ((Complex.continuous_re.comp (continuous_su2_entry 0 0)).mul
+        (Complex.continuous_re.comp (continuous_su2_entry 0 0))).add
+        ((Complex.continuous_im.comp (continuous_su2_entry 0 0)).mul
+          (Complex.continuous_im.comp (continuous_su2_entry 0 0))))
+  have hB : Integrable (fun g : SU2 =>
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1)) su2HaarProb :=
+    integrable_continuous_su2_real (by
+      simp_rw [Complex.normSq_apply]
+      exact ((Complex.continuous_re.comp (continuous_su2_entry 0 1)).mul
+        (Complex.continuous_re.comp (continuous_su2_entry 0 1))).add
+        ((Complex.continuous_im.comp (continuous_su2_entry 0 1)).mul
+          (Complex.continuous_im.comp (continuous_su2_entry 0 1))))
+  have hrow :
+      (∫ g : SU2,
+        (Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0) +
+          Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1))
+        ∂su2HaarProb) = ∫ _g : SU2, (1 : Real) ∂su2HaarProb := by
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall su2_normSq_row_zero
+  rw [integral_add hA hB] at hrow
+  simp at hrow
+  rw [← integral_su2_normSq_zero_zero_eq_zero_one] at hrow
+  linarith
+
+theorem su2PhaseI_mul_apply_zero_zero_re (g : SU2) :
+    (((su2PhaseI * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0).re =
+      -((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).im := by
+  rw [su2PhaseI_mul_apply_zero_zero]
+  simp [Complex.mul_re]
+
+/-- Haar phase symmetry equates the real and imaginary second moments of the
+upper-left entry. -/
+theorem integral_su2_re_sq_eq_im_sq :
+    (∫ g : SU2,
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 ∂su2HaarProb) =
+    ∫ g : SU2,
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).im ^ 2 ∂su2HaarProb := by
+  have hinv := integral_mul_left_eq_self (μ := su2HaarProb)
+    (fun g : SU2 =>
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2) su2PhaseI
+  simp_rw [su2PhaseI_mul_apply_zero_zero_re] at hinv
+  simpa using hinv.symm
+
+/-- Exact real-coordinate second moment of normalized SU(2) Haar. -/
+theorem integral_su2_re_zero_zero_sq :
+    (∫ g : SU2,
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 ∂su2HaarProb) =
+      1 / 4 := by
+  have hRe : Integrable (fun g : SU2 =>
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2) su2HaarProb :=
+    integrable_continuous_su2_real
+      ((Complex.continuous_re.comp (continuous_su2_entry 0 0)).pow 2)
+  have hIm : Integrable (fun g : SU2 =>
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).im ^ 2) su2HaarProb :=
+    integrable_continuous_su2_real
+      ((Complex.continuous_im.comp (continuous_su2_entry 0 0)).pow 2)
+  have hsplit :
+      (∫ g : SU2,
+        (((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 +
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).im ^ 2) ∂su2HaarProb) =
+      1 / 2 := by
+    rw [← integral_su2_normSq_zero_zero]
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall fun g => by
+      change ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 +
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).im ^ 2 =
+        Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0)
+      rw [Complex.normSq_apply]
+      ring
+  rw [integral_add hRe hIm] at hsplit
+  rw [← integral_su2_re_sq_eq_im_sq] at hsplit
+  linarith
+
+/-- Fundamental-character Schur normalization at the first nontrivial order. -/
+theorem integral_su2FundamentalCharacter_re_sq :
+    (∫ g : SU2, (su2CharacterChebyshev 1 g).re ^ 2 ∂su2HaarProb) = 1 := by
+  calc
+    (∫ g : SU2, (su2CharacterChebyshev 1 g).re ^ 2 ∂su2HaarProb) =
+        ∫ g : SU2,
+          4 * ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 ∂su2HaarProb := by
+            apply integral_congr_ae
+            exact Filter.Eventually.of_forall fun g => by
+              change (su2CharacterChebyshev 1 g).re ^ 2 =
+                4 * ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2
+              rw [su2FundamentalCharacter_eq_two_mul_re]
+              norm_num
+              ring
+    _ = 4 * (∫ g : SU2,
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 ∂su2HaarProb) := by
+            rw [integral_const_mul]
+    _ = 1 := by rw [integral_su2_re_zero_zero_sq]; norm_num
+
+/-- The first even nontrivial SU(2) character has zero normalized Haar mean.
+Together with the odd selector, this is the first genuinely even Haar
+orthogonality checkpoint. -/
+theorem integral_su2CharacterChebyshev_two_eq_zero :
+    (∫ g : SU2, su2CharacterChebyshev 2 g ∂su2HaarProb) = 0 := by
+  calc
+    (∫ g : SU2, su2CharacterChebyshev 2 g ∂su2HaarProb) =
+        ∫ g : SU2,
+          (((4 * ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 - 1 : Real)) :
+            Complex) ∂su2HaarProb := by
+              apply integral_congr_ae
+              exact Filter.Eventually.of_forall su2CharacterChebyshev_two
+    _ = ((∫ g : SU2,
+          (4 * ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 - 1 : Real)
+          ∂su2HaarProb : Real) : Complex) := integral_complex_ofReal
+    _ = ((4 * (∫ g : SU2,
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2
+          ∂su2HaarProb) - 1 : Real) : Complex) := by
+            congr 1
+            rw [integral_sub]
+            · rw [integral_const_mul]
+              simp
+            · exact (integrable_continuous_su2_real
+                ((Complex.continuous_re.comp (continuous_su2_entry 0 0)).pow 2)).const_mul 4
+            · fun_prop
+    _ = 0 := by rw [integral_su2_re_zero_zero_sq]; norm_num
 
 end Lean2dYangMills

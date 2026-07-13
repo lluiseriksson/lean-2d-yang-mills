@@ -6,7 +6,9 @@
   La tabla concreta, la cota de Weyl, la invariancia por conjugación y la
   convergencia uniforme, continuidad y la ortogonalidad angular de Weyl están cerradas.
   Haar normalizado ya se construye internamente y el selector de caracteres
-  impares está probado. Falta la fórmula de Weyl completa y la identidad
+  impares está probado. También están cerrados los momentos Haar exactos
+  `E|g₀₀|²=1/2`, `E(Re g₀₀)²=1/4`, la normalización fundamental y el primer
+  carácter par `∫χ₂=0`. Falta la fórmula de Weyl completa y la identidad
   matricial de convolución; coordina con el PETER_WEYL_ROADMAP.
 - M1: invariancia de la acción heat-kernel bajo subdivisión (Migdal).
 - M2: Wilson loop exacto en el plano: área law con tensión explícita

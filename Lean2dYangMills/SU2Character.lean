@@ -113,26 +113,44 @@ theorem su2CharacterChebyshev_one (n : Nat) :
   rw [su2CharacterChebyshev]
   simp [Polynomial.Chebyshev.U_eval_one]
 
-/-- In the defining two-dimensional representation of `SU(2)`, the lower
-right entry is the complex conjugate of the upper left entry.  This is derived
-from unitarity and determinant one via the concrete two-by-two adjugate. -/
-theorem su2_apply_one_one_eq_conj_apply_zero_zero (g : SU2) :
-    (g : Matrix (Fin 2) (Fin 2) Complex) 1 1 =
-      star ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0) := by
+/-- For a special unitary matrix, the classical adjugate is its
+conjugate-transpose. -/
+theorem su2_adjugate_eq_star (g : SU2) :
+    Matrix.adjugate (g : Matrix (Fin 2) (Fin 2) Complex) =
+      star (g : Matrix (Fin 2) (Fin 2) Complex) := by
   let A : Matrix (Fin 2) (Fin 2) Complex := g
   have hdet : A.det = 1 := g.prop.2
   have hAdjMul : Matrix.adjugate A * A = 1 := by
     rw [Matrix.adjugate_mul, hdet]
     simp
   have hMulStar : A * star A = 1 := g.prop.1.2
-  have hAdjStar : Matrix.adjugate A = star A := by
-    calc
-      Matrix.adjugate A = Matrix.adjugate A * 1 := by simp
-      _ = Matrix.adjugate A * (A * star A) := by rw [hMulStar]
-      _ = (Matrix.adjugate A * A) * star A := by rw [Matrix.mul_assoc]
-      _ = star A := by rw [hAdjMul, Matrix.one_mul]
-  have hentry := congrArg (fun M : Matrix (Fin 2) (Fin 2) Complex => M 0 0) hAdjStar
-  simpa [A, Matrix.adjugate_fin_two, Matrix.star_eq_conjTranspose] using hentry
+  change Matrix.adjugate A = star A
+  calc
+    Matrix.adjugate A = Matrix.adjugate A * 1 := by simp
+    _ = Matrix.adjugate A * (A * star A) := by rw [hMulStar]
+    _ = (Matrix.adjugate A * A) * star A := by rw [Matrix.mul_assoc]
+    _ = star A := by rw [hAdjMul, Matrix.one_mul]
+
+/-- In the defining two-dimensional representation of `SU(2)`, the lower
+right entry is the complex conjugate of the upper left entry. -/
+theorem su2_apply_one_one_eq_conj_apply_zero_zero (g : SU2) :
+    (g : Matrix (Fin 2) (Fin 2) Complex) 1 1 =
+      star ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0) := by
+  have hentry := congrArg (fun M : Matrix (Fin 2) (Fin 2) Complex => M 0 0)
+    (su2_adjugate_eq_star g)
+  simpa [Matrix.adjugate_fin_two, Matrix.star_eq_conjTranspose] using hentry
+
+/-- The lower-left entry is minus the conjugate of the upper-right entry. -/
+theorem su2_apply_one_zero_eq_neg_conj_apply_zero_one (g : SU2) :
+    (g : Matrix (Fin 2) (Fin 2) Complex) 1 0 =
+      -star ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1) := by
+  have hentry := congrArg (fun M : Matrix (Fin 2) (Fin 2) Complex => M 1 0)
+    (su2_adjugate_eq_star g)
+  have hentry' :
+      -(g : Matrix (Fin 2) (Fin 2) Complex) 1 0 =
+        star ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1) := by
+    simpa [Matrix.adjugate_fin_two, Matrix.star_eq_conjTranspose] using hentry
+  exact neg_eq_iff_eq_neg.mp hentry'
 
 /-- Every entry of the defining unitary representation has norm at most one;
 we record the entry needed for the trace estimate. -/
@@ -154,6 +172,19 @@ theorem su2_norm_apply_zero_zero_le_one (g : SU2) :
   change ‖A 0 0‖ <= 1
   nlinarith
 
+/-- The first row of the defining SU(2) matrix has unit norm. -/
+theorem su2_normSq_row_zero (g : SU2) :
+    Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0) +
+      Complex.normSq ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1) = 1 := by
+  let A : Matrix (Fin 2) (Fin 2) Complex := g
+  have hunitary : A * star A = 1 := g.prop.1.2
+  have hrow := congrArg (fun M : Matrix (Fin 2) (Fin 2) Complex => M 0 0) hunitary
+  have hrowC :
+      A 0 0 * star (A 0 0) + A 0 1 * star (A 0 1) = 1 := by
+    simpa [Matrix.mul_apply, Fin.sum_univ_two, Matrix.star_eq_conjTranspose] using hrow
+  rw [Complex.star_def, Complex.mul_conj, Complex.mul_conj] at hrowC
+  exact_mod_cast hrowC
+
 /-- Half the trace of an `SU(2)` matrix is the real part of its upper-left
 entry, viewed as a complex number. -/
 theorem su2_half_trace_eq_ofReal_re (g : SU2) :
@@ -164,6 +195,28 @@ theorem su2_half_trace_eq_ofReal_re (g : SU2) :
   apply Complex.ext
   · simp
   · simp
+
+/-- The fundamental Chebyshev character is twice the real part of the
+upper-left matrix entry. -/
+theorem su2FundamentalCharacter_eq_two_mul_re (g : SU2) :
+    su2CharacterChebyshev 1 g =
+      ((2 * ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re : Real) : Complex) := by
+  unfold su2CharacterChebyshev
+  rw [su2_half_trace_eq_ofReal_re]
+  simp [Polynomial.Chebyshev.U_one]
+
+/-- The first even nontrivial character is the quadratic real-coordinate
+observable `4 (Re g₀₀)² - 1`. -/
+theorem su2CharacterChebyshev_two (g : SU2) :
+    su2CharacterChebyshev 2 g =
+      (((4 * ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 2 - 1 : Real)) :
+        Complex) := by
+  unfold su2CharacterChebyshev
+  rw [su2_half_trace_eq_ofReal_re]
+  change (Polynomial.Chebyshev.U Complex 2).eval
+      (((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re : Complex) = _
+  rw [Polynomial.Chebyshev.U_two]
+  simp
 
 /-- The Chebyshev argument `tr(g)/2` lies in the closed unit interval on
 the real axis. -/
