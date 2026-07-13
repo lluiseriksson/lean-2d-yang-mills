@@ -83,6 +83,25 @@ theorem measurable_dartHolonomy_comp (C : SU2FiniteDiskCellulation)
       exact continuous_mul.measurable2 ih
         (C.measurable_edgeValue_comp U hU ((C.next ^ n) h))
 
+theorem continuous_edgeValue_comp (C : SU2FiniteDiskCellulation)
+    {X : Type} [TopologicalSpace X] (U : X -> C.Edge -> SU2)
+    (hU : Continuous U) (h : C.HalfEdge) :
+    Continuous (fun x => C.edgeValue (U x) h) := by
+  unfold edgeValue
+  split
+  · exact continuous_inv.comp ((continuous_apply _).comp hU)
+  · exact (continuous_apply _).comp hU
+
+theorem continuous_dartHolonomy_comp (C : SU2FiniteDiskCellulation)
+    {X : Type} [TopologicalSpace X] (U : X -> C.Edge -> SU2)
+    (hU : Continuous U) (h : C.HalfEdge) (n : Nat) :
+    Continuous (fun x => C.dartHolonomy (U x) h n) := by
+  induction n with
+  | zero => exact continuous_const
+  | succ n ih =>
+      exact ih.mul
+        (C.continuous_edgeValue_comp U hU ((C.next ^ n) h))
+
 /-- Two configurations with equal oriented values along a finite path have
 equal path holonomy. -/
 theorem dartHolonomy_congr (C : SU2FiniteDiskCellulation)
@@ -100,6 +119,31 @@ theorem dartHolonomy_congr (C : SU2FiniteDiskCellulation)
       exact congrArg _ (heq ⟨n, Nat.lt_succ_self n⟩)
 
 end SU2FiniteDiskCellulation
+
+namespace SU2EdgeConnectedDiskCellulation
+
+theorem continuous_faceHolonomy (P : SU2EdgeConnectedDiskCellulation)
+    (f : P.connected.cellulation.Face) :
+    Continuous (fun U : P.EdgeConfiguration => P.faceHolonomy U f) := by
+  exact P.connected.cellulation.continuous_dartHolonomy_comp id continuous_id
+    (P.faceBoundaryStart f) (P.faceBoundaryLength f)
+
+theorem continuous_edgeHeatKernelDensity
+    (P : SU2EdgeConnectedDiskCellulation) :
+    Continuous P.edgeHeatKernelDensity := by
+  unfold edgeHeatKernelDensity
+  refine continuous_finset_prod Finset.univ fun f _ => ?_
+  exact (continuous_su2HeatKernelCharacterSeries
+    (P.connected.cellulation.faceArea_pos f)).comp
+      (P.continuous_faceHolonomy f)
+
+theorem integrable_edgeHeatKernelDensity
+    (P : SU2EdgeConnectedDiskCellulation) :
+    Integrable P.edgeHeatKernelDensity
+      (su2FiniteProductHaar P.connected.cellulation.Edge) := by
+  exact integrable_of_continuous_compact P.continuous_edgeHeatKernelDensity
+
+end SU2EdgeConnectedDiskCellulation
 
 namespace SU2RootedTreeOrder
 
@@ -633,6 +677,77 @@ theorem globalBoundaryEdgeEquiv_measurePreserving :
   have hcomp := hprod.comp B.tree.globalEdgeGaugeEquiv_measurePreserving
   simpa [globalBoundaryEdgeEquiv, MeasurableEquiv.prodCongr,
     Function.comp_def] using hcomp
+
+theorem edgeHeatKernelDensity_globalBoundaryFactorization
+    (p : (Fin B.tree.n -> SU2) × ((B.OtherChord -> SU2) × SU2)) :
+    P.toSU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity
+        (B.globalBoundaryEdgeEquiv.symm p) =
+      B.conditionedChordDensity p.2.2 p.2.1 := by
+  change P.toSU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity
+      (B.tree.globalEdgeGaugeEquiv.symm
+        (p.1, B.chordBoundaryEquiv.symm p.2)) = _
+  exact P.toSU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity_globalEdgeFactorization B.tree
+      (p.1, B.chordBoundaryEquiv.symm p.2)
+
+/-- Integrating the retained boundary coordinate recovers the original scalar
+edge integral.  Thus the conditioned family is an actual Haar disintegration,
+not merely a collection of separately defined slices. -/
+theorem unreducedEdgeIntegral_eq_integral_conditionedEdgeIntegral :
+    P.toSU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral =
+      ∫ g : SU2, B.conditionedEdgeIntegral g ∂su2HaarProb := by
+  let μA := su2FiniteProductHaar (Fin B.tree.n)
+  let μR := su2FiniteProductHaar B.OtherChord
+  let F : ((Fin B.tree.n -> SU2) × ((B.OtherChord -> SU2) × SU2)) ->
+      Complex := fun p =>
+    P.toSU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity
+      (B.globalBoundaryEdgeEquiv.symm p)
+  let f : ((B.OtherChord -> SU2) × SU2) -> Complex := fun p =>
+    B.conditionedChordDensity p.2 p.1
+  have hinv : MeasurePreserving B.globalBoundaryEdgeEquiv.symm
+      (μA.prod (μR.prod su2HaarProb))
+      (su2FiniteProductHaar P.connected.cellulation.Edge) :=
+    MeasurePreserving.symm B.globalBoundaryEdgeEquiv
+      B.globalBoundaryEdgeEquiv_measurePreserving
+  have hFint : Integrable F (μA.prod (μR.prod su2HaarProb)) := by
+    exact hinv.integrable_comp_of_integrable
+      P.toSU2EdgeConnectedDiskCellulation.integrable_edgeHeatKernelDensity
+  have hF : F = fun p => f p.2 := by
+    funext p
+    exact B.edgeHeatKernelDensity_globalBoundaryFactorization p
+  have hfcomp : Integrable (fun p => f p.2)
+      (μA.prod (μR.prod su2HaarProb)) := hF ▸ hFint
+  have hμA : μA ≠ 0 := by
+    intro hz
+    have := congrArg (fun μ : Measure (Fin B.tree.n -> SU2) => μ Set.univ) hz
+    simp [μA] at this
+  have hfint : Integrable f (μR.prod su2HaarProb) :=
+    (Integrable.comp_snd_iff hμA).mp hfcomp
+  calc
+    P.toSU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral =
+        ∫ p, F p ∂(μA.prod (μR.prod su2HaarProb)) := by
+      exact (hinv.integral_comp'
+        P.toSU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity).symm
+    _ = ∫ p, f p.2 ∂(μA.prod (μR.prod su2HaarProb)) := by
+      rw [hF]
+    _ = ∫ q, f q ∂(μR.prod su2HaarProb) := by
+      rw [integral_fun_snd]
+      simp [μA]
+    _ = ∫ q : SU2 × (B.OtherChord -> SU2), f q.swap
+          ∂(su2HaarProb.prod μR) := by
+      exact (integral_prod_swap f).symm
+    _ = ∫ g : SU2, ∫ r, B.conditionedChordDensity g r ∂μR
+          ∂su2HaarProb := by
+      have hfswap : Integrable
+          (fun q : SU2 × (B.OtherChord -> SU2) => f q.swap)
+          (su2HaarProb.prod μR) := by
+        simpa [Function.comp_def] using hfint.swap
+      simpa [f] using
+        (integral_prod
+          (fun q : SU2 × (B.OtherChord -> SU2) => f q.swap) hfswap)
+    _ = ∫ g : SU2, B.conditionedEdgeIntegral g ∂su2HaarProb := by
+      apply integral_congr_ae
+      exact ae_of_all _ fun g =>
+        (B.conditionedEdgeIntegral_eq_conditionedChordIntegral g).symm
 
 /-- The rooted gauge used by the global chart is the identity at the exterior
 basepoint, so it preserves the exterior holonomy literally, not merely up to
