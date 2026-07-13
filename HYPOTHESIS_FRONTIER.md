@@ -47,6 +47,12 @@ Concrete SU(2) character layer (current post-PR #44 work):
   forty-five-degree SU(2) translation and the exact cancellation needed for
   the fourth-moment binomial step. This is infrastructure toward `∫χ₄=0`;
   it is not yet the all-order Weyl pushforward theorem.
+- `su2EquivRowSphere` and `su2HomeomorphRowSphere`: unconditional algebraic
+  and topological identifications
+  `SU(2) ≃ {(a,b) : ℂ² // |a|²+|b|²=1}`. The inverse matrix is constructed
+  explicitly and proved special unitary. The remaining measure-theoretic
+  step is to identify the pushforward of normalized Haar with normalized
+  spherical measure.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 

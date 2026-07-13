@@ -50,7 +50,10 @@ internally (including compactness and topological-group instances) and proves
 that every odd Chebyshev character has zero Haar mean. Explicit translation
 symmetries also give `E|g₀₀|²=1/2`, `E(Re g₀₀)²=1/4`, `∫χ₁²=1`, and the first
 even selector `∫χ₂=0`. The full Weyl pushforward formula and all-order even
-sector remain open.
+sector remain open. The algebraic equivalence and homeomorphism between
+concrete SU(2) and the complex-coordinate unit 3-sphere are now proved; the
+live frontier is precisely the equality of the pushed Haar measure with the
+normalized spherical measure.
 
 ## Public Interface
 
