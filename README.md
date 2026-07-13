@@ -77,9 +77,18 @@ disk with a three-cycle dual and three original spoke-edge variables.  An
 explicit triangular measurable equivalence preserves triple product Haar,
 removes the interior gauge coordinate, and proves that the unreduced integral
 is exactly the reduced two-coordinate amplitude and hence the heat kernel at
-summed area.  The next open frontier is to generalize this product-Haar
-equivalence from the three-spoke cycle to every connected finite disk, and then
-connect the abstract combinatorial disks to embedded planar isotopy classes.
+summed area.
+
+`SU2FiniteGaugeFixing.lean` now makes the measure-theoretic part uniform in the
+valence.  For every finite type `I`, simultaneous left gauge action on
+`SU2 × (I -> SU2)` and the triangular map
+`(x,y) |-> (x, fun i => x^-1 * y i)` preserve the literal normalized product
+Haar measure.  Any diagonally gauge-invariant density can therefore be
+integrated by setting the anchor coordinate to the identity.  The remaining
+open frontier is to compose these finite-valence steps along a spanning tree of
+an arbitrary connected disk, identify every transformed face holonomy, and
+then connect the abstract combinatorial disks to embedded planar isotopy
+classes.
 
 ## Public Interface
 

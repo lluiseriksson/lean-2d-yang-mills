@@ -23,7 +23,9 @@ by the following unconditional concrete theorems on `main`:
 - `su2ConnectedDiskExactAreaLawPackage`;
 - `su2ThreeSpokeGaugeFix_measurePreserving`;
 - `su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral`;
-- `su2ThreeSpoke_unreducedIntegral_eq_heatKernel`.
+- `su2ThreeSpoke_unreducedIntegral_eq_heatKernel`;
+- `su2FiniteStarGaugeFix_measurePreserving`;
+- `su2FiniteStar_integral_eq_identitySlice`.
 
 The generic hypothesis packages remain useful interfaces, but none of the
 conclusions above is obtained by projecting a field from such a package.  The
@@ -33,11 +35,14 @@ independence of the elimination schedule are theorems, including in the
 presence of dual cycles.  For the concrete three-spoke disk with three-cycle
 dual, equality with the unreduced triple product-Haar edge integral is now a
 theorem derived from an explicit measure-preserving gauge fixing.  The
-remaining planar frontier is the corresponding product-Haar equivalence for
-an arbitrary connected finite disk, followed by comparison with embedded
-planar isotopy classes.  Continuum construction and the positive-area
-higher-genus layer also remain open.  The detailed pre-closure history is
-retained below for provenance only.
+measure-theoretic gauge step has additionally been generalized to one vertex
+of arbitrary finite valence: its diagonal action, triangular equivalence, and
+identity-slice integral are uniform in the finite index type.  The remaining
+planar frontier is to compose those local steps along a spanning tree of an
+arbitrary connected finite disk and prove the resulting facial-holonomy
+identification, followed by comparison with embedded planar isotopy classes.
+Continuum construction and the positive-area higher-genus layer also remain
+open.  The detailed pre-closure history is retained below for provenance only.
 
 ## Main Branch Status
 

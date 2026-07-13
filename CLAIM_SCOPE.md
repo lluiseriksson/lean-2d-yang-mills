@@ -65,6 +65,14 @@ original edge variables, the formalization proves that
 `(x,y,z) |-> (x,x^-1*y,x^-1*z)` preserves triple normalized Haar, that the
 density loses the pure-gauge coordinate, and that the unreduced integral is
 the heat kernel at total area.  This is not yet a theorem for every finite
-cellulation.  Nor does the development identify the abstract combinatorial
+cellulation.
+
+The product-Haar gauge step itself is now uniform in arbitrary finite valence:
+for every finite type `I`, the diagonal action and the triangular change on
+`SU2 × (I -> SU2)` are measure preserving, and every diagonally invariant
+density admits exact identity-slice integration.  What is not yet proved is the
+composition of these local steps along a spanning tree of an arbitrary
+`SU2FiniteDiskCellulation`, together with the induced formula for every face
+holonomy.  Nor does the development identify the abstract combinatorial
 disks with isotopy classes of piecewise-smooth planar embeddings, treat
 nonsimple/intersecting Wilson loops, or construct a continuum measure.

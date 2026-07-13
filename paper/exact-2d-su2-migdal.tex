@@ -73,7 +73,8 @@ schedule reduces to the heat kernel at total area, and any two choices give
 the same amplitude.  For the first cyclic unreduced lattice, a three-face disk,
 we additionally construct a triangular gauge-fixing equivalence that preserves
 the original triple product Haar measure and prove equality with the reduced
-amplitude.  The schedule is hidden from the public loop object,
+amplitude.  The same measure-theoretic construction is then proved uniformly
+for one vertex of arbitrary finite valence.  The schedule is hidden from the public loop object,
 which supplies a nontrivial exact-area-law package.  Combined with all-label
 coefficient extraction, this yields the exact normalized simple-loop identity
 \[
@@ -317,6 +318,53 @@ finite cellulations.  That uniform generalization requires a global spanning
 tree gauge fixing compatible with the incidence data of the independent disk
 object.
 
+\subsection{Uniform finite-valence theorem}
+
+The preceding three-spoke map is not intrinsically three-dimensional.  Let
+$I$ be any finite type and let
+\[
+  d\mu_I=\bigotimes_{i\in I}dg_i
+\]
+be the normalized product Haar probability on $SU(2)^I$.  The formalization
+constructs, without choosing an enumeration of $I$, the measurable equivalence
+\[
+ \begin{aligned}
+ \Phi_I&\colon SU(2)\times SU(2)^I\to SU(2)\times SU(2)^I,\\
+ \Phi_I(x,y)&=\bigl(x,(x^{-1}y_i)_{i\in I}\bigr).
+ \end{aligned}
+\]
+with inverse $(u,v)\mapsto(u,(uv_i)_i)$.  The product measure is Mathlib's
+\texttt{Measure.pi}.  Using finite-product Haar invariance and the skew-product
+theorem, Lean proves
+\begin{equation}\label{eq:finite-valence-mp}
+  (\Phi_I)_*(dg\otimes d\mu_I)=dg\otimes d\mu_I
+\end{equation}
+for every finite $I$.  It also proves that the diagonal action
+$(x,y_i)\mapsto(ux,uy_i)$ preserves the same measure.
+
+The result is consumed at the integral level.  If
+$F:SU(2)\times SU(2)^I\to\mathbb C$ is invariant under that diagonal action,
+then
+\begin{equation}\label{eq:identity-slice}
+ \int F(x,y)\,dg(x)\,d\mu_I(y)
+ =\int F(1,y)\,d\mu_I(y).
+\end{equation}
+More generally, the source contains an explicit factorization theorem for any
+density whose pullback through $\Phi_I^{-1}$ loses its first coordinate.  The
+principal uniform endpoints are:
+\begin{lstlisting}
+su2FiniteStarDiagonalLeft_measurePreserving
+su2FiniteStarGaugeFix_measurePreserving
+su2FiniteStar_integral_eq_gaugeFixed
+su2FiniteStar_integral_eq_identitySlice
+\end{lstlisting}
+
+Equations~\eqref{eq:finite-valence-mp}--\eqref{eq:identity-slice} remove the
+fixed-valence limitation of the gauge step.  They do not yet compose the local
+steps at all vertices of a general disk or identify the transformed holonomy of
+every face; those are separate combinatorial statements about a chosen
+spanning tree.
+
 \section{Independent finite cellulations and elimination}
 
 The analytic evaluator used by the development is a labelled binary schedule.
@@ -421,7 +469,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the thirty-four audited public endpoints
+in the Lean development.  Printing axioms for the thirty-eight audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -467,6 +515,10 @@ su2ThreeSpoke_density_gaugeFactorization
 su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
 su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
 su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+su2FiniteStarDiagonalLeft_measurePreserving
+su2FiniteStarGaugeFix_measurePreserving
+su2FiniteStar_integral_eq_gaugeFixed
+su2FiniteStar_integral_eq_identitySlice
 \end{lstlisting}
 
 \section{Scope and next frontier}
@@ -476,10 +528,12 @@ independent finite oriented disk-cellulation object, constructs elimination
 schedules for every connected dual graph, and proves independence of the
 schedule for the reduced amplitude.  Dual cycles are allowed at this level,
 and the three-face cycle is additionally linked to its original product-Haar
-edge integral by a formal lattice gauge-fixing change of variables.
+edge integral by a formal lattice gauge-fixing change of variables.  The local
+measure-preserving change and identity-slice theorem hold for arbitrary finite
+valence.
 
-It does not yet generalize that unreduced equivalence to every finite
-cellulation.  It also does not identify the
+It does not yet compose the local gauge steps along a spanning tree of every
+finite cellulation or identify all transformed face holonomies.  It also does not identify the
 abstract combinatorial maps with planar isotopy classes, treat nonsimple or
 intersecting loops, construct a continuum measure, or evaluate higher-genus
 partition functions.  The next precise frontier is therefore a uniform

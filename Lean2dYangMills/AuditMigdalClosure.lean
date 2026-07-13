@@ -1,4 +1,4 @@
-import Lean2dYangMills.SU2EdgeGaugeFixing
+import Lean2dYangMills.SU2FiniteGaugeFixing
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -43,5 +43,9 @@ namespace Lean2dYangMills
 #print axioms su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
 #print axioms su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
 #print axioms su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+#print axioms su2FiniteStarDiagonalLeft_measurePreserving
+#print axioms su2FiniteStarGaugeFix_measurePreserving
+#print axioms su2FiniteStar_integral_eq_gaugeFixed
+#print axioms su2FiniteStar_integral_eq_identitySlice
 
 end Lean2dYangMills

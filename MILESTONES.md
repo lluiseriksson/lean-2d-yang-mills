@@ -12,7 +12,10 @@
   calendario. Para el primer ciclo no trivial, el disco de tres caras y tres
   radios, `su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral` prueba además
   la equivalencia medida-preservante con la integral original de Haar producto.
-  Queda abierta su generalización a toda celulación finita conexa.
+  `su2FiniteStarGaugeFix_measurePreserving` y
+  `su2FiniteStar_integral_eq_identitySlice` hacen uniforme el paso local para
+  cualquier valencia finita. Queda abierta su composición global a lo largo de
+  un árbol generador de toda celulación finita conexa.
 - M2: **cerrado mediante una instancia física no trivial para esa amplitud**.
   `su2ConnectedDiskExactAreaLawPackage` y su consumer prueban el exponencial de
   Casimir para todo label y toda celulación conectada de áreas positivas. No
