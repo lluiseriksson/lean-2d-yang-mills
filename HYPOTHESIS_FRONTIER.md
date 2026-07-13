@@ -10,6 +10,22 @@ Date: 2026-07-07
 
 ## Closed facts on `main` through PR #44
 
+Concrete SU(2) character layer (current post-PR #44 work):
+
+- `su2_apply_one_one_eq_conj_apply_zero_zero`: the defining matrix has
+  `g₁₁ = conj(g₀₀)`, derived from determinant one and unitarity through the
+  two-by-two adjugate.
+- `su2_norm_apply_zero_zero_le_one` and `su2_half_trace_eq_ofReal_re`: the
+  Chebyshev argument `tr(g)/2` is real and lies in `[-1,1]`.
+- `abs_chebyshevU_real_le_of_mem_Icc`: the sharp bound
+  `|U_n(x)| <= n+1` on `[-1,1]`, including the endpoint cases.
+- `abs_su2CharacterChebyshev_le`: the concrete SU(2) Weyl character bound,
+  with no spectral hypothesis.
+- `summable_su2HeatKernelTerm`: unconditional pointwise summability of the
+  SU(2) heat-kernel character series for every positive heat time.
+- `su2HeatKernelCharacterSeries_conj_invariant`: unconditional class-function
+  invariance of the concrete series.
+
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 
 PR #29 was a digest/status refresh after PR #28; it did not add or rename Lean
@@ -123,16 +139,14 @@ Area-law API normalization (`Interfaces.lean`):
 
 ## Frontier obligations (branch `frontier/M0-su2`, statement-first, sorried)
 
-`Frontier/SU2Character.lean`:
+Former `Frontier/SU2Character.lean` obligations:
 
-- `su2CharacterChebyshev` (DEFINED today via `Polynomial.Chebyshev.U` at
-  half the trace) and `su2CharacterTable` with Casimir `n(n+2)/4`.
-- `su2CharacterChebyshev_one` (`U_n(1) = n+1`).
-- `abs_su2CharacterChebyshev_le` (Weyl bound; spectral input: SU(2)
-  eigenvalues on the unit circle, `|tr g| <= 2`).
-- `summable_su2HeatKernelTerm` (route: Weyl bound + the Casimir engine
-  already proved on main).
-- `exists_su2HeatKernelPackage`.
+- `su2CharacterChebyshev`, `su2CharacterTable`,
+  `su2CharacterChebyshev_one`, `abs_su2CharacterChebyshev_le`, and
+  `summable_su2HeatKernelTerm` are now closed on `main` without `sorry`.
+- The remaining M0 obstruction is the Haar orthogonality/convolution theorem
+  needed to replace the weak `heatKernel_semigroup : Prop` interface by a
+  concrete equality and construct the physical package.
 
 ## Distance To Goal
 

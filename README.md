@@ -34,6 +34,12 @@ lake build
 
 The current `main` interface is conditional: theorem statements project explicit fields from structures such as `HeatKernelCharacterPackage`, `MigdalSelfSimilarityPackage`, and `ExactAreaLawPackage`. This keeps the import surface stable without pretending the analytic theorems are already formalized.
 
+The concrete SU(2) character layer is no longer conditional: `main` proves
+the Chebyshev character formula at the identity, the sharp Weyl bound
+`|chi_n(g)| <= n+1`, class-function invariance, and pointwise convergence of
+the heat-kernel character series for every positive heat time. Haar
+orthogonality and the convolution semigroup remain the live M0 frontier.
+
 ## Public Interface
 
 The parent repo should import only the contract module:
