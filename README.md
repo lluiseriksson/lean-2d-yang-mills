@@ -45,6 +45,11 @@ Identifying that angle measure with the class pushforward of Mathlib's SU(2)
 Haar measure, and then proving the full convolution law, remain the live M0
 frontier.
 
+The repository now constructs that normalized Haar probability measure
+internally (including compactness and topological-group instances) and proves
+that every odd Chebyshev character has zero Haar mean. The full Weyl
+pushforward formula, including the even sector, remains open.
+
 ## Public Interface
 
 The parent repo should import only the contract module:

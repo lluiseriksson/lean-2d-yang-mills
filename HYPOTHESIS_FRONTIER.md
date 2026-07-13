@@ -31,6 +31,11 @@ Concrete SU(2) character layer (current post-PR #44 work):
 - `intervalIntegral_chebyshevU_mul_chebyshevU_sin_sq`: exact SU(2)
   class-character orthogonality in Weyl angle coordinates,
   `integral U_n(cos theta) U_m(cos theta) sin(theta)^2 = pi/2 delta_nm`.
+- `su2HaarProb`: an internally constructed normalized Haar probability
+  measure on Mathlib's concrete SU(2), with compactness and topological-group
+  instances proved in the satellite.
+- `integral_su2CharacterChebyshev_eq_zero_of_odd`: the first concrete Haar
+  selector; every odd character has zero Haar mean by translation with `-I`.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 
@@ -153,7 +158,8 @@ Former `Frontier/SU2Character.lean` obligations:
 - The analytic angle-coordinate orthogonality is closed. The remaining M0
   obstruction is the group-theoretic Weyl integration/pushforward theorem
   identifying the normalized `sin(theta)^2 dtheta` measure with the class
-  pushforward of SU(2) Haar, followed by the full matrix-coefficient
+  pushforward of SU(2) Haar for all class functions (the odd-character sector
+  is already closed directly), followed by the full matrix-coefficient
   convolution theorem. These are needed to replace the weak
   `heatKernel_semigroup : Prop` interface by a concrete equality.
 

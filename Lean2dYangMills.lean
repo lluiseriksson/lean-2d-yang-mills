@@ -2,5 +2,6 @@ import Lean2dYangMills.Interfaces
 import Lean2dYangMills.ConvergenceEngine
 import Lean2dYangMills.SU2Character
 import Lean2dYangMills.SU2ClassOrthogonality
+import Lean2dYangMills.SU2Haar
 import Lean2dYangMills.WittenZetaSU2
 import Lean2dYangMills.TrivialModel
