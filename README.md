@@ -55,42 +55,48 @@ lake build
 `main` is intended to stay free of `sorry` and project-local axioms. Frontier work may live on `frontier/*` branches, with every open statement mirrored in `HYPOTHESIS_FRONTIER.md`.
 
 The generic public interfaces remain available, but the concrete `SU(2)` chain
-is no longer conditional.  `main` now proves the Haar/spherical measure bridge,
-the all-order orbital law, translated character convolution, the infinite
-heat-kernel semigroup, a two-face Migdal edge integration, and the exact
-all-label simple-loop coefficient without projecting any of those conclusions
+is no longer conditional.  The development proves the Haar/spherical measure
+bridge, the all-order orbital law, translated character convolution, the
+infinite heat-kernel semigroup, a two-face Migdal edge integration, and the
+exact all-label simple-loop coefficient without projecting those conclusions
 from a hypothesis package.
 
-The concrete SU(2) character layer is no longer conditional: `main` proves
-the Chebyshev character formula at the identity, the sharp Weyl bound
-`|chi_n(g)| <= n+1`, class-function invariance, and pointwise convergence of
-the heat-kernel character series for every positive heat time. The same
-Casimir majorant now proves uniform convergence on all of SU(2) and continuity
-of the resulting series. It also proves
-the exact Chebyshev-U orthogonality integral with the SU(2) Weyl angle weight.
-The angle calculation is connected to normalized Haar and consumed by the
-all-order translated convolution theorem.
+`SU2FiniteCellulation.lean` now separates the geometric input from the binary
+evaluator.  Its finite oriented disk object stores vertices, edges, paired
+half-edges, source/target incidence, cyclic face successors, the disk Euler
+relation, and positive bounded-face areas.  The dual graph is derived from
+these incidences.  Every connected dual graph admits a valid elimination
+schedule; every valid schedule reduces to the heat kernel at total area; and
+any two schedules give exactly the same reduced amplitude.  A public
+`SU2ConnectedDiskCellulation` contains no schedule choice and supplies a
+nontrivial `ExactAreaLawPackage`, the exact Casimir law, and normalization.
 
-The repository now constructs that normalized Haar probability measure
-internally (including compactness and topological-group instances) and proves
-that every odd Chebyshev character has zero Haar mean. Explicit translation
-symmetries also give `E|g₀₀|²=1/2`, `E(Re g₀₀)²=1/4`, `∫χ₁²=1`, and the first
-even selector `∫χ₂=0`. The full Weyl pushforward formula and all-order even
-sector remain open. The algebraic equivalence and homeomorphism between
-concrete SU(2) and the complex-coordinate unit 3-sphere are now proved; the
-measure bridge is now closed. Every transported SU(2) action is realized as a
-real-linear isometric equivalence of the ambient L2 space. A general theorem
-proves that an ambient measure-preserving linear isometry preserves its
-`Measure.toSphere` measure. After normalization, transport back to SU(2), and
-uniqueness of normalized Haar, `main` proves the literal equality
-`su2RowSphereHaar = su2CanonicalRowSphereMeasure`.  The new orbit module then
-identifies the first complex-rail mass with the uniform probability on
-`[0,1]`; the character-convolution and heat-semigroup modules consume that
-identity through a real Haar integral.  Finally,
-`su2Migdal_subdivision_invariant` integrates a shared edge of two heat-kernel
-faces and `su2_exact_simpleLoop_areaLaw` gives the exact Casimir exponential
-for every representation label.  The next open frontier is a global reduction
-over arbitrary finite planar cellulations, not the local two-face move.
+No acyclicity condition is imposed on the dual graph.  For cyclic duals, the
+development now also closes the first genuine unreduced example: a three-face
+disk with a three-cycle dual and three original spoke-edge variables.  An
+explicit triangular measurable equivalence preserves triple product Haar,
+removes the interior gauge coordinate, and proves that the unreduced integral
+is exactly the reduced two-coordinate amplitude and hence the heat kernel at
+summed area.
+
+`SU2FiniteGaugeFixing.lean` makes the local measure-theoretic part uniform in the
+valence.  For every finite type `I`, simultaneous left gauge action on
+`SU2 × (I -> SU2)` and the triangular map
+`(x,y) |-> (x, fun i => x^-1 * y i)` preserve the literal normalized product
+Haar measure.  Any diagonally gauge-invariant density can therefore be
+integrated by setting the anchor coordinate to the identity.
+
+`SU2RootedTreeGaugeFixing.lean` now closes the global vertex-coordinate layer.
+Every finite connected simple graph admits a construction-ordered rooted
+spanning tree.  For a disk cellulation with connected primal graph, the chosen
+tree is certified by actual half-edge incidences, and one measurable
+equivalence replaces all vertex variables by the root variable and the ordered
+parent--child increments.  The map and its inverse are explicit, its coordinate
+formulas are theorems, and it preserves the literal `Measure.pi` product Haar
+probability.  What remains open is the stronger edge-model equivalence
+`SU(2)^E ≃ SU(2)^{V\setminus\{r\}} × SU(2)^{E\setminus T}`, the induced formula
+for every face holonomy, and the comparison with embedded planar isotopy
+classes.
 
 ## Public Interface
 

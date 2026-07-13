@@ -50,7 +50,7 @@
 \title{\bfseries Exact Two-Dimensional $SU(2)$ Yang--Mills in Lean:\\
 Weyl Integration, Heat-Kernel Convolution, Migdal Invariance,\\
 and the Exact Simple-Loop Area Law}
-\author{Llu\'is Eriksson}
+\author{Lluis Eriksson}
 \date{13 July 2026}
 
 \begin{document}
@@ -65,9 +65,21 @@ canonical spherical probability, proves the required all-order orbital
 integration law, derives translated character convolution for every pair of
 irreducible labels, passes from finite character sums to the infinite
 heat-kernel semigroup by dominated convergence, and integrates an actual edge
-shared by two faces.  Combined with the all-label coefficient extraction
-already proved in the same development, this yields the exact normalized
-simple-loop identity
+shared by two faces.  We then define finite oriented disk cellulations
+independently of any reduction tree, using vertices, paired half-edges, cyclic
+face words, incidence, Euler characteristic, and positive face areas.  Every
+connected dual graph admits a certified elimination schedule, every valid
+schedule reduces to the heat kernel at total area, and any two choices give
+the same amplitude.  For the first cyclic unreduced lattice, a three-face disk,
+we additionally construct a triangular gauge-fixing equivalence that preserves
+the original triple product Haar measure and prove equality with the reduced
+amplitude.  The same measure-theoretic construction is then proved uniformly
+for one vertex of arbitrary finite valence.  We further construct a rooted
+spanning-tree order for every finite connected primal graph and a single
+global root-plus-edge-increments equivalence on all cellulation vertex
+variables, with exact product-Haar preservation.  The schedule is hidden from the public loop object,
+which supplies a nontrivial exact-area-law package.  Combined with all-label
+coefficient extraction, this yields the exact normalized simple-loop identity
 \[
   \mathbb E[W_n(C)]
   =\exp\!\left[-\frac{n(n+2)}4\operatorname{Area}(C)\right].
@@ -104,7 +116,7 @@ the formalized chain is
 \]
 
 This result is distinct from the programme's earlier strong-coupling area-law
-theorem.  The earlier theorem is a volume-uniform \emph{inequality} for finite
+theorem~\cite{ErikssonStrongCoupling}.  The earlier theorem is a volume-uniform \emph{inequality} for finite
 lattices and $SU(N_c)$ in an explicit convergence window, obtained from a
 Koteck\'y--Preiss cluster expansion.  The present theorem is an \emph{exact
 identity} in the two-dimensional $SU(2)$ heat-kernel model, obtained by Haar
@@ -247,6 +259,244 @@ su2Migdal_twoFace_merge
 su2Migdal_subdivision_invariant
 \end{lstlisting}
 
+\section{A cyclic product-Haar gauge fixing}
+
+The two-face move alone does not identify a reduced evaluator with the original
+lattice integral when the face-dual graph has cycles.  We therefore formalize
+the first cyclic test explicitly.  Consider a disk split into three bounded
+faces by three spokes meeting at one interior vertex.  Its face dual is
+$K_3$, equivalently the three-cycle.  Write $x,y,z\in SU(2)$ for the original
+spoke-edge variables and $a,b,c\in SU(2)$ for the fixed boundary arcs.  The
+three face holonomies are
+\[
+  xay^{-1},\qquad ybz^{-1},\qquad zcx^{-1}.
+\]
+Thus the unreduced density and measure are
+\begin{equation}\label{eq:unreduced-three}
+  K_{t_1}(xay^{-1})K_{t_2}(ybz^{-1})K_{t_3}(zcx^{-1})
+  \,dx\,dy\,dz.
+\end{equation}
+
+Gauge transformations at the interior vertex act by simultaneous left
+multiplication.  Lean constructs the measurable equivalence
+\[
+  \Phi(x,y,z)=(x,x^{-1}y,x^{-1}z),
+  \qquad
+  \Phi^{-1}(u,v,w)=(u,uv,uw).
+\]
+The skew-product theorem and left invariance of normalized Haar prove the
+literal measure identity
+\[
+  \Phi_*\bigl(dx\,dy\,dz\bigr)=dx\,dy\,dz.
+\]
+After substitution, conjugation invariance of the heat kernel removes the
+first coordinate and gives
+\[
+  K_{t_1}(av^{-1})K_{t_2}(vbw^{-1})K_{t_3}(wc).
+\]
+The pure-gauge integral has mass one.  Applying the reversed two-face Migdal
+identity first to $w$ and then to $v$ yields the fully unreduced result
+\begin{equation}\label{eq:three-spoke-result}
+ \int_{SU(2)^3}
+  K_{t_1}(xay^{-1})K_{t_2}(ybz^{-1})K_{t_3}(zcx^{-1})
+  \,dx\,dy\,dz
+  =K_{t_1+t_2+t_3}(abc).
+\end{equation}
+
+The proof does not store a Jacobian certificate or assume an abstract gauge
+package.  The map, its inverse, measurability, product-Haar preservation,
+density factorization, Fubini integrability, and both edge integrations are
+all kernel checked.  The principal endpoints are:
+\begin{lstlisting}
+su2ThreeSpokeFaceDual_connected
+su2ThreeSpokeGaugeFix_measurePreserving
+su2ThreeSpoke_density_gaugeFactorization
+su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
+su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+\end{lstlisting}
+
+Equation~\eqref{eq:three-spoke-result} is a genuine product-Haar theorem for a
+cyclic dual, but it is intentionally not stated as a theorem for arbitrary
+finite cellulations.  That uniform generalization requires a global spanning
+tree gauge fixing compatible with the incidence data of the independent disk
+object.
+
+\subsection{Uniform finite-valence theorem}
+
+The preceding three-spoke map is not intrinsically three-dimensional.  Let
+$I$ be any finite type and let
+\[
+  d\mu_I=\bigotimes_{i\in I}dg_i
+\]
+be the normalized product Haar probability on $SU(2)^I$.  The formalization
+constructs, without choosing an enumeration of $I$, the measurable equivalence
+\[
+ \begin{aligned}
+ \Phi_I&\colon SU(2)\times SU(2)^I\to SU(2)\times SU(2)^I,\\
+ \Phi_I(x,y)&=\bigl(x,(x^{-1}y_i)_{i\in I}\bigr).
+ \end{aligned}
+\]
+with inverse $(u,v)\mapsto(u,(uv_i)_i)$.  The product measure is Mathlib's
+\texttt{Measure.pi}.  Using finite-product Haar invariance and the skew-product
+theorem, Lean proves
+\begin{equation}\label{eq:finite-valence-mp}
+  (\Phi_I)_*(dg\otimes d\mu_I)=dg\otimes d\mu_I
+\end{equation}
+for every finite $I$.  It also proves that the diagonal action
+$(x,y_i)\mapsto(ux,uy_i)$ preserves the same measure.
+
+The result is consumed at the integral level.  If
+$F:SU(2)\times SU(2)^I\to\mathbb C$ is invariant under that diagonal action,
+then
+\begin{equation}\label{eq:identity-slice}
+ \int F(x,y)\,dg(x)\,d\mu_I(y)
+ =\int F(1,y)\,d\mu_I(y).
+\end{equation}
+More generally, the source contains an explicit factorization theorem for any
+density whose pullback through $\Phi_I^{-1}$ loses its first coordinate.  The
+principal uniform endpoints are:
+\begin{lstlisting}
+su2FiniteStarDiagonalLeft_measurePreserving
+su2FiniteStarGaugeFix_measurePreserving
+su2FiniteStar_integral_eq_gaugeFixed
+su2FiniteStar_integral_eq_identitySlice
+\end{lstlisting}
+
+Equations~\eqref{eq:finite-valence-mp}--\eqref{eq:identity-slice} remove the
+fixed-valence limitation of the gauge step.  Their composition requires a
+separate combinatorial theorem selecting and ordering a spanning tree.  The
+next subsection closes that global coordinate theorem at the vertex level;
+facial holonomies remain a further edge-model statement.
+
+\subsection{Global rooted-tree vertex coordinates}
+
+The development now performs the global composition at the level of vertex
+coordinates.  A value of \texttt{SU2RootedTreeOrder n} records a rooted tree on
+$n+1$ vertices by adjoining one leaf at a time, together with the already
+present parent of each new leaf.  Its parent--child list is embedded in the
+final index type.  For every finite connected simple graph, Lean constructs an
+equivalence
+\[
+  e:\operatorname{Fin}(n+1)\simeq V
+\]
+and such an order for which every recorded parent--child pair is an actual
+graph edge.  The proof removes a vertex whose complement remains connected,
+recurses on the induced graph, and reattaches the vertex across a witnessed
+edge.
+
+For vertex variables $x_0,\ldots,x_n\in SU(2)$, the associated single global
+map retains the root and replaces each later variable by its tree increment:
+\begin{equation}\label{eq:global-tree-coordinates}
+  \Psi_T(x)_0=x_0,
+  \qquad
+  \Psi_T(x)_k=x_{p(k)}^{-1}x_k\quad(k>0).
+\end{equation}
+It is implemented recursively by splitting the last coordinate, applying the
+triangular Haar shear, transforming the older coordinates, and reassembling
+the finite product.  The inverse is part of the measurable equivalence, not an
+existence assertion.  Induction and finite-product Haar invariance prove
+\begin{equation}\label{eq:global-tree-haar}
+  (\Psi_T)_*\!\left(\bigotimes_{v\in V}dg_v\right)
+  =\bigotimes_{v\in V}dg_v.
+\end{equation}
+
+For a \texttt{SU2FiniteDiskCellulation}, primal adjacency is derived from an
+actual oriented half-edge and made into a simple graph.  Under the explicit
+hypothesis that this primal graph is connected, Lean chooses the certified
+tree internally, transports \eqref{eq:global-tree-coordinates} through the
+vertex enumeration, and returns a global measure-preserving equivalence on
+\texttt{C.Vertex -> SU2}.  The principal endpoints are:
+\begin{lstlisting}
+SU2RootedTreeOrder.exists_validForGraph_of_connected
+SU2RootedTreeOrder.coordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
+SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
+\end{lstlisting}
+
+This closes global composition and product-Haar preservation for the vertex
+gauge coordinates.  It does \emph{not} yet prove the stronger edge-space
+decomposition
+\[
+ SU(2)^E\simeq SU(2)^{V\setminus\{r\}}\times SU(2)^{E\setminus T},
+\]
+nor the simultaneous transformation formula for every facial holonomy.  Those
+are the remaining ingredients for equality between the unreduced edge model
+and the schedule-independent amplitude for every cellulation.
+
+\section{Independent finite cellulations and elimination}
+
+The analytic evaluator used by the development is a labelled binary schedule.
+If a schedule node has left and right subproblems $L,R$, its amplitude is
+defined recursively by
+\[
+  A_C(a,b)=\int_{SU(2)} A_L(a,x)A_R(x^{-1},b)\,dx.
+\]
+The earlier tree module proves by structural induction that
+\[
+  A_C(a,b)=K_{T(C)}(ab).
+\]
+At each node the induction hypotheses expose two heat kernels and the proof
+invokes the concrete two-face theorem.
+
+The new point is that the geometric input is no longer this evaluator syntax.
+The new independent cellulation structure stores finite types of
+vertices, edges, half-edges, and bounded faces; a fixed-point-free involution
+pairs the two half-edges of every edge; source and target incidence is linked
+to a cyclic face-successor permutation; \texttt{none} denotes the exterior
+face; and the disk Euler relation $V-E+F=1$ is part of the certificate.  The
+dual face graph is derived from the two sides of internal edges.
+
+A labelled elimination schedule is valid when its leaves list every bounded
+face exactly once and each binary merge is witnessed by a genuine adjacency
+in the derived dual graph.  Lean proves the following existence theorem for an
+arbitrary finite connected dual graph.  If the graph has one vertex, the
+schedule is a leaf.  Otherwise, a vertex whose deletion leaves a connected
+induced subgraph is removed, the proof recurses on the smaller finite type,
+and the vertex is reattached across an actual adjacent edge.  Thus no
+acyclicity assumption is used.
+
+For any valid schedule $S$, permutation of the face list gives
+$T(S)=\sum_f t_f$.  The tree reduction then proves
+\begin{equation}\label{eq:global-reduction}
+  A_{C,S}(a,b)=K_{\sum_f t_f}(ab).
+\end{equation}
+Consequently, for all valid $S_1,S_2$,
+\[
+  A_{C,S_1}(a,b)=A_{C,S_2}(a,b).
+\]
+The public structure \texttt{SU2ConnectedDiskCellulation} stores only the
+cellulation and connectedness of its dual.  A schedule is chosen internally
+from the existence theorem; the preceding equality proves that every other
+valid choice is observationally identical.  Its principal declarations are:
+\begin{lstlisting}
+SU2FaceEliminationSchedule.exists_schedule_of_connected_graph
+SU2FaceEliminationSchedule.exists_valid_schedule_of_dual_connected
+SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules
+SU2ConnectedDiskCellulation.amplitude_eq_heatKernel
+SU2ConnectedDiskCellulation.amplitude_eq_any_valid_schedule
+\end{lstlisting}
+
+For each representation label $n$, the formalization defines a plane-loop
+theory whose loops are connected independently specified cellulations, whose
+area is $\sum_f t_f$, whose string tension is $n(n+2)/4$, and whose Wilson
+functional integrates the schedule-independent amplitude.  Equation
+\eqref{eq:global-reduction} followed by
+coefficient extraction gives a nontrivial concrete instance
+\texttt{su2ConnectedDiskExactAreaLawPackage}.  The generic public interface is
+then consumed by
+\texttt{su2ConnectedDisk\_simpleLoop\_areaLaw\_exact}; no field of that
+package remains assumed.  The trivial-label case also proves the normalization
+\[
+  \int_{SU(2)} A_C(1,g)\,dg=1.
+\]
+
+For a general dual graph with cycles, this theorem concerns the explicitly
+defined post-gauge-fixed schedule amplitude.  The preceding section proves
+equality with the unreduced product-Haar integral for the concrete three-cycle,
+but equality over every original edge of an arbitrary cellulation is not yet
+asserted.
+
 \section{Exact simple-loop coefficient}
 
 The same repository proves, for every label $n$ and positive area $t$, that
@@ -260,20 +510,17 @@ heat coefficient:
 The proof first establishes the identity for partial character sums and then
 passes to the full kernel by dominated convergence.  Its final consumer is:
 
+\begin{samepage}
 \begin{lstlisting}
-theorem su2_exact_simpleLoop_areaLaw
-    {t : Real} (ht : 0 < t) (n : Nat) :
-  (integral (fun g : SU2 =>
-    su2NormalizedWilsonCharacter n g *
-      heatKernelCharacterSeries su2CharacterTable t g)
-      su2HaarProb) =
-    ((Real.exp (-t * ((n : Real) *
-      ((n : Real) + 2) / 4)) : Real) : Complex)
+su2_exact_simpleLoop_areaLaw
 \end{lstlisting}
+\end{samepage}
 
-Together with the Migdal move, this is the exact two-dimensional route: edge
-subdivision does not change the density, and the remaining simple face has the
-Casimir coefficient prescribed by its area.
+Together with the iterated Migdal reduction, this is the exact
+two-dimensional route for connected finite combinatorial disks after the
+certified elimination step: the choice of schedule does not change the
+density, and the effective face has the Casimir coefficient prescribed by its
+total area.
 
 \section{Audit and reproducibility}
 
@@ -281,7 +528,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the twelve new public endpoints
+in the Lean development.  Printing axioms for the forty-three audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -291,7 +538,21 @@ The toolchain and Mathlib revision are pinned in the repository.  GitHub
 Actions builds the public root target from a clean checkout and separately
 rejects placeholders.
 
-\paragraph{Principal new declarations.}
+\paragraph{Authoritative proof artifact.}
+The complete machine-checked proofs are contained in the public repository
+\texttt{lluiseriksson/lean-2d-yang-mills}~\cite{FormalArtifact}.  The immutable
+audited snapshot for this manuscript is commit
+\texttt{c13451842768e02a3c97afe11c8dcb9523c2c727}.  In particular,
+\texttt{SU2RootedTreeGaugeFixing.lean} contains the connected-graph spanning-tree
+construction and global product-Haar theorem; the preceding modules contain
+the Haar--sphere identification, orbital integration, character convolution,
+heat semigroup, Migdal move, finite-cellulation reduction, and exact coefficient
+extraction.  \texttt{AuditMigdalClosure.lean} prints the kernel dependencies of
+all forty-three public endpoints.  Thus the repository is not supplementary
+numerics or pseudocode: it is the compilable proof object to which the theorem
+claims refer.
+
+\medskip\noindent\textbf{Principal new declarations.}\par\smallskip
 \begin{lstlisting}
 su2FirstRailMoment_recurrence
 su2FirstRailMoment_eq
@@ -305,22 +566,58 @@ su2HeatKernelPartial_convolution
 su2HeatKernel_convolution
 su2Migdal_twoFace_merge
 su2Migdal_subdivision_invariant
+su2_exact_simpleLoop_areaLaw
+SU2PlanarFaceTree.internalEdgeCount_eq_faceCount_sub_one
+su2PlanarCellulationAmplitude_eq_heatKernel
+su2PlanarCellulationAmplitude_eq_effectiveFace
+su2TreePlanar_wilsonExpectation_eq_casimir
+su2TreePlanarExactAreaLawPackage
+su2TreePlanar_simpleLoop_areaLaw_exact
+integral_su2PlanarCellulationAmplitude_eq_one
+SU2FaceEliminationSchedule.exists_schedule_of_connected_graph
+SU2FaceEliminationSchedule.exists_valid_schedule_of_dual_connected
+SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules
+SU2ConnectedDiskCellulation.amplitude_eq_heatKernel
+SU2ConnectedDiskCellulation.amplitude_eq_any_valid_schedule
+su2ConnectedDisk_wilsonExpectation_eq_casimir
+su2ConnectedDiskExactAreaLawPackage
+su2ConnectedDisk_simpleLoop_areaLaw_exact
+integral_su2ConnectedDiskAmplitude_eq_one
+su2ThreeSpokeGaugeFix_measurePreserving
+su2ThreeSpoke_density_gaugeFactorization
+su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
+su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
+su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+su2FiniteStarDiagonalLeft_measurePreserving
+su2FiniteStarGaugeFix_measurePreserving
+su2FiniteStar_integral_eq_gaugeFixed
+su2FiniteStar_integral_eq_identitySlice
+SU2RootedTreeOrder.exists_validForGraph_of_connected
+SU2RootedTreeOrder.coordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
+SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
 \end{lstlisting}
 
 \section{Scope and next frontier}
 
-The present artifact closes the compact-group analytic chain needed for an
-exact simple-loop calculation.  It does not yet formalize arbitrary embedded
-planar graphs, gauge fixing on a general cellular decomposition, nonsimple or
-intersecting loops, continuum measure construction, or higher-genus partition
-functions.  Those are independent extensions and should not be inferred from
-the two-face theorem.
+The present artifact closes the compact-group analytic chain, introduces an
+independent finite oriented disk-cellulation object, constructs elimination
+schedules for every connected dual graph, and proves independence of the
+schedule for the reduced amplitude.  Dual cycles are allowed at this level,
+and the three-face cycle is additionally linked to its original product-Haar
+edge integral by a formal lattice gauge-fixing change of variables.  The local
+measure-preserving change and identity-slice theorem hold for arbitrary finite
+valence.  The global vertex-coordinate transformation is now constructed over
+a certified primal spanning tree and preserves the full vertex product Haar.
 
-The next mathematically meaningful consumer is a finite planar-cellulation
-reduction theorem: repeated application of the concrete Migdal move, with
-incidence and orientation data made explicit, until a simple loop bounds one
-effective face.  That step would promote the local subdivision identity into a
-global discretization-independence statement.
+It does not yet lift this transformation to all original edge variables or
+identify all transformed face holonomies.  It also does not identify the
+abstract combinatorial maps with planar isotopy classes, treat nonsimple or
+intersecting loops, construct a continuum measure, or evaluate higher-genus
+partition functions.  The next precise frontier is therefore a uniform
+spanning-tree gauge-fixing theorem from the unreduced edge model of an
+arbitrary connected disk to the schedule-independent face model.
 
 \begin{thebibliography}{9}
 \bibitem{Migdal}
@@ -342,6 +639,17 @@ language}, CADE-28, Lecture Notes in Computer Science 12699 (2021), 625--635.
 \bibitem{Mathlib}
 The Mathlib Community, \emph{The Lean mathematical library},
 CPP 2020, 367--381.
+
+\bibitem{ErikssonStrongCoupling}
+L.~Eriksson, \emph{A machine-checked volume-uniform Wilson-loop area law via a
+formalized cluster expansion},
+\href{https://ai.vixra.org/pdf/2607.0005v1.pdf}{ai.viXra:2607.0005} (2026).
+
+\bibitem{FormalArtifact}
+L.~Eriksson, \emph{lean-2d-yang-mills: machine-checked exact two-dimensional
+$SU(2)$ Yang--Mills}, GitHub repository,
+\href{https://github.com/lluiseriksson/lean-2d-yang-mills/tree/c13451842768e02a3c97afe11c8dcb9523c2c727}{audited commit c1345184}
+(2026).
 \end{thebibliography}
 
 \end{document}

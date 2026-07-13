@@ -38,3 +38,45 @@ The previous strong-coupling theorem does not instantiate
 `ExactAreaLawPackage`. A nontrivial instance must be built internally from the
 concrete two-dimensional heat-kernel convolution law, lattice edge integration,
 Migdal subdivision invariance, and the resulting simple-loop expectation.
+
+## Current finite-cellulation endpoint
+
+The current formal object is an oriented finite combinatorial disk
+cellulation: it stores finite vertices, edges, paired half-edges, source and
+target incidence, cyclic face successors, one exterior face, the disk Euler
+relation, and positive bounded-face areas. Its dual graph is derived from the
+half-edge incidences.
+
+For every such cellulation with connected dual graph, the development proves:
+
+- existence of a labelled binary gauge-fixing/elimination schedule;
+- validity of each merge against an actual dual edge;
+- exact reduction of every valid schedule to the heat kernel at total area;
+- independence of the chosen valid schedule;
+- a schedule-free `ExactAreaLawPackage` and the exact simple-loop Casimir law.
+
+No acyclicity hypothesis is imposed on the dual graph. This closes finite
+choice-independent reduction of the explicitly defined post-gauge-fixed
+amplitude, including schedules supported on dual graphs with cycles.
+
+The first nontrivial product-Haar bridge is also closed for the concrete
+three-spoke disk whose face dual is the three-cycle.  Starting from three
+original edge variables, the formalization proves that
+`(x,y,z) |-> (x,x^-1*y,x^-1*z)` preserves triple normalized Haar, that the
+density loses the pure-gauge coordinate, and that the unreduced integral is
+the heat kernel at total area.  This is not yet a theorem for every finite
+cellulation.
+
+The product-Haar gauge step itself is now uniform in arbitrary finite valence:
+for every finite type `I`, the diagonal action and the triangular change on
+`SU2 × (I -> SU2)` are measure preserving, and every diagonally invariant
+density admits exact identity-slice integration.  What is not yet proved is the
+global vertex-coordinate composition is now also closed.  Every finite
+connected primal graph admits a construction-ordered rooted spanning tree;
+each parent edge is certified by an actual half-edge incidence, and the single
+root-plus-increments equivalence on all cellulation vertex variables preserves
+product Haar.  What is not yet proved is the corresponding equivalence on all
+original edge variables, together with the induced formula for every face
+holonomy.  Nor does the development identify the abstract combinatorial
+disks with isotopy classes of piecewise-smooth planar embeddings, treat
+nonsimple/intersecting Wilson loops, or construct a continuum measure.

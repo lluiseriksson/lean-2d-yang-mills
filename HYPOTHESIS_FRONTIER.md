@@ -2,7 +2,7 @@
 
 Date: 2026-07-13
 
-## Supersession note: concrete closure at `1c335e1`
+## Supersession note: concrete SU(2) closure
 
 The historical ledger below records how the project reached the Haar/canonical
 measure bridge.  Its statements that general Weyl consumers, concrete
@@ -14,13 +14,43 @@ by the following unconditional concrete theorems on `main`:
 - `su2CharacterChebyshev_convolution`;
 - `su2HeatKernel_convolution`;
 - `su2Migdal_subdivision_invariant`;
-- `su2_exact_simpleLoop_areaLaw`.
+- `su2_exact_simpleLoop_areaLaw`;
+- `su2PlanarCellulationAmplitude_eq_heatKernel`;
+- `su2TreePlanarExactAreaLawPackage`;
+- `SU2FaceEliminationSchedule.exists_schedule_of_connected_graph`;
+- `SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules`;
+- `SU2ConnectedDiskCellulation.amplitude_eq_heatKernel`;
+- `su2ConnectedDiskExactAreaLawPackage`;
+- `su2ThreeSpokeGaugeFix_measurePreserving`;
+- `su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral`;
+- `su2ThreeSpoke_unreducedIntegral_eq_heatKernel`;
+- `su2FiniteStarGaugeFix_measurePreserving`;
+- `su2FiniteStar_integral_eq_identitySlice`.
+- `SU2RootedTreeOrder.exists_validForGraph_of_connected`;
+- `SU2RootedTreeOrder.coordinateEquiv_measurePreserving`;
+- `SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected`;
+- `SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving`;
+- `SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving`.
 
-The generic hypothesis packages remain useful interfaces, but none of the six
+The generic hypothesis packages remain useful interfaces, but none of the
 conclusions above is obtained by projecting a field from such a package.  The
-live frontier is global planar-cellulation reduction, continuum construction,
-and the positive-area higher-genus layer.  The detailed pre-closure history is
-retained below for provenance only.
+finite oriented disk-cellulation reduction is now global for every connected
+dual graph at the explicitly defined post-gauge-fixed level.  Existence and
+independence of the elimination schedule are theorems, including in the
+presence of dual cycles.  For the concrete three-spoke disk with three-cycle
+dual, equality with the unreduced triple product-Haar edge integral is now a
+theorem derived from an explicit measure-preserving gauge fixing.  The
+measure-theoretic gauge step has additionally been generalized to one vertex
+of arbitrary finite valence: its diagonal action, triangular equivalence, and
+identity-slice integral are uniform in the finite index type.  The global
+vertex-coordinate layer is now closed as well: every finite connected primal
+graph has a construction-ordered spanning tree, and every primal-connected
+cellulation admits one root-plus-tree-increments equivalence preserving all
+vertex product Haar.  The remaining planar frontier is to lift this coordinate
+theorem to the full edge configuration, prove the resulting facial-holonomy
+identification, and compare with embedded planar isotopy classes.
+Continuum construction and the positive-area higher-genus layer also remain
+open.  The detailed pre-closure history is retained below for provenance only.
 
 ## Main Branch Status
 

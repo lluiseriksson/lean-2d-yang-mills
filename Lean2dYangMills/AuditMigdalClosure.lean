@@ -1,5 +1,4 @@
-import Lean2dYangMills.SU2HeatSemigroup
-import Lean2dYangMills.SU2ExactAreaLaw
+import Lean2dYangMills.SU2RootedTreeGaugeFixing
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -23,5 +22,35 @@ namespace Lean2dYangMills
 #print axioms su2Migdal_twoFace_merge
 #print axioms su2Migdal_subdivision_invariant
 #print axioms su2_exact_simpleLoop_areaLaw
+#print axioms SU2PlanarFaceTree.internalEdgeCount_eq_faceCount_sub_one
+#print axioms su2PlanarCellulationAmplitude_eq_heatKernel
+#print axioms su2PlanarCellulationAmplitude_eq_effectiveFace
+#print axioms su2TreePlanar_wilsonExpectation_eq_casimir
+#print axioms su2TreePlanarExactAreaLawPackage
+#print axioms su2TreePlanar_simpleLoop_areaLaw_exact
+#print axioms integral_su2PlanarCellulationAmplitude_eq_one
+#print axioms SU2FaceEliminationSchedule.exists_schedule_of_connected_graph
+#print axioms SU2FaceEliminationSchedule.exists_valid_schedule_of_dual_connected
+#print axioms SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules
+#print axioms SU2ConnectedDiskCellulation.amplitude_eq_heatKernel
+#print axioms SU2ConnectedDiskCellulation.amplitude_eq_any_valid_schedule
+#print axioms su2ConnectedDisk_wilsonExpectation_eq_casimir
+#print axioms su2ConnectedDiskExactAreaLawPackage
+#print axioms su2ConnectedDisk_simpleLoop_areaLaw_exact
+#print axioms integral_su2ConnectedDiskAmplitude_eq_one
+#print axioms su2ThreeSpokeGaugeFix_measurePreserving
+#print axioms su2ThreeSpoke_density_gaugeFactorization
+#print axioms su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
+#print axioms su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
+#print axioms su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+#print axioms su2FiniteStarDiagonalLeft_measurePreserving
+#print axioms su2FiniteStarGaugeFix_measurePreserving
+#print axioms su2FiniteStar_integral_eq_gaugeFixed
+#print axioms su2FiniteStar_integral_eq_identitySlice
+#print axioms SU2RootedTreeOrder.exists_validForGraph_of_connected
+#print axioms SU2RootedTreeOrder.coordinateEquiv_measurePreserving
+#print axioms SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
+#print axioms SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
+#print axioms SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
 
 end Lean2dYangMills
