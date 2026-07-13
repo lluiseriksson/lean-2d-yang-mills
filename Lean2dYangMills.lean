@@ -18,6 +18,7 @@ import Lean2dYangMills.SU2CyclicEdgeElimination
 import Lean2dYangMills.SU2PhysicalEliminationTree
 import Lean2dYangMills.SU2PhysicalBoundaryElimination
 import Lean2dYangMills.SU2CyclicWordSplicing
+import Lean2dYangMills.SU2PhysicalEliminationSchedule
 import Lean2dYangMills.SU2FiniteGaugeFixing
 import Lean2dYangMills.SU2RootedTreeGaugeFixing
 import Lean2dYangMills.SU2GlobalEdgeGaugeFixing
