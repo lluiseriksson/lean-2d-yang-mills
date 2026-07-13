@@ -82,6 +82,11 @@ density factors through the chord coordinates, and
 gauge-volume factor.
 
 This closes the edge-model/gauge-reduction gap.  The development still does not
-identify abstract combinatorial disks with isotopy classes of piecewise-smooth
-planar embeddings, treat nonsimple/intersecting Wilson loops, or construct a
-continuum measure.
+identify the fully boundary-integrated chord scalar with the
+boundary-dependent schedule amplitude.  Those objects cannot be equated as
+currently typed: the first integrates every exterior edge, whereas the second
+retains an exterior holonomy.  The correct remaining statement requires a
+boundary-conditioned original-edge integral and a pointwise proof that it is
+the schedule amplitude.  The development also does not identify abstract
+combinatorial disks with isotopy classes of piecewise-smooth planar embeddings,
+treat nonsimple/intersecting Wilson loops, or construct a continuum measure.

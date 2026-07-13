@@ -104,8 +104,11 @@ preserves literal normalized product Haar.  Reconstructed vertex potentials
 set all tree edges to the identity, every facial holonomy transforms by its
 basepoint conjugation, the full heat-kernel density loses every tree/gauge
 coordinate, and the unreduced edge integral equals the chord integral exactly.
-The remaining geometric frontier is comparison with embedded planar isotopy
-classes and continuum constructions, not another gauge-coordinate wrapper.
+This integral includes the exterior edge variables and is a scalar; it is not
+the boundary-dependent schedule amplitude.  The next physical bridge is a
+boundary-conditioned original-edge integral, followed by comparison with
+embedded planar isotopy classes and continuum constructions.  Release and
+commit authentication details are recorded in `RELEASE_PROVENANCE.md`.
 
 ## Public Interface
 

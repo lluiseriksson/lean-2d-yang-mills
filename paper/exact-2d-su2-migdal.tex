@@ -449,6 +449,12 @@ normalized gauge coordinates integrate to one:
  =\int_{SU(2)^{E\setminus T}}
    \prod_f K_{t_f}(H_f(U_T=1,X))\,dX.
 \end{equation}
+Both sides of \eqref{eq:unreduced-global-edge} integrate every physical edge,
+including the exterior boundary edges, and are therefore scalars.  They must
+not be identified with the two-boundary amplitude $A_C(a,b)$ below, which
+retains an exterior holonomy and equals $K_{\sum_f t_f}(ab)$.  A pointwise
+edge-model derivation of that amplitude requires a separately defined
+boundary-conditioned edge integral and remains a distinct bridge theorem.
 The principal new endpoints are:
 \begin{lstlisting}
 SU2FiniteDiskCellulation.RootedSpanningTree.treeEdge_injective
@@ -531,7 +537,9 @@ explicitly defined post-gauge-fixed amplitude.  Equation
 \eqref{eq:unreduced-global-edge} now supplies the uniform original-edge gauge
 reduction for every facially well-formed, primal- and dual-connected disk
 cellulation; the earlier three-cycle computation remains a concrete diagnostic
-instance of the general construction.
+instance of the general construction.  It does not by itself identify the
+fully boundary-integrated chord scalar with the boundary-dependent schedule
+amplitude.
 
 \section{Exact simple-loop coefficient}
 
@@ -564,7 +572,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the forty-three audited public endpoints
+in the Lean development.  Printing axioms for the fifty-two audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -578,13 +586,13 @@ rejects placeholders.
 The complete machine-checked proofs are contained in the public repository
 \texttt{lluiseriksson/lean-2d-yang-mills}~\cite{FormalArtifact}.  The immutable
 audited snapshot for this manuscript is commit
-\texttt{c13451842768e02a3c97afe11c8dcb9523c2c727}.  In particular,
+\texttt{52e0e6f54e40a891c9dc092f730daba26f100bcd}.  In particular,
 \texttt{SU2RootedTreeGaugeFixing.lean} contains the connected-graph spanning-tree
 construction and global product-Haar theorem; the preceding modules contain
 the Haar--sphere identification, orbital integration, character convolution,
 heat semigroup, Migdal move, finite-cellulation reduction, and exact coefficient
 extraction.  \texttt{AuditMigdalClosure.lean} prints the kernel dependencies of
-all forty-three public endpoints.  Thus the repository is not supplementary
+all fifty-two public endpoints.  Thus the repository is not supplementary
 numerics or pseudocode: it is the compilable proof object to which the theorem
 claims refer.
 
@@ -652,9 +660,11 @@ $V-1$ gauge coordinates exactly.
 
 The artifact does not identify the abstract combinatorial maps with planar
 isotopy classes, treat nonsimple or intersecting loops, construct a continuum
-measure, or evaluate positive-area higher-genus partition functions.  Those
-geometric and continuum questions, rather than another finite gauge-coordinate
-wrapper, form the remaining frontier.
+measure, or evaluate positive-area higher-genus partition functions.  It also
+does not yet identify a boundary-conditioned original-edge integral with the
+schedule amplitude for every cellulation.  That pointwise boundary bridge,
+followed by the geometric and continuum questions, forms the remaining
+frontier.
 
 \begin{thebibliography}{9}
 \bibitem{Migdal}
@@ -685,7 +695,7 @@ formalized cluster expansion},
 \bibitem{FormalArtifact}
 L.~Eriksson, \emph{lean-2d-yang-mills: machine-checked exact two-dimensional
 $SU(2)$ Yang--Mills}, GitHub repository,
-\href{https://github.com/lluiseriksson/lean-2d-yang-mills/tree/c13451842768e02a3c97afe11c8dcb9523c2c727}{audited commit c1345184}
+\href{https://github.com/lluiseriksson/lean-2d-yang-mills/tree/52e0e6f54e40a891c9dc092f730daba26f100bcd}{audited Lean snapshot 52e0e6f}
 (2026).
 \end{thebibliography}
 
