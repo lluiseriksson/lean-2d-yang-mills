@@ -12,7 +12,9 @@
   matricial de convolución. La equivalencia y el homeomorfismo concretos
   `SU(2) ≃ S³` ya están cerrados. Haar ya se transporta a una probabilidad
   sobre la esfera y su invariancia bajo la acción SU(2) completa está probada;
-  falta identificarla con `volume.toSphere`. Coordina con el
+  la esfera ya está homeomorfa al tipo L2 exacto de `volume.toSphere`, cuya
+  medida canónica normalizada también está construida y devuelta al mismo
+  tipo. Falta demostrar la igualdad literal de ambas medidas. Coordina con el
   PETER_WEYL_ROADMAP.
 - M1: invariancia de la acción heat-kernel bajo subdivisión (Migdal).
 - M2: Wilson loop exacto en el plano: área law con tensión explícita

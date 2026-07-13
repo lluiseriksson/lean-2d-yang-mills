@@ -1,3 +1,6 @@
+import Mathlib.Analysis.InnerProductSpace.ProdL2
+import Mathlib.MeasureTheory.Constructions.HaarToSphere
+import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 import Lean2dYangMills.SU2Haar
 
 /-!
@@ -19,6 +22,103 @@ open Matrix
 /-- The concrete complex-coordinate model of the unit 3-sphere. -/
 abbrev SU2RowSphere :=
   {z : Complex × Complex // Complex.normSq z.1 + Complex.normSq z.2 = 1}
+
+/-- The ambient real inner-product space used by Mathlib's canonical
+spherical measure. -/
+abbrev SU2SphereAmbient := WithLp 2 (Complex × Complex)
+
+instance instMeasurableSpaceSU2SphereAmbient :
+    MeasurableSpace SU2SphereAmbient := borel _
+
+instance instBorelSpaceSU2SphereAmbient :
+    BorelSpace SU2SphereAmbient := ⟨rfl⟩
+
+/-- The same unit 3-sphere, now as Mathlib's metric sphere in the L2 product. -/
+abbrev SU2MetricSphere := Metric.sphere (0 : SU2SphereAmbient) 1
+
+theorem norm_toLp_complex_prod_eq_one (z : SU2RowSphere) :
+    ‖WithLp.toLp 2 z.1‖ = 1 := by
+  have hsquare : ‖WithLp.toLp 2 z.1‖ ^ 2 = (1 : Real) := by
+    rw [WithLp.prod_norm_sq_eq_of_L2]
+    change ‖z.1.1‖ ^ 2 + ‖z.1.2‖ ^ 2 = 1
+    simpa [Complex.normSq_eq_norm_sq] using z.2
+  nlinarith [norm_nonneg (WithLp.toLp 2 z.1)]
+
+/-- Move the coordinate sphere into Mathlib's canonical metric-sphere type. -/
+def rowSphereToMetricSphere (z : SU2RowSphere) : SU2MetricSphere :=
+  ⟨WithLp.toLp 2 z.1, mem_sphere_zero_iff_norm.2
+    (norm_toLp_complex_prod_eq_one z)⟩
+
+/-- Recover complex coordinates from Mathlib's L2 metric sphere. -/
+def metricSphereToRowSphere (z : SU2MetricSphere) : SU2RowSphere := by
+  refine ⟨WithLp.ofLp z.1, ?_⟩
+  have hnorm : ‖z.1‖ = 1 := mem_sphere_zero_iff_norm.1 z.2
+  have hsquare := congrArg (fun x : Real => x ^ 2) hnorm
+  dsimp at hsquare
+  rw [WithLp.prod_norm_sq_eq_of_L2] at hsquare
+  change Complex.normSq (WithLp.ofLp z.1).1 +
+      Complex.normSq (WithLp.ofLp z.1).2 = 1
+  simpa [Complex.normSq_eq_norm_sq] using hsquare
+
+@[simp]
+theorem rowSphereToMetricSphere_metricSphereToRowSphere (z : SU2MetricSphere) :
+    rowSphereToMetricSphere (metricSphereToRowSphere z) = z := by
+  apply Subtype.ext
+  rfl
+
+@[simp]
+theorem metricSphereToRowSphere_rowSphereToMetricSphere (z : SU2RowSphere) :
+    metricSphereToRowSphere (rowSphereToMetricSphere z) = z := by
+  apply Subtype.ext
+  rfl
+
+/-- Algebraic equivalence with Mathlib's canonical metric sphere. -/
+def rowSphereEquivMetricSphere : SU2RowSphere ≃ SU2MetricSphere where
+  toFun := rowSphereToMetricSphere
+  invFun := metricSphereToRowSphere
+  left_inv := metricSphereToRowSphere_rowSphereToMetricSphere
+  right_inv := rowSphereToMetricSphere_metricSphereToRowSphere
+
+theorem continuous_rowSphereToMetricSphere :
+    Continuous rowSphereToMetricSphere := by
+  apply Continuous.subtype_mk
+  exact (WithLp.prod_continuous_toLp 2 Complex Complex).comp
+    continuous_subtype_val
+
+theorem continuous_metricSphereToRowSphere :
+    Continuous metricSphereToRowSphere := by
+  apply Continuous.subtype_mk
+  exact (WithLp.prod_continuous_ofLp 2 Complex Complex).comp
+    continuous_subtype_val
+
+/-- Homeomorphism from the coordinate model to the exact sphere type used by
+`Measure.toSphere`. -/
+def rowSphereHomeomorphMetricSphere : SU2RowSphere ≃ₜ SU2MetricSphere where
+  toEquiv := rowSphereEquivMetricSphere
+  continuous_toFun := continuous_rowSphereToMetricSphere
+  continuous_invFun := continuous_metricSphereToRowSphere
+
+instance : Nonempty SU2MetricSphere :=
+  ⟨rowSphereToMetricSphere ⟨(1, 0), by simp⟩⟩
+
+/-- Mathlib's canonical spherical measure, normalized to a probability. -/
+def su2CanonicalSphereProbability :
+    MeasureTheory.ProbabilityMeasure SU2MetricSphere :=
+  MeasureTheory.FiniteMeasure.normalize
+    (⟨(MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere,
+      inferInstance⟩ : MeasureTheory.FiniteMeasure SU2MetricSphere)
+
+/-- The canonical spherical probability pulled back to the complex-coordinate
+model.  The live equality target is this measure versus `su2RowSphereHaar`. -/
+def su2CanonicalRowSphereMeasure : MeasureTheory.Measure SU2RowSphere :=
+  (su2CanonicalSphereProbability : MeasureTheory.Measure SU2MetricSphere).map
+    metricSphereToRowSphere
+
+instance : MeasureTheory.IsProbabilityMeasure su2CanonicalRowSphereMeasure := by
+  constructor
+  rw [su2CanonicalRowSphereMeasure, MeasureTheory.Measure.map_apply
+    continuous_metricSphereToRowSphere.measurable MeasurableSet.univ]
+  simp
 
 /-- Extract the first row of an SU(2) matrix. -/
 def su2ToRowSphere (g : SU2) : SU2RowSphere :=

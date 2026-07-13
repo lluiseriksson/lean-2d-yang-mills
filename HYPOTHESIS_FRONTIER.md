@@ -59,6 +59,12 @@ Concrete SU(2) character layer (current post-PR #44 work):
   transported measure is proved invariant under the full SU(2) action. What
   remains is its identification with Mathlib's canonical normalized
   `volume.toSphere`, not invariance of the transported measure itself.
+- `rowSphereHomeomorphMetricSphere`, `su2CanonicalSphereProbability`, and
+  `su2CanonicalRowSphereMeasure`: the coordinate sphere is now identified
+  with the exact L2 metric-sphere type consumed by `Measure.toSphere`; the
+  canonical finite spherical measure is normalized and pulled back to the
+  same type as transported Haar. Thus the remaining frontier is the literal
+  measure equality `su2RowSphereHaar = su2CanonicalRowSphereMeasure`.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 

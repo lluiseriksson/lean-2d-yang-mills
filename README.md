@@ -54,7 +54,11 @@ sector remain open. The algebraic equivalence and homeomorphism between
 concrete SU(2) and the complex-coordinate unit 3-sphere are now proved; the
 live frontier is precisely the equality of the pushed Haar measure with the
 normalized spherical measure. The pushed measure is already constructed as a
-probability and proved invariant under the full transported SU(2) action.
+probability and proved invariant under the full transported SU(2) action. The
+coordinate sphere is also homeomorphic to the exact L2 metric sphere used by
+Mathlib's `Measure.toSphere`; its canonical measure has been normalized and
+pulled back, so the frontier is now a literal equality of two measures on one
+type.
 
 ## Public Interface
 
