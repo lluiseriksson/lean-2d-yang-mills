@@ -7,6 +7,9 @@ import Lean2dYangMills.SU2Sphere
 import Lean2dYangMills.SU2Weyl
 import Lean2dYangMills.SU2Conjugacy
 import Lean2dYangMills.SU2Convolution
+import Lean2dYangMills.SU2Orbit
+import Lean2dYangMills.SU2CharacterConvolution
+import Lean2dYangMills.SU2HeatSemigroup
 import Lean2dYangMills.SU2ExactAreaLaw
 import Lean2dYangMills.SU2ClassHeatKernel
 import Lean2dYangMills.WittenZetaSU2
