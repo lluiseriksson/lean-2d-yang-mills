@@ -14,8 +14,10 @@
   sobre la esfera y su invariancia bajo la acción SU(2) completa está probada;
   la esfera ya está homeomorfa al tipo L2 exacto de `volume.toSphere`, cuya
   medida canónica normalizada también está construida y devuelta al mismo
-  tipo. Falta demostrar la igualdad literal de ambas medidas. Coordina con el
-  PETER_WEYL_ROADMAP.
+  tipo. La acción inducida por SU(2) ya está realizada como isometría
+  real-lineal del ambiente L2 y coincide con la acción transportada sobre la
+  esfera. Falta demostrar que preserva `volume.toSphere` y usar unicidad para
+  la igualdad literal de medidas. Coordina con el PETER_WEYL_ROADMAP.
 - M1: invariancia de la acción heat-kernel bajo subdivisión (Migdal).
 - M2: Wilson loop exacto en el plano: área law con tensión explícita
   (benchmark del área law en volumen finito del madre).

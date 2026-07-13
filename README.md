@@ -60,6 +60,11 @@ Mathlib's `Measure.toSphere`; its canonical measure has been normalized and
 pulled back, so the frontier is now a literal equality of two measures on one
 type.
 
+The next canonical-measure step is also concrete: every transported SU(2)
+action has been upgraded to a real-linear isometric equivalence of the ambient
+L2 space, and its restriction is proved equal to the coordinate action. The
+remaining input is invariance of `volume.toSphere` under that isometry.
+
 ## Public Interface
 
 The parent repo should import only the contract module:

@@ -65,6 +65,12 @@ Concrete SU(2) character layer (current post-PR #44 work):
   canonical finite spherical measure is normalized and pulled back to the
   same type as transported Haar. Thus the remaining frontier is the literal
   measure equality `su2RowSphereHaar = su2CanonicalRowSphereMeasure`.
+- `su2AmbientLeftLinearIsometryEquiv`, `su2MetricSphereLeft`, and
+  `rowSphereToMetricSphere_su2RowSphereLeft`: for every `h : SU(2)`, the
+  induced action on `L²(ℂ × ℂ)` is proved to be a real-linear isometric
+  equivalence, its restriction preserves the metric sphere, and that
+  restriction is exactly the transported group action. The next obligation
+  is preservation of `volume.toSphere` by this orthogonal action.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 

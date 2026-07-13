@@ -36,6 +36,88 @@ instance instBorelSpaceSU2SphereAmbient :
 /-- The same unit 3-sphere, now as Mathlib's metric sphere in the L2 product. -/
 abbrev SU2MetricSphere := Metric.sphere (0 : SU2SphereAmbient) 1
 
+/-- The quaternionic norm identity underlying the real-orthogonal SU(2)
+action on `ℂ²`. -/
+theorem su2Ambient_normSq_identity (p q a b : Complex) :
+    Complex.normSq (p * a - q * star b) +
+        Complex.normSq (p * b + q * star a) =
+      (Complex.normSq p + Complex.normSq q) *
+        (Complex.normSq a + Complex.normSq b) := by
+  have hbre : (star b).re = b.re := by simp
+  have hbim : (star b).im = -b.im := by simp
+  have hare : (star a).re = a.re := by simp
+  have haim : (star a).im = -a.im := by simp
+  simp only [Complex.normSq_apply, Complex.mul_re, Complex.mul_im,
+    Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im]
+  rw [hbre, hbim, hare, haim]
+  ring
+
+/-- Ambient action induced by left multiplication on SU(2), written in first
+row coordinates. -/
+def su2AmbientLeftFun (h : SU2) (z : SU2SphereAmbient) : SU2SphereAmbient :=
+  let p := (h : Matrix (Fin 2) (Fin 2) Complex) 0 0
+  let q := (h : Matrix (Fin 2) (Fin 2) Complex) 0 1
+  let a := (WithLp.ofLp z).1
+  let b := (WithLp.ofLp z).2
+  WithLp.toLp 2 (p * a - q * star b, p * b + q * star a)
+
+/-- The ambient SU(2) action is real-linear. -/
+def su2AmbientLeftLinear (h : SU2) :
+    SU2SphereAmbient →ₗ[Real] SU2SphereAmbient where
+  toFun := su2AmbientLeftFun h
+  map_add' x y := by
+    apply WithLp.ofLp_injective
+    ext <;> simp [su2AmbientLeftFun]
+    <;> ring
+  map_smul' c x := by
+    apply WithLp.ofLp_injective
+    ext
+    · simp [su2AmbientLeftFun]
+      change
+        (h : Matrix (Fin 2) (Fin 2) Complex) 0 0 *
+              ((c : Complex) * (WithLp.ofLp x).1) -
+            (h : Matrix (Fin 2) (Fin 2) Complex) 0 1 *
+              ((c : Complex) * star (WithLp.ofLp x).2) =
+          (c : Complex) *
+            ((h : Matrix (Fin 2) (Fin 2) Complex) 0 0 * (WithLp.ofLp x).1 -
+              (h : Matrix (Fin 2) (Fin 2) Complex) 0 1 * star (WithLp.ofLp x).2)
+      ring
+    · simp [su2AmbientLeftFun]
+      rw [mul_smul_comm, mul_smul_comm]
+
+theorem norm_su2AmbientLeftFun (h : SU2) (z : SU2SphereAmbient) :
+    ‖su2AmbientLeftFun h z‖ = ‖z‖ := by
+  rw [← sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _),
+    WithLp.prod_norm_sq_eq_of_L2, WithLp.prod_norm_sq_eq_of_L2]
+  change
+    ‖(h : Matrix (Fin 2) (Fin 2) Complex) 0 0 * (WithLp.ofLp z).1 -
+        (h : Matrix (Fin 2) (Fin 2) Complex) 0 1 * star (WithLp.ofLp z).2‖ ^ 2 +
+      ‖(h : Matrix (Fin 2) (Fin 2) Complex) 0 0 * (WithLp.ofLp z).2 +
+        (h : Matrix (Fin 2) (Fin 2) Complex) 0 1 * star (WithLp.ofLp z).1‖ ^ 2 =
+      ‖(WithLp.ofLp z).1‖ ^ 2 + ‖(WithLp.ofLp z).2‖ ^ 2
+  rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
+    ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+  rw [su2Ambient_normSq_identity, su2_normSq_row_zero]
+  ring
+
+/-- The induced ambient action as a real-linear isometry. -/
+def su2AmbientLeftLinearIsometry (h : SU2) :
+    SU2SphereAmbient →ₗᵢ[Real] SU2SphereAmbient :=
+  ⟨su2AmbientLeftLinear h, norm_su2AmbientLeftFun h⟩
+
+/-- Finite dimensionality upgrades the ambient isometry to an isometric
+equivalence. -/
+def su2AmbientLeftLinearIsometryEquiv (h : SU2) :
+    SU2SphereAmbient ≃ₗᵢ[Real] SU2SphereAmbient :=
+  (su2AmbientLeftLinearIsometry h).toLinearIsometryEquiv rfl
+
+/-- Restriction of the ambient real-linear isometry to the canonical metric
+sphere. -/
+def su2MetricSphereLeft (h : SU2) (z : SU2MetricSphere) : SU2MetricSphere :=
+  ⟨su2AmbientLeftFun h z.1, by
+    rw [mem_sphere_zero_iff_norm, norm_su2AmbientLeftFun]
+    exact mem_sphere_zero_iff_norm.1 z.2⟩
+
 theorem norm_toLp_complex_prod_eq_one (z : SU2RowSphere) :
     ‖WithLp.toLp 2 z.1‖ = 1 := by
   have hsquare : ‖WithLp.toLp 2 z.1‖ ^ 2 = (1 : Real) := by
@@ -245,6 +327,23 @@ theorem measurePreserving_rowSphereToSU2 :
 /-- Left SU(2) action transported to the unit-row sphere. -/
 def su2RowSphereLeft (h : SU2) (z : SU2RowSphere) : SU2RowSphere :=
   su2ToRowSphere (h * rowSphereToSU2 z)
+
+/-- The coordinate action transported from group multiplication is exactly
+the restriction of the ambient real-linear isometry. -/
+theorem rowSphereToMetricSphere_su2RowSphereLeft
+    (h : SU2) (z : SU2RowSphere) :
+    rowSphereToMetricSphere (su2RowSphereLeft h z) =
+      su2MetricSphereLeft h (rowSphereToMetricSphere z) := by
+  apply Subtype.ext
+  apply WithLp.ofLp_injective
+  ext
+  · simp [rowSphereToMetricSphere, su2MetricSphereLeft, su2AmbientLeftFun,
+      su2RowSphereLeft, su2ToRowSphere, rowSphereToSU2, Matrix.mul_apply,
+      Fin.sum_univ_two]
+    ring
+  · simp [rowSphereToMetricSphere, su2MetricSphereLeft, su2AmbientLeftFun,
+      su2RowSphereLeft, su2ToRowSphere, rowSphereToSU2, Matrix.mul_apply,
+      Fin.sum_univ_two]
 
 /-- The transported spherical Haar probability is invariant under the full
 left SU(2) action, not merely under the finite rotations used for low moments. -/
