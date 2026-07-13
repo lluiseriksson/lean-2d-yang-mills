@@ -1,5 +1,6 @@
 import Lean2dYangMills.SU2BoundaryConditionedGaugeFixing
 import Lean2dYangMills.SU2CyclicEdgeElimination
+import Lean2dYangMills.SU2PhysicalBoundaryElimination
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -79,5 +80,13 @@ namespace Lean2dYangMills
 #print axioms SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.conditionedEdgeIntegral_eq_conditionedChordIntegral
 #print axioms SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.globalPhysicalBoundaryEdgeEquiv_measurePreserving
 #print axioms SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.globalPhysicalBoundaryEdgeEquiv_apply_exterior
+#print axioms SU2EdgeConnectedDiskCellulation.nonempty_dualRootedEliminationTree
+#print axioms SU2DualRootedEliminationTree.selectedEdge_injective
+#print axioms SU2DualRootedEliminationTree.card_selectedEdgeRange
+#print axioms SU2DualRootedEliminationTree.selectedEdge_ne_exteriorEdge
+#print axioms SU2PhysicalBoundaryEliminationChart.stepChord_bijective
+#print axioms SU2PhysicalBoundaryEliminationChart.stepChordEquiv
+#print axioms SU2PhysicalBoundaryEliminationChart.internalCoordinateEquiv_measurePreserving
+#print axioms SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.nonempty_physicalBoundaryEliminationChart_of_connected
 
 end Lean2dYangMills
