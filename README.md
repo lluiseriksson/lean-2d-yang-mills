@@ -37,7 +37,9 @@ The current `main` interface is conditional: theorem statements project explicit
 The concrete SU(2) character layer is no longer conditional: `main` proves
 the Chebyshev character formula at the identity, the sharp Weyl bound
 `|chi_n(g)| <= n+1`, class-function invariance, and pointwise convergence of
-the heat-kernel character series for every positive heat time. It also proves
+the heat-kernel character series for every positive heat time. The same
+Casimir majorant now proves uniform convergence on all of SU(2) and continuity
+of the resulting series. It also proves
 the exact Chebyshev-U orthogonality integral with the SU(2) Weyl angle weight.
 Identifying that angle measure with the class pushforward of Mathlib's SU(2)
 Haar measure, and then proving the full convolution law, remain the live M0

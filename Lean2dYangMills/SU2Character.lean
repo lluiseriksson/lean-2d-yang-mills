@@ -1,6 +1,9 @@
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.Normed.Group.FunctionSeries
 import Mathlib.LinearAlgebra.Matrix.Adjugate
+import Mathlib.Topology.Instances.Matrix
+import Mathlib.Topology.Algebra.Polynomial
 import Lean2dYangMills.Interfaces
 import Lean2dYangMills.ConvergenceEngine
 
@@ -203,6 +206,17 @@ theorem su2CharacterChebyshev_conj_invariant (n : Nat) (x g : SU2) :
   unfold su2CharacterChebyshev
   rw [su2_trace_conj]
 
+/-- Continuity of every concrete SU(2) character. -/
+theorem continuous_su2CharacterChebyshev (n : Nat) :
+    Continuous (su2CharacterChebyshev n) := by
+  unfold su2CharacterChebyshev
+  apply (Polynomial.Chebyshev.U Complex (n : Int)).continuous.comp
+  have htrace : Continuous (fun g : SU2 =>
+      Matrix.trace (g : Matrix (Fin 2) (Fin 2) Complex)) := by
+    unfold Matrix.trace
+    fun_prop
+  fun_prop
+
 /-- Every summand of the concrete SU(2) heat-kernel expansion is conjugation
 invariant. -/
 theorem su2HeatKernelTerm_conj_invariant
@@ -222,6 +236,64 @@ theorem su2HeatKernelCharacterSeries_conj_invariant
   unfold heatKernelCharacterSeries
   apply tsum_congr
   exact fun n => su2HeatKernelTerm_conj_invariant n t x g
+
+/-- Width-independent positive majorant for the concrete SU(2) heat-kernel
+series. -/
+def su2HeatKernelMajorant (t : Real) (n : Nat) : Real :=
+  ((n : Real) + 1) ^ 2 *
+    Real.exp (-t * ((n : Real) * ((n : Real) + 2)) / 4)
+
+/-- The SU(2) heat-kernel majorant is summable for every positive heat time. -/
+theorem summable_su2HeatKernelMajorant {t : Real} (ht : 0 < t) :
+    Summable (su2HeatKernelMajorant t) :=
+  summable_su2_dim_sq_exp_neg_casimir ht
+
+/-- Uniform norm domination of every SU(2) heat-kernel summand. -/
+theorem norm_su2HeatKernelTerm_le_majorant
+    (t : Real) (n : Nat) (g : SU2) :
+    ‖heatKernelTerm su2CharacterTable t g n‖ <= su2HeatKernelMajorant t n := by
+  change
+    ‖(((n + 1 : Nat) : Complex) * su2CharacterChebyshev n g *
+      ((Real.exp (-t * (((n : Real) * ((n : Real) + 2)) / 4)) : Real) : Complex))‖ <= _
+  simp only [norm_mul, Complex.norm_natCast, Complex.norm_real]
+  rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+  push_cast
+  unfold su2HeatKernelMajorant
+  calc
+    ((n : Real) + 1) * ‖su2CharacterChebyshev n g‖ *
+        Real.exp (-t * ((n : Real) * ((n : Real) + 2) / 4))
+        <= ((n : Real) + 1) * ((n : Real) + 1) *
+          Real.exp (-t * ((n : Real) * ((n : Real) + 2) / 4)) := by
+            gcongr
+            exact abs_su2CharacterChebyshev_le n g
+    _ = ((n : Real) + 1) ^ 2 *
+          Real.exp (-t * ((n : Real) * ((n : Real) + 2)) / 4) := by ring_nf
+
+/-- Continuity of each concrete heat-kernel summand. -/
+theorem continuous_su2HeatKernelTerm (t : Real) (n : Nat) :
+    Continuous (fun g : SU2 => heatKernelTerm su2CharacterTable t g n) := by
+  change Continuous (fun g : SU2 =>
+    ((n + 1 : Nat) : Complex) * su2CharacterChebyshev n g * _)
+  exact (continuous_const.mul (continuous_su2CharacterChebyshev n)).mul continuous_const
+
+/-- **Uniform convergence on the whole compact gauge group.** -/
+theorem tendstoUniformly_su2HeatKernelCharacterSeries {t : Real} (ht : 0 < t) :
+    TendstoUniformly
+      (fun N : Nat => fun g : SU2 =>
+        ∑ n ∈ Finset.range N, heatKernelTerm su2CharacterTable t g n)
+      (fun g : SU2 => heatKernelCharacterSeries su2CharacterTable t g)
+      Filter.atTop := by
+  apply tendstoUniformly_tsum_nat (summable_su2HeatKernelMajorant ht)
+  exact fun n g => norm_su2HeatKernelTerm_le_majorant t n g
+
+/-- The concrete SU(2) heat-kernel character series is continuous for every
+positive heat time. -/
+theorem continuous_su2HeatKernelCharacterSeries {t : Real} (ht : 0 < t) :
+    Continuous (heatKernelCharacterSeries su2CharacterTable t) := by
+  apply continuous_tsum
+  · exact continuous_su2HeatKernelTerm t
+  · exact summable_su2HeatKernelMajorant ht
+  · exact fun n g => norm_su2HeatKernelTerm_le_majorant t n g
 
 /-- The already-proved Casimir convergence engine yields pointwise
 heat-kernel summability as soon as the concrete Weyl bound is supplied. -/

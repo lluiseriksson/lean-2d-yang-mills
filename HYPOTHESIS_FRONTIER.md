@@ -23,6 +23,9 @@ Concrete SU(2) character layer (current post-PR #44 work):
   with no spectral hypothesis.
 - `summable_su2HeatKernelTerm`: unconditional pointwise summability of the
   SU(2) heat-kernel character series for every positive heat time.
+- `tendstoUniformly_su2HeatKernelCharacterSeries` and
+  `continuous_su2HeatKernelCharacterSeries`: the Casimir majorant gives
+  uniform convergence on the whole gauge group and continuity of the sum.
 - `su2HeatKernelCharacterSeries_conj_invariant`: unconditional class-function
   invariance of the concrete series.
 - `intervalIntegral_chebyshevU_mul_chebyshevU_sin_sq`: exact SU(2)
