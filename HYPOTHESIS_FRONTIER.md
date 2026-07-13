@@ -50,27 +50,30 @@ Concrete SU(2) character layer (current post-PR #44 work):
 - `su2EquivRowSphere` and `su2HomeomorphRowSphere`: unconditional algebraic
   and topological identifications
   `SU(2) ≃ {(a,b) : ℂ² // |a|²+|b|²=1}`. The inverse matrix is constructed
-  explicitly and proved special unitary. The remaining measure-theoretic
-  step is to identify the pushforward of normalized Haar with normalized
-  spherical measure.
+  explicitly and proved special unitary.
 - `su2RowSphereHaar`, `measurePreserving_su2ToRowSphere`, and
   `measurePreserving_su2RowSphereLeft`: Haar is transported through that
   homeomorphism to a probability measure on the unit 3-sphere, and the
-  transported measure is proved invariant under the full SU(2) action. What
-  remains is its identification with Mathlib's canonical normalized
-  `volume.toSphere`, not invariance of the transported measure itself.
+  transported measure is proved invariant under the full SU(2) action.
 - `rowSphereHomeomorphMetricSphere`, `su2CanonicalSphereProbability`, and
   `su2CanonicalRowSphereMeasure`: the coordinate sphere is now identified
   with the exact L2 metric-sphere type consumed by `Measure.toSphere`; the
   canonical finite spherical measure is normalized and pulled back to the
-  same type as transported Haar. Thus the remaining frontier is the literal
-  measure equality `su2RowSphereHaar = su2CanonicalRowSphereMeasure`.
+  same type as transported Haar.
 - `su2AmbientLeftLinearIsometryEquiv`, `su2MetricSphereLeft`, and
   `rowSphereToMetricSphere_su2RowSphereLeft`: for every `h : SU(2)`, the
   induced action on `L²(ℂ × ℂ)` is proved to be a real-linear isometric
   equivalence, its restriction preserves the metric sphere, and that
-  restriction is exactly the transported group action. The next obligation
-  is preservation of `volume.toSphere` by this orthogonal action.
+  restriction is exactly the transported group action.
+- `measurePreserving_linearIsometryUnitSphereMap` and
+  `measurePreserving_su2MetricSphereLeft_toSphere`: any ambient measure
+  preserved by a real-linear isometry induces a preserved `toSphere` measure;
+  in particular the full SU(2) action preserves canonical spherical volume.
+- `su2CanonicalPullback_eq_su2HaarProb` and
+  `su2RowSphereHaar_eq_su2CanonicalRowSphereMeasure`: after normalization and
+  transport back to SU(2), uniqueness of Haar closes the literal equality of
+  transported Haar and canonical spherical probability. No measure bridge
+  remains open; the next M0 obstruction is general Weyl pushforward.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 
@@ -203,8 +206,9 @@ Former `Frontier/SU2Character.lean` obligations:
 M4's convergence layer is closed and identifies the Riemann bridge
 unconditionally. M0 now has its concrete character definition, sharp Weyl
 bound, uniform heat-series convergence, angular orthogonality, normalized
-Haar measure, all odd Haar selectors, and the first even selector. What
-remains for M0 is the general Haar/Weyl pushforward theorem and
+Haar measure, the exact canonical-sphere/Haar measure bridge, all odd Haar
+selectors, and the first even selector. What remains for M0 is the general
+Haar/Weyl pushforward theorem and
 matrix-coefficient orthogonality needed for the semigroup. M1 (Migdal), M2
 (area law), M3 (continuum) remain open as before.
 

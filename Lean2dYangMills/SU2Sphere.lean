@@ -1,5 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
+import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+import Mathlib.MeasureTheory.Measure.Haar.Unique
 import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 import Lean2dYangMills.SU2Haar
 
@@ -17,7 +19,97 @@ noncomputable section
 
 namespace Lean2dYangMills
 
-open Matrix
+open Matrix Set Function Metric MeasurableSpace
+open scoped Pointwise ENNReal NNReal
+
+/-- The open unit cone over a measurable subset of the unit sphere is
+measurable in the ambient normed space. -/
+theorem measurableSet_unitSphereCone
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
+    {s : Set (sphere (0 : E) 1)} (hs : MeasurableSet s) :
+    MeasurableSet (Ioo (0 : ℝ) 1 •
+      ((fun z : sphere (0 : E) 1 => (z : E)) '' s)) := by
+  let r : Ioi (0 : ℝ) := ⟨1, mem_Ioi.2 one_pos⟩
+  have hpre : MeasurableSet
+      (homeomorphUnitSphereProd E ⁻¹' (s ×ˢ Iio r)) :=
+    (homeomorphUnitSphereProd E).measurable (hs.prod measurableSet_Iio)
+  have himage : MeasurableSet
+      ((fun x : {x : E // x ∈ ({0} : Set E)ᶜ} => (x : E)) ''
+        (homeomorphUnitSphereProd E ⁻¹' (s ×ˢ Iio r))) :=
+    (MeasurableEmbedding.subtype_coe (measurableSet_singleton _).compl).measurableSet_image'
+      hpre
+  have hset :
+      ((fun x : {x : E // x ∈ ({0} : Set E)ᶜ} => (x : E)) ''
+          (homeomorphUnitSphereProd E ⁻¹' (s ×ˢ Iio r))) =
+        Ioo (0 : ℝ) (r : ℝ) •
+          ((fun z : sphere (0 : E) 1 => (z : E)) '' s) := by
+    rw [← image2_smul, image2_image_right, ← Homeomorph.image_symm, image_image,
+      ← image_subtype_val_Ioi_Iio, image2_image_left, image2_swap, ← image_prod]
+    rfl
+  simpa [r] using hset ▸ himage
+
+/-- Restrict a real-linear isometric equivalence to the unit sphere. -/
+def linearIsometryUnitSphereMap
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (L : E ≃ₗᵢ[ℝ] E) (z : sphere (0 : E) 1) : sphere (0 : E) 1 :=
+  ⟨L z.1, by
+    rw [mem_sphere_zero_iff_norm, L.norm_map]
+    exact mem_sphere_zero_iff_norm.1 z.2⟩
+
+theorem continuous_linearIsometryUnitSphereMap
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (L : E ≃ₗᵢ[ℝ] E) : Continuous (linearIsometryUnitSphereMap L) := by
+  apply Continuous.subtype_mk
+  exact L.continuous.comp continuous_subtype_val
+
+/-- Any ambient measure preserved by a real-linear isometry induces a
+preserved spherical measure under `Measure.toSphere`. -/
+theorem measurePreserving_linearIsometryUnitSphereMap
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [MeasurableSpace E] [BorelSpace E]
+    (L : E ≃ₗᵢ[ℝ] E) (μ : MeasureTheory.Measure E)
+    (hL : MeasureTheory.MeasurePreserving L μ μ) :
+    MeasureTheory.MeasurePreserving (linearIsometryUnitSphereMap L)
+      μ.toSphere μ.toSphere := by
+  refine ⟨(continuous_linearIsometryUnitSphereMap L).measurable, ?_⟩
+  ext s hs
+  rw [MeasureTheory.Measure.map_apply
+      (continuous_linearIsometryUnitSphereMap L).measurable hs,
+    MeasureTheory.Measure.toSphere_apply' _
+      (hs.preimage (continuous_linearIsometryUnitSphereMap L).measurable),
+    MeasureTheory.Measure.toSphere_apply' _ hs]
+  congr 1
+  have hcone :
+      L ⁻¹' (Ioo (0 : ℝ) 1 •
+        ((fun z : sphere (0 : E) 1 => (z : E)) '' s)) =
+      Ioo (0 : ℝ) 1 •
+        ((fun z : sphere (0 : E) 1 => (z : E)) ''
+          (linearIsometryUnitSphereMap L ⁻¹' s)) := by
+    ext x
+    constructor
+    · rintro ⟨r, hr, v, ⟨z, hzs, rfl⟩, hrz⟩
+      let y : sphere (0 : E) 1 :=
+        ⟨L.symm z.1, by
+          rw [mem_sphere_zero_iff_norm, L.symm.norm_map]
+          exact mem_sphere_zero_iff_norm.1 z.2⟩
+      have hy : y ∈ linearIsometryUnitSphereMap L ⁻¹' s := by
+        change linearIsometryUnitSphereMap L y ∈ s
+        convert hzs using 1
+        apply Subtype.ext
+        simp [linearIsometryUnitSphereMap, y]
+      refine ⟨r, hr, (y : E), ⟨y, hy, rfl⟩, ?_⟩
+      apply L.injective
+      simpa [map_smul, y] using hrz
+    · rintro ⟨r, hr, v, ⟨z, hzs, rfl⟩, rfl⟩
+      change L (r • (z : E)) ∈
+        Ioo (0 : ℝ) 1 • ((fun z : sphere (0 : E) 1 => (z : E)) '' s)
+      refine ⟨r, hr, (linearIsometryUnitSphereMap L z : E),
+        ⟨linearIsometryUnitSphereMap L z, hzs, rfl⟩, ?_⟩
+      simp [linearIsometryUnitSphereMap, map_smul]
+  rw [← hcone]
+  exact hL.measure_preimage
+    (measurableSet_unitSphereCone hs).nullMeasurableSet
 
 /-- The concrete complex-coordinate model of the unit 3-sphere. -/
 abbrev SU2RowSphere :=
@@ -118,6 +210,22 @@ def su2MetricSphereLeft (h : SU2) (z : SU2MetricSphere) : SU2MetricSphere :=
     rw [mem_sphere_zero_iff_norm, norm_su2AmbientLeftFun]
     exact mem_sphere_zero_iff_norm.1 z.2⟩
 
+theorem su2MetricSphereLeft_eq_linearIsometryUnitSphereMap (h : SU2) :
+    su2MetricSphereLeft h =
+      linearIsometryUnitSphereMap (su2AmbientLeftLinearIsometryEquiv h) := by
+  rfl
+
+/-- The unnormalized canonical spherical measure is invariant under the full
+ambient SU(2) action. -/
+theorem measurePreserving_su2MetricSphereLeft_toSphere (h : SU2) :
+    MeasureTheory.MeasurePreserving (su2MetricSphereLeft h)
+      (MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere
+      (MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere := by
+  rw [su2MetricSphereLeft_eq_linearIsometryUnitSphereMap]
+  exact measurePreserving_linearIsometryUnitSphereMap
+    (su2AmbientLeftLinearIsometryEquiv h) MeasureTheory.volume
+    (LinearIsometryEquiv.measurePreserving _)
+
 theorem norm_toLp_complex_prod_eq_one (z : SU2RowSphere) :
     ‖WithLp.toLp 2 z.1‖ = 1 := by
   have hsquare : ‖WithLp.toLp 2 z.1‖ ^ 2 = (1 : Real) := by
@@ -189,6 +297,35 @@ def su2CanonicalSphereProbability :
   MeasureTheory.FiniteMeasure.normalize
     (⟨(MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere,
       inferInstance⟩ : MeasureTheory.FiniteMeasure SU2MetricSphere)
+
+/-- Normalization preserves the full SU(2) invariance of the canonical
+spherical measure. -/
+theorem measurePreserving_su2MetricSphereLeft_canonical (h : SU2) :
+    MeasureTheory.MeasurePreserving (su2MetricSphereLeft h)
+      (su2CanonicalSphereProbability : MeasureTheory.Measure SU2MetricSphere)
+      (su2CanonicalSphereProbability : MeasureTheory.Measure SU2MetricSphere) := by
+  refine ⟨(measurePreserving_su2MetricSphereLeft_toSphere h).measurable, ?_⟩
+  rw [su2CanonicalSphereProbability, MeasureTheory.FiniteMeasure.normalize]
+  split_ifs with hz
+  · exfalso
+    have hmass : MeasureTheory.FiniteMeasure.mass
+        (⟨(MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere,
+          inferInstance⟩ : MeasureTheory.FiniteMeasure SU2MetricSphere) ≠ 0 :=
+      (MeasureTheory.FiniteMeasure.mass_nonzero_iff
+        (⟨(MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere,
+          inferInstance⟩ : MeasureTheory.FiniteMeasure SU2MetricSphere)).2 (by
+            intro hzero
+            apply MeasureTheory.Measure.toSphere_ne_zero
+              (MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient)
+            simpa using congrArg
+              (fun ν : MeasureTheory.FiniteMeasure SU2MetricSphere =>
+                (ν : MeasureTheory.Measure SU2MetricSphere)) hzero)
+    exact hmass hz
+  · change MeasureTheory.Measure.map (su2MetricSphereLeft h)
+        (_ • (MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere) =
+      _ • (MeasureTheory.volume : MeasureTheory.Measure SU2SphereAmbient).toSphere
+    rw [MeasureTheory.Measure.map_smul,
+      (measurePreserving_su2MetricSphereLeft_toSphere h).map_eq]
 
 /-- The canonical spherical probability pulled back to the complex-coordinate
 model.  The live equality target is this measure versus `su2RowSphereHaar`. -/
@@ -353,5 +490,109 @@ theorem measurePreserving_su2RowSphereLeft (h : SU2) :
   exact measurePreserving_su2ToRowSphere.comp
     ((MeasureTheory.measurePreserving_mul_left su2HaarProb h).comp
       measurePreserving_rowSphereToSU2)
+
+theorem metricSphereToRowSphere_su2MetricSphereLeft
+    (h : SU2) (z : SU2MetricSphere) :
+    metricSphereToRowSphere (su2MetricSphereLeft h z) =
+      su2RowSphereLeft h (metricSphereToRowSphere z) := by
+  apply rowSphereEquivMetricSphere.injective
+  change rowSphereToMetricSphere
+      (metricSphereToRowSphere (su2MetricSphereLeft h z)) =
+    rowSphereToMetricSphere
+      (su2RowSphereLeft h (metricSphereToRowSphere z))
+  rw [rowSphereToMetricSphere_su2RowSphereLeft]
+  simp
+
+theorem continuous_su2RowSphereLeft (h : SU2) :
+    Continuous (su2RowSphereLeft h) := by
+  exact continuous_su2ToRowSphere.comp
+    (continuous_const.mul continuous_rowSphereToSU2)
+
+/-- Pulling the canonical metric-sphere probability into row coordinates is
+measure preserving by definition. -/
+theorem measurePreserving_metricSphereToRowSphere_canonical :
+    MeasureTheory.MeasurePreserving metricSphereToRowSphere
+      (su2CanonicalSphereProbability : MeasureTheory.Measure SU2MetricSphere)
+      su2CanonicalRowSphereMeasure := by
+  exact ⟨continuous_metricSphereToRowSphere.measurable, rfl⟩
+
+/-- The canonical probability in row coordinates is invariant under the
+transported left SU(2) action. -/
+theorem measurePreserving_su2RowSphereLeft_canonical (h : SU2) :
+    MeasureTheory.MeasurePreserving (su2RowSphereLeft h)
+      su2CanonicalRowSphereMeasure su2CanonicalRowSphereMeasure := by
+  apply measurePreserving_metricSphereToRowSphere_canonical.of_semiconj
+    (measurePreserving_su2MetricSphereLeft_canonical h)
+  · intro z
+    exact metricSphereToRowSphere_su2MetricSphereLeft h z
+  · exact (continuous_su2RowSphereLeft h).measurable
+
+/-- Canonical spherical probability transported back to concrete SU(2). -/
+def su2CanonicalPullback : MeasureTheory.Measure SU2 :=
+  su2CanonicalRowSphereMeasure.map rowSphereToSU2
+
+instance instIsProbabilityMeasureSU2CanonicalPullback :
+    MeasureTheory.IsProbabilityMeasure su2CanonicalPullback := by
+  constructor
+  rw [su2CanonicalPullback, MeasureTheory.Measure.map_apply
+    continuous_rowSphereToSU2.measurable MeasurableSet.univ]
+  simp
+
+theorem measurePreserving_rowSphereToSU2_canonical :
+    MeasureTheory.MeasurePreserving rowSphereToSU2
+      su2CanonicalRowSphereMeasure su2CanonicalPullback := by
+  exact ⟨continuous_rowSphereToSU2.measurable, rfl⟩
+
+theorem rowSphereToSU2_su2RowSphereLeft
+    (h : SU2) (z : SU2RowSphere) :
+    rowSphereToSU2 (su2RowSphereLeft h z) = h * rowSphereToSU2 z := by
+  simp [su2RowSphereLeft]
+
+theorem measurePreserving_mul_left_su2CanonicalPullback (h : SU2) :
+    MeasureTheory.MeasurePreserving (h * ·)
+      su2CanonicalPullback su2CanonicalPullback := by
+  apply measurePreserving_rowSphereToSU2_canonical.of_semiconj
+    (measurePreserving_su2RowSphereLeft_canonical h)
+  · intro z
+    exact rowSphereToSU2_su2RowSphereLeft h z
+  · fun_prop
+
+instance instIsMulLeftInvariantSU2CanonicalPullback :
+    su2CanonicalPullback.IsMulLeftInvariant where
+  map_mul_left_eq_self h :=
+    (measurePreserving_mul_left_su2CanonicalPullback h).map_eq
+
+/-- Uniqueness of normalized Haar identifies the canonical spherical
+pullback with the internally constructed SU(2) Haar probability. -/
+theorem su2CanonicalPullback_eq_su2HaarProb :
+    su2CanonicalPullback = su2HaarProb := by
+  letI : su2HaarProb.IsHaarMeasure := by
+    unfold su2HaarProb
+    infer_instance
+  have hscale := MeasureTheory.Measure.isMulInvariant_eq_smul_of_compactSpace
+    su2CanonicalPullback su2HaarProb
+  have huniv := congrArg
+    (fun μ : MeasureTheory.Measure SU2 => μ Set.univ) hscale
+  have hc : MeasureTheory.Measure.haarScalarFactor
+      su2CanonicalPullback su2HaarProb = 1 := by
+    simpa [ENNReal.smul_def] using huniv.symm
+  exact hscale.trans (by
+    rw [hc]
+    exact one_smul NNReal su2HaarProb)
+
+/-- The literal measure bridge: transported normalized Haar equals the
+normalized canonical spherical measure on the identical row-sphere type. -/
+theorem su2RowSphereHaar_eq_su2CanonicalRowSphereMeasure :
+    su2RowSphereHaar = su2CanonicalRowSphereMeasure := by
+  have hmap := congrArg (MeasureTheory.Measure.map su2ToRowSphere)
+    su2CanonicalPullback_eq_su2HaarProb
+  rw [su2CanonicalPullback,
+    MeasureTheory.Measure.map_map continuous_su2ToRowSphere.measurable
+      continuous_rowSphereToSU2.measurable] at hmap
+  rw [show su2ToRowSphere ∘ rowSphereToSU2 = id by
+    funext z
+    simp, MeasureTheory.Measure.map_id] at hmap
+  change su2CanonicalRowSphereMeasure = su2RowSphereHaar at hmap
+  exact hmap.symm
 
 end Lean2dYangMills

@@ -52,18 +52,14 @@ symmetries also give `E|g₀₀|²=1/2`, `E(Re g₀₀)²=1/4`, `∫χ₁²=1`, 
 even selector `∫χ₂=0`. The full Weyl pushforward formula and all-order even
 sector remain open. The algebraic equivalence and homeomorphism between
 concrete SU(2) and the complex-coordinate unit 3-sphere are now proved; the
-live frontier is precisely the equality of the pushed Haar measure with the
-normalized spherical measure. The pushed measure is already constructed as a
-probability and proved invariant under the full transported SU(2) action. The
-coordinate sphere is also homeomorphic to the exact L2 metric sphere used by
-Mathlib's `Measure.toSphere`; its canonical measure has been normalized and
-pulled back, so the frontier is now a literal equality of two measures on one
-type.
-
-The next canonical-measure step is also concrete: every transported SU(2)
-action has been upgraded to a real-linear isometric equivalence of the ambient
-L2 space, and its restriction is proved equal to the coordinate action. The
-remaining input is invariance of `volume.toSphere` under that isometry.
+measure bridge is now closed. Every transported SU(2) action is realized as a
+real-linear isometric equivalence of the ambient L2 space. A general theorem
+proves that an ambient measure-preserving linear isometry preserves its
+`Measure.toSphere` measure. After normalization, transport back to SU(2), and
+uniqueness of normalized Haar, `main` proves the literal equality
+`su2RowSphereHaar = su2CanonicalRowSphereMeasure`. The live M0 frontier is
+therefore the general Weyl pushforward formula and its all-order Haar
+orthogonality consumers, followed by concrete convolution.
 
 ## Public Interface
 
