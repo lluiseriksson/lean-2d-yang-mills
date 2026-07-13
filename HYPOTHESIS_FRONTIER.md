@@ -25,6 +25,9 @@ Concrete SU(2) character layer (current post-PR #44 work):
   SU(2) heat-kernel character series for every positive heat time.
 - `su2HeatKernelCharacterSeries_conj_invariant`: unconditional class-function
   invariance of the concrete series.
+- `intervalIntegral_chebyshevU_mul_chebyshevU_sin_sq`: exact SU(2)
+  class-character orthogonality in Weyl angle coordinates,
+  `integral U_n(cos theta) U_m(cos theta) sin(theta)^2 = pi/2 delta_nm`.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 
@@ -144,9 +147,12 @@ Former `Frontier/SU2Character.lean` obligations:
 - `su2CharacterChebyshev`, `su2CharacterTable`,
   `su2CharacterChebyshev_one`, `abs_su2CharacterChebyshev_le`, and
   `summable_su2HeatKernelTerm` are now closed on `main` without `sorry`.
-- The remaining M0 obstruction is the Haar orthogonality/convolution theorem
-  needed to replace the weak `heatKernel_semigroup : Prop` interface by a
-  concrete equality and construct the physical package.
+- The analytic angle-coordinate orthogonality is closed. The remaining M0
+  obstruction is the group-theoretic Weyl integration/pushforward theorem
+  identifying the normalized `sin(theta)^2 dtheta` measure with the class
+  pushforward of SU(2) Haar, followed by the full matrix-coefficient
+  convolution theorem. These are needed to replace the weak
+  `heatKernel_semigroup : Prop` interface by a concrete equality.
 
 ## Distance To Goal
 
