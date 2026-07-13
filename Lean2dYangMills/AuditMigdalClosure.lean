@@ -1,4 +1,4 @@
-import Lean2dYangMills.SU2RootedTreeGaugeFixing
+import Lean2dYangMills.SU2GlobalEdgeGaugeFixing
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -52,5 +52,14 @@ namespace Lean2dYangMills
 #print axioms SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
 #print axioms SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
 #print axioms SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
+#print axioms SU2RootedTreeOrder.parentIndex_lt_child
+#print axioms SU2FiniteDiskCellulation.RootedSpanningTree.treeEdge_injective
+#print axioms SU2FiniteDiskCellulation.RootedSpanningTree.globalEdgeGaugeEquiv_measurePreserving
+#print axioms SU2FiniteDiskCellulation.RootedSpanningTree.gaugeTransform_eq_gaugeFixedEdgeConfiguration
+#print axioms SU2FiniteDiskCellulation.dartHolonomy_gaugeTransform_of_closed
+#print axioms SU2EdgeConnectedDiskCellulation.allFaceHolonomies_gaugeTransform
+#print axioms SU2EdgeConnectedDiskCellulation.exists_globalEdgeGaugeEquiv_measurePreserving
+#print axioms SU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity_globalEdgeFactorization
+#print axioms SU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral_eq_chordGaugeFixedIntegral
 
 end Lean2dYangMills

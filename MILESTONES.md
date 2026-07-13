@@ -16,17 +16,32 @@
   `su2FiniteStar_integral_eq_identitySlice` hacen uniforme el paso local para
   cualquier valencia finita. `exists_validForGraph_of_connected` construye un
   árbol generador ordenado para todo grafo finito conexo, y
-  `exists_rootedTreeVertexCoordinateEquiv_measurePreserving` cierra una única
-  transformación global Haar-preservante sobre todas las variables de vértice
-  de una celulación primal-conexa. Queda abierta la equivalencia sobre todas
-  las variables originales de arista y la identificación simultánea de las
-  holonomías faciales.
+  `exists_rootedTreeVertexCoordinateEquiv_measurePreserving` cierra la capa de
+  vértices. `globalEdgeGaugeEquiv_measurePreserving` la eleva a todas las
+  aristas originales, `allFaceHolonomies_gaugeTransform` da simultáneamente las
+  holonomías faciales y
+  `unreducedEdgeIntegral_eq_chordGaugeFixedIntegral` elimina exactamente las
+  `V-1` coordenadas gauge de la integral Haar. El puente de aristas queda
+  cerrado para toda celulación de disco conexa y facialmente bien formada.
 - M2: **cerrado mediante una instancia física no trivial para esa amplitud**.
   `su2ConnectedDiskExactAreaLawPackage` y su consumer prueban el exponencial de
   Casimir para todo label y toda celulación conectada de áreas positivas. No
   debe confundirse con la cota previa de acoplamiento fuerte del repositorio
-  madre; el puente al modelo de aristas sin gauge fixing está demostrado en el
-  caso cíclico de tres caras, pero aún no uniformemente para toda celulación.
+  madre. La reducción desde todas las aristas hasta las cuerdas es uniforme,
+  pero el integral allí definido integra también la frontera. Sigue pendiente
+  el puente puntual correcto: definir el integral de aristas condicionado por
+  la holonomía exterior y probar que coincide con la amplitud del calendario.
 - M3: statements-first del límite continuo (Lévy; Sengupta; Driver 1989).
 - M4: zeta de Witten ζ_G(s)=Σ_λ dim(λ)^{-s}: convergencia y su papel en la
   función de partición sobre superficies.
+
+## Siguientes frentes, sin desviar el cierre actual
+
+1. Puente de frontera: integral original condicionado -> integral de cuerdas
+   condicionado -> amplitud del calendario -> heat kernel de área total.
+2. `hRpoly`: volver a la cadena analítica dura solo después de congelar este
+   release; el cuello de botella sigue siendo coercividad uniforme/localización
+   del inverso, no infraestructura de celulaciones.
+3. Surface Theorem: retomar el cierre de G1/G2 y colas como segundo frente
+   coordinado. Ninguno de estos dos objetivos se usa como hipótesis del
+   resultado bidimensional actual.
