@@ -65,9 +65,12 @@ canonical spherical probability, proves the required all-order orbital
 integration law, derives translated character convolution for every pair of
 irreducible labels, passes from finite character sums to the infinite
 heat-kernel semigroup by dominated convergence, and integrates an actual edge
-shared by two faces.  Combined with the all-label coefficient extraction
-already proved in the same development, this yields the exact normalized
-simple-loop identity
+shared by two faces.  A further structural induction now eliminates every
+internal edge of a finite positive-area polygonal disk cellulation whose dual
+graph is a tree, proves that the procedure uses exactly one fewer integration
+than the number of faces, and produces a nontrivial concrete instance of the
+project's exact-area-law interface.  Combined with all-label coefficient
+extraction, this yields the exact normalized simple-loop identity
 \[
   \mathbb E[W_n(C)]
   =\exp\!\left[-\frac{n(n+2)}4\operatorname{Area}(C)\right].
@@ -247,6 +250,57 @@ su2Migdal_twoFace_merge
 su2Migdal_subdivision_invariant
 \end{lstlisting}
 
+\section{Finite planar reduction and termination}
+
+The local move can now be iterated over a nontrivial global class.  A
+\texttt{SU2PlanarFaceTree} is generated from positive-area elementary faces by
+binary gluing along one oppositely oriented boundary edge.  Geometrically this
+describes polygonal disk cellulations with tree dual.  If $C$ has left and
+right subcellulations $L,R$, its amplitude is defined recursively by
+\[
+  A_C(a,b)=\int_{SU(2)} A_L(a,x)A_R(x^{-1},b)\,dx.
+\]
+Thus the definition contains one actual Haar variable for every internal edge;
+orientation is encoded by the occurrences $x$ and $x^{-1}$.
+
+The face count $F(C)$, internal-edge count $E(C)$, and total area $T(C)$ are
+structural recursions.  Lean proves
+\[
+  E(C)=F(C)-1,
+  \qquad T(C)>0,
+\]
+and then eliminates all internal variables by induction on $C$:
+\begin{equation}\label{eq:global-reduction}
+  A_C(a,b)=K_{T(C)}(ab).
+\end{equation}
+At each gluing node the induction hypotheses expose two heat kernels and the
+proof invokes the concrete two-face theorem.  Hence termination is supplied by
+the inductive type itself and the exact number of integration steps is certified
+separately by $E=F-1$.
+
+The explicit collapsed cellulation has one face, no internal edge, and area
+$T(C)$.  A consumer theorem proves that its amplitude is literally equal to
+the original recursively integrated amplitude.  The principal declarations
+are:
+\begin{lstlisting}
+SU2PlanarFaceTree.internalEdgeCount_eq_faceCount_sub_one
+su2PlanarCellulationAmplitude_eq_heatKernel
+su2PlanarCellulationAmplitude_eq_effectiveFace
+\end{lstlisting}
+
+For each representation label $n$, the formalization defines a plane-loop
+theory whose loops are these finite cellulations, whose area is $T(C)$, whose
+string tension is $n(n+2)/4$, and whose Wilson functional integrates the full
+recursive amplitude.  Equation \eqref{eq:global-reduction} followed by
+coefficient extraction gives a nontrivial concrete instance
+\texttt{su2TreePlanarExactAreaLawPackage}.  The generic public interface is
+then consumed by \texttt{su2TreePlanar\_simpleLoop\_areaLaw\_exact}; no field
+of that package remains assumed.  The trivial-label case also proves the
+normalization
+\[
+  \int_{SU(2)} A_C(1,g)\,dg=1.
+\]
+
 \section{Exact simple-loop coefficient}
 
 The same repository proves, for every label $n$ and positive area $t$, that
@@ -260,20 +314,16 @@ heat coefficient:
 The proof first establishes the identity for partial character sums and then
 passes to the full kernel by dominated convergence.  Its final consumer is:
 
+\begin{samepage}
 \begin{lstlisting}
-theorem su2_exact_simpleLoop_areaLaw
-    {t : Real} (ht : 0 < t) (n : Nat) :
-  (integral (fun g : SU2 =>
-    su2NormalizedWilsonCharacter n g *
-      heatKernelCharacterSeries su2CharacterTable t g)
-      su2HaarProb) =
-    ((Real.exp (-t * ((n : Real) *
-      ((n : Real) + 2) / 4)) : Real) : Complex)
+su2_exact_simpleLoop_areaLaw
 \end{lstlisting}
+\end{samepage}
 
-Together with the Migdal move, this is the exact two-dimensional route: edge
-subdivision does not change the density, and the remaining simple face has the
-Casimir coefficient prescribed by its area.
+Together with the iterated Migdal reduction, this is the exact
+two-dimensional route for tree-dual polygonal disks: subdivision does not
+change the density, every internal edge is eliminated, and the remaining
+effective face has the Casimir coefficient prescribed by its total area.
 
 \section{Audit and reproducibility}
 
@@ -281,7 +331,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the twelve new public endpoints
+in the Lean development.  Printing axioms for the twenty audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -305,22 +355,30 @@ su2HeatKernelPartial_convolution
 su2HeatKernel_convolution
 su2Migdal_twoFace_merge
 su2Migdal_subdivision_invariant
+su2_exact_simpleLoop_areaLaw
+SU2PlanarFaceTree.internalEdgeCount_eq_faceCount_sub_one
+su2PlanarCellulationAmplitude_eq_heatKernel
+su2PlanarCellulationAmplitude_eq_effectiveFace
+su2TreePlanar_wilsonExpectation_eq_casimir
+su2TreePlanarExactAreaLawPackage
+su2TreePlanar_simpleLoop_areaLaw_exact
+integral_su2PlanarCellulationAmplitude_eq_one
 \end{lstlisting}
 
 \section{Scope and next frontier}
 
-The present artifact closes the compact-group analytic chain needed for an
-exact simple-loop calculation.  It does not yet formalize arbitrary embedded
-planar graphs, gauge fixing on a general cellular decomposition, nonsimple or
-intersecting loops, continuum measure construction, or higher-genus partition
-functions.  Those are independent extensions and should not be inferred from
-the two-face theorem.
+The present artifact closes the compact-group analytic chain and a global
+finite reduction for polygonal disk cellulations whose dual graph is a tree.
+It does not yet formalize arbitrary embedded planar graphs with interior
+vertices or cycles in the dual graph, gauge fixing on a general cellular
+decomposition, nonsimple or intersecting loops, continuum measure
+construction, or higher-genus partition functions.
 
-The next mathematically meaningful consumer is a finite planar-cellulation
-reduction theorem: repeated application of the concrete Migdal move, with
-incidence and orientation data made explicit, until a simple loop bounds one
-effective face.  That step would promote the local subdivision identity into a
-global discretization-independence statement.
+The next mathematically meaningful extension is therefore precise: define a
+general finite planar combinatorial map, choose and verify an elimination or
+gauge-fixing schedule in the presence of dual cycles, and prove independence
+of that choice.  The tree-dual theorem must be used as a base case, not
+relabeled as the arbitrary-planar result.
 
 \begin{thebibliography}{9}
 \bibitem{Migdal}

@@ -1,5 +1,4 @@
-import Lean2dYangMills.SU2HeatSemigroup
-import Lean2dYangMills.SU2ExactAreaLaw
+import Lean2dYangMills.SU2PlanarReduction
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -23,5 +22,12 @@ namespace Lean2dYangMills
 #print axioms su2Migdal_twoFace_merge
 #print axioms su2Migdal_subdivision_invariant
 #print axioms su2_exact_simpleLoop_areaLaw
+#print axioms SU2PlanarFaceTree.internalEdgeCount_eq_faceCount_sub_one
+#print axioms su2PlanarCellulationAmplitude_eq_heatKernel
+#print axioms su2PlanarCellulationAmplitude_eq_effectiveFace
+#print axioms su2TreePlanar_wilsonExpectation_eq_casimir
+#print axioms su2TreePlanarExactAreaLawPackage
+#print axioms su2TreePlanar_simpleLoop_areaLaw_exact
+#print axioms integral_su2PlanarCellulationAmplitude_eq_one
 
 end Lean2dYangMills

@@ -2,7 +2,7 @@
 
 Date: 2026-07-13
 
-## Supersession note: concrete closure at `1c335e1`
+## Supersession note: concrete SU(2) closure
 
 The historical ledger below records how the project reached the Haar/canonical
 measure bridge.  Its statements that general Weyl consumers, concrete
@@ -14,13 +14,17 @@ by the following unconditional concrete theorems on `main`:
 - `su2CharacterChebyshev_convolution`;
 - `su2HeatKernel_convolution`;
 - `su2Migdal_subdivision_invariant`;
-- `su2_exact_simpleLoop_areaLaw`.
+- `su2_exact_simpleLoop_areaLaw`;
+- `su2PlanarCellulationAmplitude_eq_heatKernel`;
+- `su2TreePlanarExactAreaLawPackage`.
 
-The generic hypothesis packages remain useful interfaces, but none of the six
+The generic hypothesis packages remain useful interfaces, but none of the
 conclusions above is obtained by projecting a field from such a package.  The
-live frontier is global planar-cellulation reduction, continuum construction,
-and the positive-area higher-genus layer.  The detailed pre-closure history is
-retained below for provenance only.
+tree-dual polygonal-disk reduction is now global and finite; the remaining
+planar frontier is the case with dual cycles or interior vertices and the
+independence of the elimination/gauge-fixing schedule.  Continuum construction
+and the positive-area higher-genus layer also remain open.  The detailed
+pre-closure history is retained below for provenance only.
 
 ## Main Branch Status
 
