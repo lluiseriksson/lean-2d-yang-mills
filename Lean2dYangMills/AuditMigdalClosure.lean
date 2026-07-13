@@ -1,4 +1,5 @@
-import Lean2dYangMills.SU2GlobalEdgeGaugeFixing
+import Lean2dYangMills.SU2BoundaryConditionedGaugeFixing
+import Lean2dYangMills.SU2CyclicEdgeElimination
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -43,6 +44,11 @@ namespace Lean2dYangMills
 #print axioms su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
 #print axioms su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
 #print axioms su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+#print axioms su2Migdal_eliminate_cyclic_pos_neg
+#print axioms su2Migdal_eliminate_cyclic_neg_pos
+#print axioms SU2FiniteDiskCellulation.evalDartWord_dartWord
+#print axioms SU2EdgeConnectedDiskCellulation.exists_cyclicFaceMerge_of_dualAdj
+#print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.integrate_selected_edge
 #print axioms su2FiniteStarDiagonalLeft_measurePreserving
 #print axioms su2FiniteStarGaugeFix_measurePreserving
 #print axioms su2FiniteStar_integral_eq_gaugeFixed
@@ -61,5 +67,10 @@ namespace Lean2dYangMills
 #print axioms SU2EdgeConnectedDiskCellulation.exists_globalEdgeGaugeEquiv_measurePreserving
 #print axioms SU2EdgeConnectedDiskCellulation.edgeHeatKernelDensity_globalEdgeFactorization
 #print axioms SU2EdgeConnectedDiskCellulation.unreducedEdgeIntegral_eq_chordGaugeFixedIntegral
+#print axioms SU2BoundaryDiskCellulation.BoundaryGaugeChart.card_chordEdge_eq_card_face
+#print axioms SU2BoundaryDiskCellulation.BoundaryGaugeChart.chordBoundaryEquiv_measurePreserving
+#print axioms SU2BoundaryDiskCellulation.BoundaryGaugeChart.conditionedEdgeIntegral_eq_conditionedChordIntegral
+#print axioms SU2BoundaryDiskCellulation.BoundaryGaugeChart.globalBoundaryEdgeEquiv_measurePreserving
+#print axioms SU2BoundaryDiskCellulation.BoundaryGaugeChart.globalBoundaryEdgeEquiv_apply_exterior
 
 end Lean2dYangMills
