@@ -8,6 +8,20 @@ Date: 2026-07-13
 - Project-local `axiom`: 0 intended.
 - Hard analytic inputs: carried only as explicit fields of structures in `Lean2dYangMills/Interfaces.lean`.
 
+## Authoritative area-law distinction
+
+The programme's previously published, machine-checked Wilson-loop result is a
+volume-uniform strong-coupling *bound* for finite-lattice `SU(N_c)` gauge theory,
+obtained by cluster expansion, Kotecky--Preiss convergence, and rooted-tree
+majorants. It is prior work and must be cited as such.
+
+M2 in this repository is mathematically different: it asks for the exact
+two-dimensional `SU(2)` heat-kernel identity for simple planar loops, derived
+through Weyl integration, character convolution, edge integration, and Migdal
+subdivision invariance. The earlier bound neither discharges nor supplies a
+nontrivial `ExactAreaLawPackage` here. This clarification changes claim
+architecture, not theorem content.
+
 ## Closed facts on `main` through PR #44
 
 Concrete SU(2) character layer (current post-PR #44 work):

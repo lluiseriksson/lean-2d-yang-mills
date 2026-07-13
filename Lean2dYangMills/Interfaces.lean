@@ -176,6 +176,13 @@ theorem areaLawValue_zero_area (T : PlaneSimpleLoopTheory.{u}) {C : T.Loop}
 The string tension is explicit as the field `T.stringTension`; this file does
 not compute it from an `SU(2)` Casimir.
 
+This package is intended to be instantiated by the exact two-dimensional
+heat-kernel/Migdal construction.  The Eriksson programme's earlier
+volume-uniform strong-coupling Wilson-loop inequality is a different theorem:
+it uses cluster expansion and Kotecky--Preiss convergence for finite-lattice
+`SU(N_c)` gauge theory.  That bound must not be imported as a nontrivial
+instance of this exact-identity package.
+
 Reference target: Driver (1989, Commun. Math. Phys. 123, 575-616), plane loop
 expectations; Sengupta (1997, Mem. Amer. Math. Soc. 126, no. 600), compact
 surface gauge theory; Levy (2003, Mem. Amer. Math. Soc. 166, no. 790), compact

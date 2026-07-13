@@ -4,5 +4,7 @@ import Lean2dYangMills.SU2Character
 import Lean2dYangMills.SU2ClassOrthogonality
 import Lean2dYangMills.SU2Haar
 import Lean2dYangMills.SU2Sphere
+import Lean2dYangMills.SU2Weyl
+import Lean2dYangMills.SU2ClassHeatKernel
 import Lean2dYangMills.WittenZetaSU2
 import Lean2dYangMills.TrivialModel

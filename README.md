@@ -17,6 +17,28 @@ What this is not:
 - It is not a replacement for the Balaban/Kotecky-Preiss frontier in the parent repo.
 - It does not claim Peter-Weyl, compact Lie heat-kernel convergence, or Levy/Sengupta continuum limits unless those inputs are supplied explicitly.
 
+## Publication claim boundary
+
+The Eriksson programme already contains a distinct machine-checked Wilson-loop
+area-law theorem: a volume-uniform strong-coupling bound for finite-lattice
+`SU(N_c)` gauge theory, proved with a formalized cluster expansion and a
+Kotecky--Preiss criterion.  That theorem establishes an exponentially decaying
+*inequality* in an explicit strong-coupling window.  It does not establish the
+exact two-dimensional heat-kernel identity pursued here.
+
+The nontrivial target of this repository is instead the exact `SU(2)` chain
+
+```text
+Haar/canonical measure = Weyl integration -> character convolution
+  -> Migdal subdivision invariance -> exact simple-loop identity.
+```
+
+Accordingly, the earlier strong-coupling theorem must not be used to instantiate
+`ExactAreaLawPackage`: the regimes, hypotheses, mechanisms, and conclusions do
+not match.  A nontrivial instance must be derived internally from the concrete
+two-dimensional heat-kernel and Migdal construction.  See `CLAIM_SCOPE.md` and
+`paper/claim-boundary.tex` for the comparison and manuscript-ready wording.
+
 ## Build
 
 The toolchain and Mathlib commit are copied from the parent repository:
