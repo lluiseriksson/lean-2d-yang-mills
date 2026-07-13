@@ -14,8 +14,13 @@
   la equivalencia medida-preservante con la integral original de Haar producto.
   `su2FiniteStarGaugeFix_measurePreserving` y
   `su2FiniteStar_integral_eq_identitySlice` hacen uniforme el paso local para
-  cualquier valencia finita. Queda abierta su composición global a lo largo de
-  un árbol generador de toda celulación finita conexa.
+  cualquier valencia finita. `exists_validForGraph_of_connected` construye un
+  árbol generador ordenado para todo grafo finito conexo, y
+  `exists_rootedTreeVertexCoordinateEquiv_measurePreserving` cierra una única
+  transformación global Haar-preservante sobre todas las variables de vértice
+  de una celulación primal-conexa. Queda abierta la equivalencia sobre todas
+  las variables originales de arista y la identificación simultánea de las
+  holonomías faciales.
 - M2: **cerrado mediante una instancia física no trivial para esa amplitud**.
   `su2ConnectedDiskExactAreaLawPackage` y su consumer prueban el exponencial de
   Casimir para todo label y toda celulación conectada de áreas positivas. No

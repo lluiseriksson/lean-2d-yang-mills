@@ -79,15 +79,23 @@ removes the interior gauge coordinate, and proves that the unreduced integral
 is exactly the reduced two-coordinate amplitude and hence the heat kernel at
 summed area.
 
-`SU2FiniteGaugeFixing.lean` now makes the measure-theoretic part uniform in the
+`SU2FiniteGaugeFixing.lean` makes the local measure-theoretic part uniform in the
 valence.  For every finite type `I`, simultaneous left gauge action on
 `SU2 × (I -> SU2)` and the triangular map
 `(x,y) |-> (x, fun i => x^-1 * y i)` preserve the literal normalized product
 Haar measure.  Any diagonally gauge-invariant density can therefore be
-integrated by setting the anchor coordinate to the identity.  The remaining
-open frontier is to compose these finite-valence steps along a spanning tree of
-an arbitrary connected disk, identify every transformed face holonomy, and
-then connect the abstract combinatorial disks to embedded planar isotopy
+integrated by setting the anchor coordinate to the identity.
+
+`SU2RootedTreeGaugeFixing.lean` now closes the global vertex-coordinate layer.
+Every finite connected simple graph admits a construction-ordered rooted
+spanning tree.  For a disk cellulation with connected primal graph, the chosen
+tree is certified by actual half-edge incidences, and one measurable
+equivalence replaces all vertex variables by the root variable and the ordered
+parent--child increments.  The map and its inverse are explicit, its coordinate
+formulas are theorems, and it preserves the literal `Measure.pi` product Haar
+probability.  What remains open is the stronger edge-model equivalence
+`SU(2)^E ≃ SU(2)^{V\setminus\{r\}} × SU(2)^{E\setminus T}`, the induced formula
+for every face holonomy, and the comparison with embedded planar isotopy
 classes.
 
 ## Public Interface

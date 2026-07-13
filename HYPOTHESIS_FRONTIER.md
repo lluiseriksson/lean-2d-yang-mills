@@ -26,6 +26,11 @@ by the following unconditional concrete theorems on `main`:
 - `su2ThreeSpoke_unreducedIntegral_eq_heatKernel`;
 - `su2FiniteStarGaugeFix_measurePreserving`;
 - `su2FiniteStar_integral_eq_identitySlice`.
+- `SU2RootedTreeOrder.exists_validForGraph_of_connected`;
+- `SU2RootedTreeOrder.coordinateEquiv_measurePreserving`;
+- `SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected`;
+- `SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving`;
+- `SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving`.
 
 The generic hypothesis packages remain useful interfaces, but none of the
 conclusions above is obtained by projecting a field from such a package.  The
@@ -37,10 +42,13 @@ dual, equality with the unreduced triple product-Haar edge integral is now a
 theorem derived from an explicit measure-preserving gauge fixing.  The
 measure-theoretic gauge step has additionally been generalized to one vertex
 of arbitrary finite valence: its diagonal action, triangular equivalence, and
-identity-slice integral are uniform in the finite index type.  The remaining
-planar frontier is to compose those local steps along a spanning tree of an
-arbitrary connected finite disk and prove the resulting facial-holonomy
-identification, followed by comparison with embedded planar isotopy classes.
+identity-slice integral are uniform in the finite index type.  The global
+vertex-coordinate layer is now closed as well: every finite connected primal
+graph has a construction-ordered spanning tree, and every primal-connected
+cellulation admits one root-plus-tree-increments equivalence preserving all
+vertex product Haar.  The remaining planar frontier is to lift this coordinate
+theorem to the full edge configuration, prove the resulting facial-holonomy
+identification, and compare with embedded planar isotopy classes.
 Continuum construction and the positive-area higher-genus layer also remain
 open.  The detailed pre-closure history is retained below for provenance only.
 

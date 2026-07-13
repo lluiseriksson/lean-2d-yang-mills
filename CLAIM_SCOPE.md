@@ -71,8 +71,12 @@ The product-Haar gauge step itself is now uniform in arbitrary finite valence:
 for every finite type `I`, the diagonal action and the triangular change on
 `SU2 × (I -> SU2)` are measure preserving, and every diagonally invariant
 density admits exact identity-slice integration.  What is not yet proved is the
-composition of these local steps along a spanning tree of an arbitrary
-`SU2FiniteDiskCellulation`, together with the induced formula for every face
+global vertex-coordinate composition is now also closed.  Every finite
+connected primal graph admits a construction-ordered rooted spanning tree;
+each parent edge is certified by an actual half-edge incidence, and the single
+root-plus-increments equivalence on all cellulation vertex variables preserves
+product Haar.  What is not yet proved is the corresponding equivalence on all
+original edge variables, together with the induced formula for every face
 holonomy.  Nor does the development identify the abstract combinatorial
 disks with isotopy classes of piecewise-smooth planar embeddings, treat
 nonsimple/intersecting Wilson loops, or construct a continuum measure.

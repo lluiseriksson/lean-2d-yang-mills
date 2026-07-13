@@ -74,7 +74,10 @@ the same amplitude.  For the first cyclic unreduced lattice, a three-face disk,
 we additionally construct a triangular gauge-fixing equivalence that preserves
 the original triple product Haar measure and prove equality with the reduced
 amplitude.  The same measure-theoretic construction is then proved uniformly
-for one vertex of arbitrary finite valence.  The schedule is hidden from the public loop object,
+for one vertex of arbitrary finite valence.  We further construct a rooted
+spanning-tree order for every finite connected primal graph and a single
+global root-plus-edge-increments equivalence on all cellulation vertex
+variables, with exact product-Haar preservation.  The schedule is hidden from the public loop object,
 which supplies a nontrivial exact-area-law package.  Combined with all-label
 coefficient extraction, this yields the exact normalized simple-loop identity
 \[
@@ -360,10 +363,66 @@ su2FiniteStar_integral_eq_identitySlice
 \end{lstlisting}
 
 Equations~\eqref{eq:finite-valence-mp}--\eqref{eq:identity-slice} remove the
-fixed-valence limitation of the gauge step.  They do not yet compose the local
-steps at all vertices of a general disk or identify the transformed holonomy of
-every face; those are separate combinatorial statements about a chosen
-spanning tree.
+fixed-valence limitation of the gauge step.  Their composition requires a
+separate combinatorial theorem selecting and ordering a spanning tree.  The
+next subsection closes that global coordinate theorem at the vertex level;
+facial holonomies remain a further edge-model statement.
+
+\subsection{Global rooted-tree vertex coordinates}
+
+The development now performs the global composition at the level of vertex
+coordinates.  A value of \texttt{SU2RootedTreeOrder n} records a rooted tree on
+$n+1$ vertices by adjoining one leaf at a time, together with the already
+present parent of each new leaf.  Its parent--child list is embedded in the
+final index type.  For every finite connected simple graph, Lean constructs an
+equivalence
+\[
+  e:\operatorname{Fin}(n+1)\simeq V
+\]
+and such an order for which every recorded parent--child pair is an actual
+graph edge.  The proof removes a vertex whose complement remains connected,
+recurses on the induced graph, and reattaches the vertex across a witnessed
+edge.
+
+For vertex variables $x_0,\ldots,x_n\in SU(2)$, the associated single global
+map retains the root and replaces each later variable by its tree increment:
+\begin{equation}\label{eq:global-tree-coordinates}
+  \Psi_T(x)_0=x_0,
+  \qquad
+  \Psi_T(x)_k=x_{p(k)}^{-1}x_k\quad(k>0).
+\end{equation}
+It is implemented recursively by splitting the last coordinate, applying the
+triangular Haar shear, transforming the older coordinates, and reassembling
+the finite product.  The inverse is part of the measurable equivalence, not an
+existence assertion.  Induction and finite-product Haar invariance prove
+\begin{equation}\label{eq:global-tree-haar}
+  (\Psi_T)_*\!\left(\bigotimes_{v\in V}dg_v\right)
+  =\bigotimes_{v\in V}dg_v.
+\end{equation}
+
+For a \texttt{SU2FiniteDiskCellulation}, primal adjacency is derived from an
+actual oriented half-edge and made into a simple graph.  Under the explicit
+hypothesis that this primal graph is connected, Lean chooses the certified
+tree internally, transports \eqref{eq:global-tree-coordinates} through the
+vertex enumeration, and returns a global measure-preserving equivalence on
+\texttt{C.Vertex -> SU2}.  The principal endpoints are:
+\begin{lstlisting}
+SU2RootedTreeOrder.exists_validForGraph_of_connected
+SU2RootedTreeOrder.coordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
+SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
+\end{lstlisting}
+
+This closes global composition and product-Haar preservation for the vertex
+gauge coordinates.  It does \emph{not} yet prove the stronger edge-space
+decomposition
+\[
+ SU(2)^E\simeq SU(2)^{V\setminus\{r\}}\times SU(2)^{E\setminus T},
+\]
+nor the simultaneous transformation formula for every facial holonomy.  Those
+are the remaining ingredients for equality between the unreduced edge model
+and the schedule-independent amplitude for every cellulation.
 
 \section{Independent finite cellulations and elimination}
 
@@ -469,7 +528,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the thirty-eight audited public endpoints
+in the Lean development.  Printing axioms for the forty-three audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -479,7 +538,7 @@ The toolchain and Mathlib revision are pinned in the repository.  GitHub
 Actions builds the public root target from a clean checkout and separately
 rejects placeholders.
 
-\paragraph{Principal new declarations.}
+\medskip\noindent\textbf{Principal new declarations.}\par\smallskip
 \begin{lstlisting}
 su2FirstRailMoment_recurrence
 su2FirstRailMoment_eq
@@ -519,6 +578,11 @@ su2FiniteStarDiagonalLeft_measurePreserving
 su2FiniteStarGaugeFix_measurePreserving
 su2FiniteStar_integral_eq_gaugeFixed
 su2FiniteStar_integral_eq_identitySlice
+SU2RootedTreeOrder.exists_validForGraph_of_connected
+SU2RootedTreeOrder.coordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedSpanningTree_of_primal_connected
+SU2FiniteDiskCellulation.RootedSpanningTree.vertexCoordinateEquiv_measurePreserving
+SU2FiniteDiskCellulation.exists_rootedTreeVertexCoordinateEquiv_measurePreserving
 \end{lstlisting}
 
 \section{Scope and next frontier}
@@ -530,10 +594,11 @@ schedule for the reduced amplitude.  Dual cycles are allowed at this level,
 and the three-face cycle is additionally linked to its original product-Haar
 edge integral by a formal lattice gauge-fixing change of variables.  The local
 measure-preserving change and identity-slice theorem hold for arbitrary finite
-valence.
+valence.  The global vertex-coordinate transformation is now constructed over
+a certified primal spanning tree and preserves the full vertex product Haar.
 
-It does not yet compose the local gauge steps along a spanning tree of every
-finite cellulation or identify all transformed face holonomies.  It also does not identify the
+It does not yet lift this transformation to all original edge variables or
+identify all transformed face holonomies.  It also does not identify the
 abstract combinatorial maps with planar isotopy classes, treat nonsimple or
 intersecting loops, construct a continuum measure, or evaluate higher-genus
 partition functions.  The next precise frontier is therefore a uniform

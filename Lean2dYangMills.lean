@@ -15,6 +15,7 @@ import Lean2dYangMills.SU2PlanarReduction
 import Lean2dYangMills.SU2FiniteCellulation
 import Lean2dYangMills.SU2EdgeGaugeFixing
 import Lean2dYangMills.SU2FiniteGaugeFixing
+import Lean2dYangMills.SU2RootedTreeGaugeFixing
 import Lean2dYangMills.AuditMigdalClosure
 import Lean2dYangMills.SU2ClassHeatKernel
 import Lean2dYangMills.WittenZetaSU2
