@@ -375,4 +375,97 @@ theorem integral_su2CharacterChebyshev_two_eq_zero :
             · fun_prop
     _ = 0 := by rw [integral_su2_re_zero_zero_sq]; norm_num
 
+/-- A real forty-five-degree SU(2) rotation.  Left translation by this
+element mixes the real parts of the first-row coordinates evenly. -/
+def su2Hadamard : SU2 := by
+  let r : Complex := (Real.sqrt 2 / 2 : Real)
+  have hr : r * r = (1 / 2 : Complex) := by
+    dsimp [r]
+    rw [← pow_two]
+    norm_cast
+    rw [div_pow, Real.sq_sqrt (by norm_num : (0 : Real) <= 2)]
+    norm_num
+  have hstar : (starRingEnd Complex) r = r := by
+    dsimp [r]
+    exact Complex.conj_ofReal _
+  refine ⟨!![r, -r; r, r], ?_⟩
+  rw [mem_specialUnitaryGroup_iff]
+  constructor
+  · rw [mem_unitaryGroup_iff]
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [Matrix.mul_apply, Fin.sum_univ_two, Matrix.star_eq_conjTranspose,
+        hstar, hr] <;> norm_num
+  · simp [Matrix.det_fin_two, hr]
+    norm_num
+
+theorem su2Hadamard_mul_apply_zero_zero_re (g : SU2) :
+    (((su2Hadamard * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0).re =
+      (Real.sqrt 2 / 2) *
+        (((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re +
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re) := by
+  rw [show ((su2Hadamard * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0 =
+      (Real.sqrt 2 / 2 : Real) *
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0 -
+          (g : Matrix (Fin 2) (Fin 2) Complex) 1 0) by
+    simp [su2Hadamard, Matrix.mul_apply, Fin.sum_univ_two]
+    ring]
+  rw [su2_apply_one_zero_eq_neg_conj_apply_zero_one]
+  simp [Complex.mul_re]
+
+/-- Mixed real-coordinate monomials are integrable on compact SU(2). -/
+theorem integrable_su2_re_monomial (p q : Nat) :
+    Integrable (fun g : SU2 =>
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ p *
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ^ q) su2HaarProb :=
+  integrable_continuous_su2_real
+    (((Complex.continuous_re.comp (continuous_su2_entry 0 0)).pow p).mul
+      ((Complex.continuous_re.comp (continuous_su2_entry 0 1)).pow q))
+
+theorem su2QuarterTurn_mul_apply_zero_zero_re (g : SU2) :
+    (((su2QuarterTurn * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 0).re =
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re := by
+  rw [su2QuarterTurn_mul_apply_zero_zero]
+  simp
+
+theorem su2QuarterTurn_mul_apply_zero_one_re (g : SU2) :
+    (((su2QuarterTurn * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 1).re =
+      -((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re := by
+  rw [show ((su2QuarterTurn * g : SU2) : Matrix (Fin 2) (Fin 2) Complex) 0 1 =
+      -(g : Matrix (Fin 2) (Fin 2) Complex) 1 1 by
+    simp [su2QuarterTurn, Matrix.mul_apply, Fin.sum_univ_two]]
+  rw [su2_apply_one_one_eq_conj_apply_zero_zero]
+  simp
+
+/-- Quarter-turn symmetry cancels the two odd mixed terms that occur in the
+fourth-power binomial expansion. -/
+theorem integral_su2_odd_mixed_fourth_cancel :
+    (∫ g : SU2,
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 3 *
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ∂su2HaarProb) =
+      -(∫ g : SU2,
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re *
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ^ 3 ∂su2HaarProb) := by
+  have hinv := integral_mul_left_eq_self (μ := su2HaarProb)
+    (fun g : SU2 =>
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 3 *
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re) su2QuarterTurn
+  simp_rw [su2QuarterTurn_mul_apply_zero_zero_re,
+    su2QuarterTurn_mul_apply_zero_one_re] at hinv
+  calc
+    (∫ g : SU2,
+      ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re ^ 3 *
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ∂su2HaarProb) =
+        ∫ g : SU2,
+          -(((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re *
+            ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ^ 3)
+          ∂su2HaarProb := by simpa [mul_neg, mul_comm] using hinv.symm
+    _ = -(∫ g : SU2,
+        ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re *
+          ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ^ 3
+        ∂su2HaarProb) := integral_neg (μ := su2HaarProb)
+          (fun g : SU2 =>
+            ((g : Matrix (Fin 2) (Fin 2) Complex) 0 0).re *
+              ((g : Matrix (Fin 2) (Fin 2) Complex) 0 1).re ^ 3)
+
 end Lean2dYangMills

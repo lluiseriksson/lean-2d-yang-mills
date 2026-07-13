@@ -43,6 +43,10 @@ Concrete SU(2) character layer (current post-PR #44 work):
   normalization, `∫χ₁² = 1`.
 - `integral_su2CharacterChebyshev_two_eq_zero`: the first even Haar selector,
   `∫χ₂ = 0`, obtained from the exact coordinate moment.
+- `su2Hadamard` and `integral_su2_odd_mixed_fourth_cancel`: a concrete
+  forty-five-degree SU(2) translation and the exact cancellation needed for
+  the fourth-moment binomial step. This is infrastructure toward `∫χ₄=0`;
+  it is not yet the all-order Weyl pushforward theorem.
 
 Current audited base commit: PR #44 at `main` commit `71422d8`.
 
