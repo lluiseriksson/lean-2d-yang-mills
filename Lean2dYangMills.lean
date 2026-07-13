@@ -11,6 +11,7 @@ import Lean2dYangMills.SU2Orbit
 import Lean2dYangMills.SU2CharacterConvolution
 import Lean2dYangMills.SU2HeatSemigroup
 import Lean2dYangMills.SU2ExactAreaLaw
+import Lean2dYangMills.AuditMigdalClosure
 import Lean2dYangMills.SU2ClassHeatKernel
 import Lean2dYangMills.WittenZetaSU2
 import Lean2dYangMills.TrivialModel

@@ -54,7 +54,12 @@ lake build
 
 `main` is intended to stay free of `sorry` and project-local axioms. Frontier work may live on `frontier/*` branches, with every open statement mirrored in `HYPOTHESIS_FRONTIER.md`.
 
-The current `main` interface is conditional: theorem statements project explicit fields from structures such as `HeatKernelCharacterPackage`, `MigdalSelfSimilarityPackage`, and `ExactAreaLawPackage`. This keeps the import surface stable without pretending the analytic theorems are already formalized.
+The generic public interfaces remain available, but the concrete `SU(2)` chain
+is no longer conditional.  `main` now proves the Haar/spherical measure bridge,
+the all-order orbital law, translated character convolution, the infinite
+heat-kernel semigroup, a two-face Migdal edge integration, and the exact
+all-label simple-loop coefficient without projecting any of those conclusions
+from a hypothesis package.
 
 The concrete SU(2) character layer is no longer conditional: `main` proves
 the Chebyshev character formula at the identity, the sharp Weyl bound
@@ -63,9 +68,8 @@ the heat-kernel character series for every positive heat time. The same
 Casimir majorant now proves uniform convergence on all of SU(2) and continuity
 of the resulting series. It also proves
 the exact Chebyshev-U orthogonality integral with the SU(2) Weyl angle weight.
-Identifying that angle measure with the class pushforward of Mathlib's SU(2)
-Haar measure, and then proving the full convolution law, remain the live M0
-frontier.
+The angle calculation is connected to normalized Haar and consumed by the
+all-order translated convolution theorem.
 
 The repository now constructs that normalized Haar probability measure
 internally (including compactness and topological-group instances) and proves
@@ -79,9 +83,14 @@ real-linear isometric equivalence of the ambient L2 space. A general theorem
 proves that an ambient measure-preserving linear isometry preserves its
 `Measure.toSphere` measure. After normalization, transport back to SU(2), and
 uniqueness of normalized Haar, `main` proves the literal equality
-`su2RowSphereHaar = su2CanonicalRowSphereMeasure`. The live M0 frontier is
-therefore the general Weyl pushforward formula and its all-order Haar
-orthogonality consumers, followed by concrete convolution.
+`su2RowSphereHaar = su2CanonicalRowSphereMeasure`.  The new orbit module then
+identifies the first complex-rail mass with the uniform probability on
+`[0,1]`; the character-convolution and heat-semigroup modules consume that
+identity through a real Haar integral.  Finally,
+`su2Migdal_subdivision_invariant` integrates a shared edge of two heat-kernel
+faces and `su2_exact_simpleLoop_areaLaw` gives the exact Casimir exponential
+for every representation label.  The next open frontier is a global reduction
+over arbitrary finite planar cellulations, not the local two-face move.
 
 ## Public Interface
 

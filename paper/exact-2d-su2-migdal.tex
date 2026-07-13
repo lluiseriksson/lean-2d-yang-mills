@@ -1,0 +1,347 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Exact Two-Dimensional SU(2) Yang-Mills in Lean},
+  pdfauthor={Lluis Eriksson},
+  pdfsubject={Weyl integration, heat-kernel convolution, Migdal invariance, and exact area law},
+  pdfkeywords={Lean 4, Mathlib, SU(2), two-dimensional Yang-Mills, heat kernel, Migdal}
+}
+
+\definecolor{leanblue}{RGB}{36,83,125}
+\definecolor{codegray}{RGB}{245,247,249}
+\lstdefinelanguage{Lean}{
+  morekeywords={theorem,lemma,def,noncomputable,section,namespace,open,by,fun,
+    if,then,else,where,let,in,have,show,exact,simpa,rw,calc},
+  sensitive=true,
+  morecomment=[l]{--},
+  morestring=[b]"
+}
+\lstset{
+  language=Lean,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{leanblue}\bfseries,
+  commentstyle=\color{gray},
+  backgroundcolor=\color{codegray},
+  frame=single,
+  rulecolor=\color{black!15},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\bfseries Exact Two-Dimensional $SU(2)$ Yang--Mills in Lean:\\
+Weyl Integration, Heat-Kernel Convolution, Migdal Invariance,\\
+and the Exact Simple-Loop Area Law}
+\author{Llu\'is Eriksson}
+\date{13 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We give a kernel-checked Lean~4/Mathlib formalization of the exact
+heat-kernel solution of two-dimensional $SU(2)$ Yang--Mills theory along the
+chain from Haar measure to a concrete Migdal subdivision move.  The development
+identifies the transported Haar probability on $SU(2)\simeq S^3$ with the
+canonical spherical probability, proves the required all-order orbital
+integration law, derives translated character convolution for every pair of
+irreducible labels, passes from finite character sums to the infinite
+heat-kernel semigroup by dominated convergence, and integrates an actual edge
+shared by two faces.  Combined with the all-label coefficient extraction
+already proved in the same development, this yields the exact normalized
+simple-loop identity
+\[
+  \mathbb E[W_n(C)]
+  =\exp\!\left[-\frac{n(n+2)}4\operatorname{Area}(C)\right].
+\]
+All displayed endpoints compile without \texttt{sorry}, \texttt{admit}, or
+project-local axioms.  The mathematical identities are classical; the claimed
+contribution is their concrete end-to-end machine-checked composition, not a
+new analytic solution of two-dimensional Yang--Mills theory.
+\end{abstract}
+
+\section{Statement and claim boundary}
+
+Let $dg$ be normalized Haar probability on $SU(2)$, let $\chi_n$ be the
+character of the irreducible representation of dimension $d_n=n+1$, and put
+\[
+  c_n=\frac{n(n+2)}4,
+  \qquad
+  K_t(g)=\sum_{n\ge0}d_n e^{-tc_n}\chi_n(g),\qquad t>0.
+\]
+With convolution
+\[
+  (f*h)(g)=\int_{SU(2)}f(x)h(x^{-1}g)\,dx,
+\]
+the formalized chain is
+\[
+  \begin{aligned}
+  \text{Haar on }S^3
+  &\Longrightarrow \text{all-order orbital law}
+  \Longrightarrow \chi_n*\chi_m\\
+  &\Longrightarrow K_s*K_t=K_{s+t}
+  \Longrightarrow \text{Migdal}
+  \Longrightarrow \text{simple-loop coefficient}.
+  \end{aligned}
+\]
+
+This result is distinct from the programme's earlier strong-coupling area-law
+theorem.  The earlier theorem is a volume-uniform \emph{inequality} for finite
+lattices and $SU(N_c)$ in an explicit convergence window, obtained from a
+Koteck\'y--Preiss cluster expansion.  The present theorem is an \emph{exact
+identity} in the two-dimensional $SU(2)$ heat-kernel model, obtained by Haar
+integration and subdivision.  The former is cited context; it is not used to
+discharge any exact two-dimensional statement here.
+
+No claim is made here about four-dimensional Yang--Mills, a continuum
+construction in four dimensions, or a new proof of the classical exact
+solution.  A priority claim about formalization should remain conditional on a
+systematic literature and repository search.
+
+\section{From spherical Haar measure to the orbital law}
+
+Write an element of $SU(2)$ in its standard form
+\[
+  g=\begin{pmatrix}a&b\\-\overline b&\overline a\end{pmatrix},
+  \qquad |a|^2+|b|^2=1.
+\]
+Earlier modules construct a homeomorphism $SU(2)\simeq S^3$, realize left
+multiplication as an ambient real-linear isometry, prove preservation of the
+canonical \texttt{Measure.toSphere} measure, and use uniqueness of normalized
+Haar measure to obtain literal equality of the two probability measures.
+
+The new all-order step studies $u=|a|^2$.  In dimension four, the squared mass
+in one complex rail is uniform on $[0,1]$.  Rather than assume this distribution,
+the formal proof establishes its moment recurrence, proves
+\[
+  \int_{SU(2)}u^k\,dg=\frac1{k+1}\qquad(k\ge0),
+\]
+and then identifies measures on the compact interval using polynomial density.
+The resulting literal endpoint is:
+
+\begin{lstlisting}
+theorem su2FirstRailMassMeasure_eq_uniform :
+  su2FirstRailMassMeasure = su2UnitIntervalMeasure
+\end{lstlisting}
+
+For $x,y\in[-1,1]$, choose representatives with half-traces $x,y$ and average
+their product over conjugation.  The preceding uniform law reduces the orbital
+integral to a one-variable Chebyshev integral.  For the Chebyshev polynomial
+$U_m$ of the second kind, the formalized formula is
+\[
+ \int_{SU(2)}
+ U_m\!\left(\tfrac12\operatorname{tr}(kak^{-1}b)\right)dk
+ =\frac{U_m(\tfrac12\operatorname{tr}a)
+          U_m(\tfrac12\operatorname{tr}b)}{m+1}.
+\]
+The proof includes the endpoint cases $x=\pm1$; no division by a vanishing sine
+is hidden in the statement.
+
+\section{All-order translated character convolution}
+
+Characters are implemented concretely as
+\[
+  \chi_n(g)=U_n\!\left(\tfrac12\operatorname{tr}g\right).
+\]
+Conjugacy invariance, left and right Haar invariance, Fubini, and the orbital
+law give the translated orthogonality relation
+\begin{equation}\label{eq:translated}
+  \int_{SU(2)}\chi_n(x)\chi_m(x^{-1}g)\,dx
+  =\delta_{nm}\frac{\chi_n(g)}{n+1}.
+\end{equation}
+This is stronger than orthogonality at the identity and is exactly the consumer
+needed by the heat-kernel product.
+
+\begin{theorem}[Machine-checked character convolution]
+For every $n,m\in\mathbb N$ and $g\in SU(2)$,
+\[
+  (\chi_n*\chi_m)(g)=
+  \begin{cases}
+    \chi_n(g)/(n+1),&n=m,\\
+    0,&n\ne m.
+  \end{cases}
+\]
+\end{theorem}
+
+The public Lean endpoints are listed below.  They are theorems about the actual
+normalized Haar integral, not fields projected from an abstract character
+package.
+\begin{lstlisting}
+integral_su2CharacterReal_mul_translate
+su2CharacterChebyshev_convolution
+\end{lstlisting}
+
+\section{Infinite heat-kernel semigroup}
+
+For a cutoff $N$, expand both finite kernels, interchange the finite sums and
+the Haar integral, and apply \eqref{eq:translated}.  The Kronecker selector
+leaves a single sum and the Casimir weights multiply:
+\[
+  e^{-s c_n}e^{-t c_n}=e^{-(s+t)c_n}.
+\]
+This proves the finite convolution identity.  The infinite theorem then uses
+the already established uniform Casimir majorant for positive times.  Partial
+kernels converge pointwise and uniformly; the product is bounded by the
+product of two summable majorants, so dominated convergence passes the Haar
+integral to the limit.
+
+\begin{theorem}[Concrete heat semigroup]
+For $s,t>0$ and every $g\in SU(2)$,
+\[
+  \int_{SU(2)}K_s(x)K_t(x^{-1}g)\,dx=K_{s+t}(g).
+\]
+Equivalently, as functions, $K_s*K_t=K_{s+t}$.
+\end{theorem}
+
+The corresponding Lean declarations, including the function-level consumer,
+are:
+\begin{lstlisting}
+su2HeatKernelPartial_convolution
+su2HeatKernel_convolution
+su2HeatKernel_convolution_consumer
+\end{lstlisting}
+
+\section{A concrete Migdal move}
+
+Consider two adjacent faces of areas $s$ and $t$.  Let $a,b$ encode the
+external boundary holonomies and integrate their shared oriented edge $x$.
+The actual two-face density in the development is
+\[
+  D_{s,t}^{a,b}(x)=K_s(ax)K_t(x^{-1}b).
+\]
+Left invariance changes variables $y=ax$ and the heat semigroup gives
+\begin{equation}\label{eq:migdal}
+  \int_{SU(2)}D_{s,t}^{a,b}(x)\,dx
+  =K_{s+t}(ab).
+\end{equation}
+
+\begin{theorem}[Two-face Migdal subdivision]
+Equation \eqref{eq:migdal} holds for all $a,b\in SU(2)$ and all $s,t>0$.
+It is proved by a genuine Haar integration over the shared edge and invokes
+the concrete infinite heat-kernel semigroup.
+\end{theorem}
+
+This closes the first nontrivial subdivision move: two holonomy variables, two
+faces, and one integrated shared edge.  The endpoints below contain no package
+hypothesis.
+\begin{lstlisting}
+su2Migdal_twoFace_merge
+su2Migdal_subdivision_invariant
+\end{lstlisting}
+
+\section{Exact simple-loop coefficient}
+
+The same repository proves, for every label $n$ and positive area $t$, that
+the normalized Wilson character $W_n=\chi_n/(n+1)$ extracts the corresponding
+heat coefficient:
+\[
+  \int_{SU(2)}W_n(g)K_t(g)\,dg
+  =e^{-t c_n}
+  =\exp\!\left[-t\frac{n(n+2)}4\right].
+\]
+The proof first establishes the identity for partial character sums and then
+passes to the full kernel by dominated convergence.  Its final consumer is:
+
+\begin{lstlisting}
+theorem su2_exact_simpleLoop_areaLaw
+    {t : Real} (ht : 0 < t) (n : Nat) :
+  (integral (fun g : SU2 =>
+    su2NormalizedWilsonCharacter n g *
+      heatKernelCharacterSeries su2CharacterTable t g)
+      su2HaarProb) =
+    ((Real.exp (-t * ((n : Real) *
+      ((n : Real) + 2) / 4)) : Real) : Complex)
+\end{lstlisting}
+
+Together with the Migdal move, this is the exact two-dimensional route: edge
+subdivision does not change the density, and the remaining simple face has the
+Casimir coefficient prescribed by its area.
+
+\section{Audit and reproducibility}
+
+The checked source is built with Lean~4 and Mathlib.  The public root module
+imports the concrete orbit, character-convolution, heat-semigroup, and exact
+area-law modules.  A repository-wide placeholder audit finds no occurrence of
+\texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
+in the Lean development.  Printing axioms for the twelve new public endpoints
+returns only the standard kernel dependencies
+\[
+  \texttt{propext},\qquad \texttt{Classical.choice},\qquad
+  \texttt{Quot.sound}.
+\]
+The toolchain and Mathlib revision are pinned in the repository.  GitHub
+Actions builds the public root target from a clean checkout and separately
+rejects placeholders.
+
+\paragraph{Principal new declarations.}
+\begin{lstlisting}
+su2FirstRailMoment_recurrence
+su2FirstRailMoment_eq
+su2FirstRailMassMeasure_eq_uniform
+intervalIntegral_chebyshevU_product_formula
+integral_su2FirstEntryMass_eq_unitInterval
+integral_su2Haar_orbit_character_general
+integral_su2CharacterReal_mul_translate
+su2CharacterChebyshev_convolution
+su2HeatKernelPartial_convolution
+su2HeatKernel_convolution
+su2Migdal_twoFace_merge
+su2Migdal_subdivision_invariant
+\end{lstlisting}
+
+\section{Scope and next frontier}
+
+The present artifact closes the compact-group analytic chain needed for an
+exact simple-loop calculation.  It does not yet formalize arbitrary embedded
+planar graphs, gauge fixing on a general cellular decomposition, nonsimple or
+intersecting loops, continuum measure construction, or higher-genus partition
+functions.  Those are independent extensions and should not be inferred from
+the two-face theorem.
+
+The next mathematically meaningful consumer is a finite planar-cellulation
+reduction theorem: repeated application of the concrete Migdal move, with
+incidence and orientation data made explicit, until a simple loop bounds one
+effective face.  That step would promote the local subdivision identity into a
+global discretization-independence statement.
+
+\begin{thebibliography}{9}
+\bibitem{Migdal}
+A.~A. Migdal, \emph{Recursion equations in gauge field theories},
+Sov. Phys. JETP \textbf{42} (1975), 413--418.
+
+\bibitem{Witten}
+E.~Witten, \emph{On quantum gauge theories in two dimensions},
+Commun. Math. Phys. \textbf{141} (1991), 153--209.
+
+\bibitem{Driver}
+B.~K. Driver, \emph{Yang--Mills theory and the heat equation on compact Lie
+groups}, J. Funct. Anal. \textbf{110} (1992), 1--34.
+
+\bibitem{Lean}
+L.~de Moura and S.~Ullrich, \emph{The Lean 4 theorem prover and programming
+language}, CADE-28, Lecture Notes in Computer Science 12699 (2021), 625--635.
+
+\bibitem{Mathlib}
+The Mathlib Community, \emph{The Lean mathematical library},
+CPP 2020, 367--381.
+\end{thebibliography}
+
+\end{document}
