@@ -38,3 +38,28 @@ The previous strong-coupling theorem does not instantiate
 `ExactAreaLawPackage`. A nontrivial instance must be built internally from the
 concrete two-dimensional heat-kernel convolution law, lattice edge integration,
 Migdal subdivision invariance, and the resulting simple-loop expectation.
+
+## Current finite-cellulation endpoint
+
+The current formal object is an oriented finite combinatorial disk
+cellulation: it stores finite vertices, edges, paired half-edges, source and
+target incidence, cyclic face successors, one exterior face, the disk Euler
+relation, and positive bounded-face areas. Its dual graph is derived from the
+half-edge incidences.
+
+For every such cellulation with connected dual graph, the development proves:
+
+- existence of a labelled binary gauge-fixing/elimination schedule;
+- validity of each merge against an actual dual edge;
+- exact reduction of every valid schedule to the heat kernel at total area;
+- independence of the chosen valid schedule;
+- a schedule-free `ExactAreaLawPackage` and the exact simple-loop Casimir law.
+
+No acyclicity hypothesis is imposed on the dual graph. This closes finite
+choice-independent reduction of the explicitly defined post-gauge-fixed
+amplitude, including schedules supported on dual graphs with cycles. It does
+not yet prove equality with an unreduced product-Haar integral over every
+original edge of a cyclic cellulation. Nor does it identify these abstract
+combinatorial disks with isotopy classes of piecewise-smooth embeddings in the
+plane, treat nonsimple/intersecting Wilson loops, or construct a continuum
+measure.

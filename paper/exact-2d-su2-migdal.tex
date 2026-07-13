@@ -65,12 +65,14 @@ canonical spherical probability, proves the required all-order orbital
 integration law, derives translated character convolution for every pair of
 irreducible labels, passes from finite character sums to the infinite
 heat-kernel semigroup by dominated convergence, and integrates an actual edge
-shared by two faces.  A further structural induction now eliminates every
-internal edge of a finite positive-area polygonal disk cellulation whose dual
-graph is a tree, proves that the procedure uses exactly one fewer integration
-than the number of faces, and produces a nontrivial concrete instance of the
-project's exact-area-law interface.  Combined with all-label coefficient
-extraction, this yields the exact normalized simple-loop identity
+shared by two faces.  We then define finite oriented disk cellulations
+independently of any reduction tree, using vertices, paired half-edges, cyclic
+face words, incidence, Euler characteristic, and positive face areas.  Every
+connected dual graph admits a certified elimination schedule, every valid
+schedule reduces to the heat kernel at total area, and any two choices give
+the same amplitude.  The schedule is hidden from the public loop object,
+which supplies a nontrivial exact-area-law package.  Combined with all-label
+coefficient extraction, this yields the exact normalized simple-loop identity
 \[
   \mathbb E[W_n(C)]
   =\exp\!\left[-\frac{n(n+2)}4\operatorname{Area}(C)\right].
@@ -250,56 +252,77 @@ su2Migdal_twoFace_merge
 su2Migdal_subdivision_invariant
 \end{lstlisting}
 
-\section{Finite planar reduction and termination}
+\section{Independent finite cellulations and elimination}
 
-The local move can now be iterated over a nontrivial global class.  A
-\texttt{SU2PlanarFaceTree} is generated from positive-area elementary faces by
-binary gluing along one oppositely oriented boundary edge.  Geometrically this
-describes polygonal disk cellulations with tree dual.  If $C$ has left and
-right subcellulations $L,R$, its amplitude is defined recursively by
+The analytic evaluator used by the development is a labelled binary schedule.
+If a schedule node has left and right subproblems $L,R$, its amplitude is
+defined recursively by
 \[
   A_C(a,b)=\int_{SU(2)} A_L(a,x)A_R(x^{-1},b)\,dx.
 \]
-Thus the definition contains one actual Haar variable for every internal edge;
-orientation is encoded by the occurrences $x$ and $x^{-1}$.
-
-The face count $F(C)$, internal-edge count $E(C)$, and total area $T(C)$ are
-structural recursions.  Lean proves
+The earlier tree module proves by structural induction that
 \[
-  E(C)=F(C)-1,
-  \qquad T(C)>0,
-\]
-and then eliminates all internal variables by induction on $C$:
-\begin{equation}\label{eq:global-reduction}
   A_C(a,b)=K_{T(C)}(ab).
-\end{equation}
-At each gluing node the induction hypotheses expose two heat kernels and the
-proof invokes the concrete two-face theorem.  Hence termination is supplied by
-the inductive type itself and the exact number of integration steps is certified
-separately by $E=F-1$.
+\]
+At each node the induction hypotheses expose two heat kernels and the proof
+invokes the concrete two-face theorem.
 
-The explicit collapsed cellulation has one face, no internal edge, and area
-$T(C)$.  A consumer theorem proves that its amplitude is literally equal to
-the original recursively integrated amplitude.  The principal declarations
-are:
+The new point is that the geometric input is no longer this evaluator syntax.
+The new independent cellulation structure stores finite types of
+vertices, edges, half-edges, and bounded faces; a fixed-point-free involution
+pairs the two half-edges of every edge; source and target incidence is linked
+to a cyclic face-successor permutation; \texttt{none} denotes the exterior
+face; and the disk Euler relation $V-E+F=1$ is part of the certificate.  The
+dual face graph is derived from the two sides of internal edges.
+
+A labelled elimination schedule is valid when its leaves list every bounded
+face exactly once and each binary merge is witnessed by a genuine adjacency
+in the derived dual graph.  Lean proves the following existence theorem for an
+arbitrary finite connected dual graph.  If the graph has one vertex, the
+schedule is a leaf.  Otherwise, a vertex whose deletion leaves a connected
+induced subgraph is removed, the proof recurses on the smaller finite type,
+and the vertex is reattached across an actual adjacent edge.  Thus no
+acyclicity assumption is used.
+
+For any valid schedule $S$, permutation of the face list gives
+$T(S)=\sum_f t_f$.  The tree reduction then proves
+\begin{equation}\label{eq:global-reduction}
+  A_{C,S}(a,b)=K_{\sum_f t_f}(ab).
+\end{equation}
+Consequently, for all valid $S_1,S_2$,
+\[
+  A_{C,S_1}(a,b)=A_{C,S_2}(a,b).
+\]
+The public structure \texttt{SU2ConnectedDiskCellulation} stores only the
+cellulation and connectedness of its dual.  A schedule is chosen internally
+from the existence theorem; the preceding equality proves that every other
+valid choice is observationally identical.  Its principal declarations are:
 \begin{lstlisting}
-SU2PlanarFaceTree.internalEdgeCount_eq_faceCount_sub_one
-su2PlanarCellulationAmplitude_eq_heatKernel
-su2PlanarCellulationAmplitude_eq_effectiveFace
+SU2FaceEliminationSchedule.exists_schedule_of_connected_graph
+SU2FaceEliminationSchedule.exists_valid_schedule_of_dual_connected
+SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules
+SU2ConnectedDiskCellulation.amplitude_eq_heatKernel
+SU2ConnectedDiskCellulation.amplitude_eq_any_valid_schedule
 \end{lstlisting}
 
 For each representation label $n$, the formalization defines a plane-loop
-theory whose loops are these finite cellulations, whose area is $T(C)$, whose
-string tension is $n(n+2)/4$, and whose Wilson functional integrates the full
-recursive amplitude.  Equation \eqref{eq:global-reduction} followed by
+theory whose loops are connected independently specified cellulations, whose
+area is $\sum_f t_f$, whose string tension is $n(n+2)/4$, and whose Wilson
+functional integrates the schedule-independent amplitude.  Equation
+\eqref{eq:global-reduction} followed by
 coefficient extraction gives a nontrivial concrete instance
-\texttt{su2TreePlanarExactAreaLawPackage}.  The generic public interface is
-then consumed by \texttt{su2TreePlanar\_simpleLoop\_areaLaw\_exact}; no field
-of that package remains assumed.  The trivial-label case also proves the
-normalization
+\texttt{su2ConnectedDiskExactAreaLawPackage}.  The generic public interface is
+then consumed by
+\texttt{su2ConnectedDisk\_simpleLoop\_areaLaw\_exact}; no field of that
+package remains assumed.  The trivial-label case also proves the normalization
 \[
   \int_{SU(2)} A_C(1,g)\,dg=1.
 \]
+
+For dual graphs with cycles, this theorem concerns the explicitly defined
+post-gauge-fixed schedule amplitude.  Equality with an unreduced product-Haar
+integral over every original edge is not asserted; proving that change of
+variables and its unit Jacobian is the next frontier.
 
 \section{Exact simple-loop coefficient}
 
@@ -321,9 +344,10 @@ su2_exact_simpleLoop_areaLaw
 \end{samepage}
 
 Together with the iterated Migdal reduction, this is the exact
-two-dimensional route for tree-dual polygonal disks: subdivision does not
-change the density, every internal edge is eliminated, and the remaining
-effective face has the Casimir coefficient prescribed by its total area.
+two-dimensional route for connected finite combinatorial disks after the
+certified elimination step: the choice of schedule does not change the
+density, and the effective face has the Casimir coefficient prescribed by its
+total area.
 
 \section{Audit and reproducibility}
 
@@ -331,7 +355,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the twenty audited public endpoints
+in the Lean development.  Printing axioms for the twenty-nine audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -363,22 +387,32 @@ su2TreePlanar_wilsonExpectation_eq_casimir
 su2TreePlanarExactAreaLawPackage
 su2TreePlanar_simpleLoop_areaLaw_exact
 integral_su2PlanarCellulationAmplitude_eq_one
+SU2FaceEliminationSchedule.exists_schedule_of_connected_graph
+SU2FaceEliminationSchedule.exists_valid_schedule_of_dual_connected
+SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules
+SU2ConnectedDiskCellulation.amplitude_eq_heatKernel
+SU2ConnectedDiskCellulation.amplitude_eq_any_valid_schedule
+su2ConnectedDisk_wilsonExpectation_eq_casimir
+su2ConnectedDiskExactAreaLawPackage
+su2ConnectedDisk_simpleLoop_areaLaw_exact
+integral_su2ConnectedDiskAmplitude_eq_one
 \end{lstlisting}
 
 \section{Scope and next frontier}
 
-The present artifact closes the compact-group analytic chain and a global
-finite reduction for polygonal disk cellulations whose dual graph is a tree.
-It does not yet formalize arbitrary embedded planar graphs with interior
-vertices or cycles in the dual graph, gauge fixing on a general cellular
-decomposition, nonsimple or intersecting loops, continuum measure
-construction, or higher-genus partition functions.
+The present artifact closes the compact-group analytic chain, introduces an
+independent finite oriented disk-cellulation object, constructs elimination
+schedules for every connected dual graph, and proves independence of the
+schedule for the reduced amplitude.  Dual cycles are allowed at this level.
 
-The next mathematically meaningful extension is therefore precise: define a
-general finite planar combinatorial map, choose and verify an elimination or
-gauge-fixing schedule in the presence of dual cycles, and prove independence
-of that choice.  The tree-dual theorem must be used as a base case, not
-relabeled as the arbitrary-planar result.
+It does not yet prove that this reduced amplitude equals the original
+product-Haar edge integral for a cyclic cellulation; that requires a formal
+lattice gauge-fixing change of variables.  It also does not identify the
+abstract combinatorial maps with planar isotopy classes, treat nonsimple or
+intersecting loops, construct a continuum measure, or evaluate higher-genus
+partition functions.  The next precise frontier is therefore the
+measure-preserving gauge-fixing equivalence from the unreduced edge model to
+the schedule-independent face model.
 
 \begin{thebibliography}{9}
 \bibitem{Migdal}

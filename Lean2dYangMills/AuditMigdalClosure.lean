@@ -1,4 +1,4 @@
-import Lean2dYangMills.SU2PlanarReduction
+import Lean2dYangMills.SU2FiniteCellulation
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -29,5 +29,14 @@ namespace Lean2dYangMills
 #print axioms su2TreePlanarExactAreaLawPackage
 #print axioms su2TreePlanar_simpleLoop_areaLaw_exact
 #print axioms integral_su2PlanarCellulationAmplitude_eq_one
+#print axioms SU2FaceEliminationSchedule.exists_schedule_of_connected_graph
+#print axioms SU2FaceEliminationSchedule.exists_valid_schedule_of_dual_connected
+#print axioms SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules
+#print axioms SU2ConnectedDiskCellulation.amplitude_eq_heatKernel
+#print axioms SU2ConnectedDiskCellulation.amplitude_eq_any_valid_schedule
+#print axioms su2ConnectedDisk_wilsonExpectation_eq_casimir
+#print axioms su2ConnectedDiskExactAreaLawPackage
+#print axioms su2ConnectedDisk_simpleLoop_areaLaw_exact
+#print axioms integral_su2ConnectedDiskAmplitude_eq_one
 
 end Lean2dYangMills
