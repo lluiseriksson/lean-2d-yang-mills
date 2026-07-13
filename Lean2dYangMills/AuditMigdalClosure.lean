@@ -5,7 +5,7 @@ import Lean2dYangMills.SU2ExactAreaLaw
 # Kernel dependency audit for the exact SU(2) Migdal closure
 
 This module is imported by the public root so that a clean CI build prints the
-axiom dependencies of every principal endpoint in the closure chain.
+kernel dependencies of every principal endpoint in the closure chain.
 -/
 
 namespace Lean2dYangMills
