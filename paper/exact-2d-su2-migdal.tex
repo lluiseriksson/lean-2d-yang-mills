@@ -116,7 +116,7 @@ the formalized chain is
 \]
 
 This result is distinct from the programme's earlier strong-coupling area-law
-theorem.  The earlier theorem is a volume-uniform \emph{inequality} for finite
+theorem~\cite{ErikssonStrongCoupling}.  The earlier theorem is a volume-uniform \emph{inequality} for finite
 lattices and $SU(N_c)$ in an explicit convergence window, obtained from a
 Koteck\'y--Preiss cluster expansion.  The present theorem is an \emph{exact
 identity} in the two-dimensional $SU(2)$ heat-kernel model, obtained by Haar
@@ -538,6 +538,20 @@ The toolchain and Mathlib revision are pinned in the repository.  GitHub
 Actions builds the public root target from a clean checkout and separately
 rejects placeholders.
 
+\paragraph{Authoritative proof artifact.}
+The complete machine-checked proofs are contained in the public repository
+\texttt{lluiseriksson/lean-2d-yang-mills}~\cite{FormalArtifact}.  The immutable
+audited snapshot for this manuscript is commit
+\texttt{c13451842768e02a3c97afe11c8dcb9523c2c727}.  In particular,
+\texttt{SU2RootedTreeGaugeFixing.lean} contains the connected-graph spanning-tree
+construction and global product-Haar theorem; the preceding modules contain
+the Haar--sphere identification, orbital integration, character convolution,
+heat semigroup, Migdal move, finite-cellulation reduction, and exact coefficient
+extraction.  \texttt{AuditMigdalClosure.lean} prints the kernel dependencies of
+all forty-three public endpoints.  Thus the repository is not supplementary
+numerics or pseudocode: it is the compilable proof object to which the theorem
+claims refer.
+
 \medskip\noindent\textbf{Principal new declarations.}\par\smallskip
 \begin{lstlisting}
 su2FirstRailMoment_recurrence
@@ -625,6 +639,17 @@ language}, CADE-28, Lecture Notes in Computer Science 12699 (2021), 625--635.
 \bibitem{Mathlib}
 The Mathlib Community, \emph{The Lean mathematical library},
 CPP 2020, 367--381.
+
+\bibitem{ErikssonStrongCoupling}
+L.~Eriksson, \emph{A machine-checked volume-uniform Wilson-loop area law via a
+formalized cluster expansion},
+\href{https://ai.vixra.org/pdf/2607.0005v1.pdf}{ai.viXra:2607.0005} (2026).
+
+\bibitem{FormalArtifact}
+L.~Eriksson, \emph{lean-2d-yang-mills: machine-checked exact two-dimensional
+$SU(2)$ Yang--Mills}, GitHub repository,
+\href{https://github.com/lluiseriksson/lean-2d-yang-mills/tree/c13451842768e02a3c97afe11c8dcb9523c2c727}{audited commit c1345184}
+(2026).
 \end{thebibliography}
 
 \end{document}
