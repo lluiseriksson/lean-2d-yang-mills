@@ -57,9 +57,14 @@ For every such cellulation with connected dual graph, the development proves:
 
 No acyclicity hypothesis is imposed on the dual graph. This closes finite
 choice-independent reduction of the explicitly defined post-gauge-fixed
-amplitude, including schedules supported on dual graphs with cycles. It does
-not yet prove equality with an unreduced product-Haar integral over every
-original edge of a cyclic cellulation. Nor does it identify these abstract
-combinatorial disks with isotopy classes of piecewise-smooth embeddings in the
-plane, treat nonsimple/intersecting Wilson loops, or construct a continuum
-measure.
+amplitude, including schedules supported on dual graphs with cycles.
+
+The first nontrivial product-Haar bridge is also closed for the concrete
+three-spoke disk whose face dual is the three-cycle.  Starting from three
+original edge variables, the formalization proves that
+`(x,y,z) |-> (x,x^-1*y,x^-1*z)` preserves triple normalized Haar, that the
+density loses the pure-gauge coordinate, and that the unreduced integral is
+the heat kernel at total area.  This is not yet a theorem for every finite
+cellulation.  Nor does the development identify the abstract combinatorial
+disks with isotopy classes of piecewise-smooth planar embeddings, treat
+nonsimple/intersecting Wilson loops, or construct a continuum measure.

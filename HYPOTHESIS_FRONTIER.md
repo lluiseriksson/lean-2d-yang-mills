@@ -20,18 +20,24 @@ by the following unconditional concrete theorems on `main`:
 - `SU2FaceEliminationSchedule.exists_schedule_of_connected_graph`;
 - `SU2FaceEliminationSchedule.amplitude_eq_of_valid_schedules`;
 - `SU2ConnectedDiskCellulation.amplitude_eq_heatKernel`;
-- `su2ConnectedDiskExactAreaLawPackage`.
+- `su2ConnectedDiskExactAreaLawPackage`;
+- `su2ThreeSpokeGaugeFix_measurePreserving`;
+- `su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral`;
+- `su2ThreeSpoke_unreducedIntegral_eq_heatKernel`.
 
 The generic hypothesis packages remain useful interfaces, but none of the
 conclusions above is obtained by projecting a field from such a package.  The
 finite oriented disk-cellulation reduction is now global for every connected
 dual graph at the explicitly defined post-gauge-fixed level.  Existence and
 independence of the elimination schedule are theorems, including in the
-presence of dual cycles.  The remaining planar frontier is equality with the
-unreduced product-Haar integral over all original edges, followed by comparison
-with embedded planar isotopy classes.  Continuum construction and the
-positive-area higher-genus layer also remain open.  The detailed pre-closure
-history is retained below for provenance only.
+presence of dual cycles.  For the concrete three-spoke disk with three-cycle
+dual, equality with the unreduced triple product-Haar edge integral is now a
+theorem derived from an explicit measure-preserving gauge fixing.  The
+remaining planar frontier is the corresponding product-Haar equivalence for
+an arbitrary connected finite disk, followed by comparison with embedded
+planar isotopy classes.  Continuum construction and the positive-area
+higher-genus layer also remain open.  The detailed pre-closure history is
+retained below for provenance only.
 
 ## Main Branch Status
 

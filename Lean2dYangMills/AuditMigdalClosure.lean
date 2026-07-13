@@ -1,4 +1,4 @@
-import Lean2dYangMills.SU2FiniteCellulation
+import Lean2dYangMills.SU2EdgeGaugeFixing
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -38,5 +38,10 @@ namespace Lean2dYangMills
 #print axioms su2ConnectedDiskExactAreaLawPackage
 #print axioms su2ConnectedDisk_simpleLoop_areaLaw_exact
 #print axioms integral_su2ConnectedDiskAmplitude_eq_one
+#print axioms su2ThreeSpokeGaugeFix_measurePreserving
+#print axioms su2ThreeSpoke_density_gaugeFactorization
+#print axioms su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
+#print axioms su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
+#print axioms su2ThreeSpoke_unreducedIntegral_eq_heatKernel
 
 end Lean2dYangMills

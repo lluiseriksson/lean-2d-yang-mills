@@ -70,7 +70,10 @@ independently of any reduction tree, using vertices, paired half-edges, cyclic
 face words, incidence, Euler characteristic, and positive face areas.  Every
 connected dual graph admits a certified elimination schedule, every valid
 schedule reduces to the heat kernel at total area, and any two choices give
-the same amplitude.  The schedule is hidden from the public loop object,
+the same amplitude.  For the first cyclic unreduced lattice, a three-face disk,
+we additionally construct a triangular gauge-fixing equivalence that preserves
+the original triple product Haar measure and prove equality with the reduced
+amplitude.  The schedule is hidden from the public loop object,
 which supplies a nontrivial exact-area-law package.  Combined with all-label
 coefficient extraction, this yields the exact normalized simple-loop identity
 \[
@@ -252,6 +255,68 @@ su2Migdal_twoFace_merge
 su2Migdal_subdivision_invariant
 \end{lstlisting}
 
+\section{A cyclic product-Haar gauge fixing}
+
+The two-face move alone does not identify a reduced evaluator with the original
+lattice integral when the face-dual graph has cycles.  We therefore formalize
+the first cyclic test explicitly.  Consider a disk split into three bounded
+faces by three spokes meeting at one interior vertex.  Its face dual is
+$K_3$, equivalently the three-cycle.  Write $x,y,z\in SU(2)$ for the original
+spoke-edge variables and $a,b,c\in SU(2)$ for the fixed boundary arcs.  The
+three face holonomies are
+\[
+  xay^{-1},\qquad ybz^{-1},\qquad zcx^{-1}.
+\]
+Thus the unreduced density and measure are
+\begin{equation}\label{eq:unreduced-three}
+  K_{t_1}(xay^{-1})K_{t_2}(ybz^{-1})K_{t_3}(zcx^{-1})
+  \,dx\,dy\,dz.
+\end{equation}
+
+Gauge transformations at the interior vertex act by simultaneous left
+multiplication.  Lean constructs the measurable equivalence
+\[
+  \Phi(x,y,z)=(x,x^{-1}y,x^{-1}z),
+  \qquad
+  \Phi^{-1}(u,v,w)=(u,uv,uw).
+\]
+The skew-product theorem and left invariance of normalized Haar prove the
+literal measure identity
+\[
+  \Phi_*\bigl(dx\,dy\,dz\bigr)=dx\,dy\,dz.
+\]
+After substitution, conjugation invariance of the heat kernel removes the
+first coordinate and gives
+\[
+  K_{t_1}(av^{-1})K_{t_2}(vbw^{-1})K_{t_3}(wc).
+\]
+The pure-gauge integral has mass one.  Applying the reversed two-face Migdal
+identity first to $w$ and then to $v$ yields the fully unreduced result
+\begin{equation}\label{eq:three-spoke-result}
+ \int_{SU(2)^3}
+  K_{t_1}(xay^{-1})K_{t_2}(ybz^{-1})K_{t_3}(zcx^{-1})
+  \,dx\,dy\,dz
+  =K_{t_1+t_2+t_3}(abc).
+\end{equation}
+
+The proof does not store a Jacobian certificate or assume an abstract gauge
+package.  The map, its inverse, measurability, product-Haar preservation,
+density factorization, Fubini integrability, and both edge integrations are
+all kernel checked.  The principal endpoints are:
+\begin{lstlisting}
+su2ThreeSpokeFaceDual_connected
+su2ThreeSpokeGaugeFix_measurePreserving
+su2ThreeSpoke_density_gaugeFactorization
+su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
+su2ThreeSpoke_unreducedIntegral_eq_heatKernel
+\end{lstlisting}
+
+Equation~\eqref{eq:three-spoke-result} is a genuine product-Haar theorem for a
+cyclic dual, but it is intentionally not stated as a theorem for arbitrary
+finite cellulations.  That uniform generalization requires a global spanning
+tree gauge fixing compatible with the incidence data of the independent disk
+object.
+
 \section{Independent finite cellulations and elimination}
 
 The analytic evaluator used by the development is a labelled binary schedule.
@@ -319,10 +384,11 @@ package remains assumed.  The trivial-label case also proves the normalization
   \int_{SU(2)} A_C(1,g)\,dg=1.
 \]
 
-For dual graphs with cycles, this theorem concerns the explicitly defined
-post-gauge-fixed schedule amplitude.  Equality with an unreduced product-Haar
-integral over every original edge is not asserted; proving that change of
-variables and its unit Jacobian is the next frontier.
+For a general dual graph with cycles, this theorem concerns the explicitly
+defined post-gauge-fixed schedule amplitude.  The preceding section proves
+equality with the unreduced product-Haar integral for the concrete three-cycle,
+but equality over every original edge of an arbitrary cellulation is not yet
+asserted.
 
 \section{Exact simple-loop coefficient}
 
@@ -355,7 +421,7 @@ The checked source is built with Lean~4 and Mathlib.  The public root module
 imports the concrete orbit, character-convolution, heat-semigroup, and exact
 area-law modules.  A repository-wide placeholder audit finds no occurrence of
 \texttt{sorry}, \texttt{admit}, or a project-local \texttt{axiom} declaration
-in the Lean development.  Printing axioms for the twenty-nine audited public endpoints
+in the Lean development.  Printing axioms for the thirty-four audited public endpoints
 returns only the standard kernel dependencies
 \[
   \texttt{propext},\qquad \texttt{Classical.choice},\qquad
@@ -396,6 +462,11 @@ su2ConnectedDisk_wilsonExpectation_eq_casimir
 su2ConnectedDiskExactAreaLawPackage
 su2ConnectedDisk_simpleLoop_areaLaw_exact
 integral_su2ConnectedDiskAmplitude_eq_one
+su2ThreeSpokeGaugeFix_measurePreserving
+su2ThreeSpoke_density_gaugeFactorization
+su2ThreeSpoke_gaugeFixedIntegral_eq_heatKernel
+su2ThreeSpoke_unreducedIntegral_eq_gaugeFixedIntegral
+su2ThreeSpoke_unreducedIntegral_eq_heatKernel
 \end{lstlisting}
 
 \section{Scope and next frontier}
@@ -403,16 +474,17 @@ integral_su2ConnectedDiskAmplitude_eq_one
 The present artifact closes the compact-group analytic chain, introduces an
 independent finite oriented disk-cellulation object, constructs elimination
 schedules for every connected dual graph, and proves independence of the
-schedule for the reduced amplitude.  Dual cycles are allowed at this level.
+schedule for the reduced amplitude.  Dual cycles are allowed at this level,
+and the three-face cycle is additionally linked to its original product-Haar
+edge integral by a formal lattice gauge-fixing change of variables.
 
-It does not yet prove that this reduced amplitude equals the original
-product-Haar edge integral for a cyclic cellulation; that requires a formal
-lattice gauge-fixing change of variables.  It also does not identify the
+It does not yet generalize that unreduced equivalence to every finite
+cellulation.  It also does not identify the
 abstract combinatorial maps with planar isotopy classes, treat nonsimple or
 intersecting loops, construct a continuum measure, or evaluate higher-genus
-partition functions.  The next precise frontier is therefore the
-measure-preserving gauge-fixing equivalence from the unreduced edge model to
-the schedule-independent face model.
+partition functions.  The next precise frontier is therefore a uniform
+spanning-tree gauge-fixing theorem from the unreduced edge model of an
+arbitrary connected disk to the schedule-independent face model.
 
 \begin{thebibliography}{9}
 \bibitem{Migdal}

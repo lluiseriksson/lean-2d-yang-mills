@@ -72,10 +72,14 @@ any two schedules give exactly the same reduced amplitude.  A public
 nontrivial `ExactAreaLawPackage`, the exact Casimir law, and normalization.
 
 No acyclicity condition is imposed on the dual graph.  For cyclic duals, the
-current endpoint is explicitly the schedule-independent post-gauge-fixed
-amplitude.  The next open frontier is to prove its equality with the unreduced
-product-Haar integral over every original edge, and then connect the abstract
-combinatorial disks to embedded planar isotopy classes.
+development now also closes the first genuine unreduced example: a three-face
+disk with a three-cycle dual and three original spoke-edge variables.  An
+explicit triangular measurable equivalence preserves triple product Haar,
+removes the interior gauge coordinate, and proves that the unreduced integral
+is exactly the reduced two-coordinate amplitude and hence the heat kernel at
+summed area.  The next open frontier is to generalize this product-Haar
+equivalence from the three-spoke cycle to every connected finite disk, and then
+connect the abstract combinatorial disks to embedded planar isotopy classes.
 
 ## Public Interface
 
