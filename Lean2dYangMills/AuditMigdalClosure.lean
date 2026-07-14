@@ -7,7 +7,7 @@ import Lean2dYangMills.SU2PhysicalEliminationIntegral
 import Lean2dYangMills.SU2PhysicalBlockInvariant
 import Lean2dYangMills.SU2PhysicalWordBlocks
 import Lean2dYangMills.SU2PhysicalBlockMigdal
-import Lean2dYangMills.SU2PhysicalConstructionFold
+import Lean2dYangMills.SU2PhysicalConstructionIntegral
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -150,5 +150,13 @@ namespace Lean2dYangMills
 #print axioms SU2DualRootedEliminationTree.constructionState_eliminated_eq_range
 #print axioms SU2DualRootedEliminationTree.constructionState_word_nodup
 #print axioms SU2DualRootedEliminationTree.constructionState_area_eq_totalArea
+#print axioms su2FiniteProductHaar_integral_iteratedPrefix
+#print axioms SU2PhysicalConstructionData.assign_of_not_mem_range
+#print axioms SU2PhysicalConstructionData.assign_selectedEdge
+#print axioms SU2DualRootedEliminationTree.edgeHeatKernelDensity_assign_eq_constructionDensity
+#print axioms SU2PhysicalBoundaryEliminationChart.exteriorEdge_mem_tree_of_ne_anchor
+#print axioms SU2PhysicalBoundaryEliminationChart.chordBoundaryEquiv_symm_apply_boundary
+#print axioms SU2PhysicalBoundaryEliminationChart.conditionedConfiguration_eq_assign_one
+#print axioms SU2PhysicalBoundaryEliminationChart.indexedConditionedChordDensity_eq_constructionDensity
 
 end Lean2dYangMills

@@ -25,6 +25,7 @@ import Lean2dYangMills.SU2PhysicalWordBlocks
 import Lean2dYangMills.SU2PhysicalBlockMigdal
 import Lean2dYangMills.SU2PhysicalBlockGrowth
 import Lean2dYangMills.SU2PhysicalConstructionFold
+import Lean2dYangMills.SU2PhysicalConstructionIntegral
 import Lean2dYangMills.SU2FiniteGaugeFixing
 import Lean2dYangMills.SU2RootedTreeGaugeFixing
 import Lean2dYangMills.SU2GlobalEdgeGaugeFixing
