@@ -5,6 +5,8 @@ import Lean2dYangMills.SU2CyclicWordSplicing
 import Lean2dYangMills.SU2PhysicalEliminationSchedule
 import Lean2dYangMills.SU2PhysicalEliminationIntegral
 import Lean2dYangMills.SU2PhysicalBlockInvariant
+import Lean2dYangMills.SU2PhysicalWordBlocks
+import Lean2dYangMills.SU2PhysicalBlockMigdal
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -120,5 +122,9 @@ namespace Lean2dYangMills
 #print axioms SU2PhysicalBoundaryEliminationChart.conditionedGaugeFixed_selectedEdge
 #print axioms SU2FiniteDiskCellulation.CyclicDartWordMerge.wordCompleteAwayFrom_spliceAt
 #print axioms SU2FiniteDiskCellulation.CyclicDartWordMerge.wordSound_spliceAt
+#print axioms SU2EdgeConnectedDiskCellulation.faceDartSource_union
+#print axioms SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.area_merge_of_disjoint
+#print axioms SU2FiniteDiskCellulation.CyclicDartWordMerge.integrate_edge_merge
+#print axioms SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.integrate_merge
 
 end Lean2dYangMills
