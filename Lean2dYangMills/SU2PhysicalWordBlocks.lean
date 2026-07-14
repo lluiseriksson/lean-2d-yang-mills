@@ -114,6 +114,22 @@ def merge (first second : P.PhysicalWordBlock eliminated)
     (merge first second hfirst hsecond).word =
       SU2FiniteDiskCellulation.CyclicDartWordMerge.spliceAt hfirst hsecond := rfl
 
+/-- Blocks supported on disjoint original face sets have disjoint current
+dart words.  This uses soundness and the fact that every dart has one face. -/
+theorem word_disjoint_of_faces_disjoint
+    (first second : P.PhysicalWordBlock eliminated)
+    (hfaces : Disjoint first.faces second.faces) :
+    List.Disjoint first.word second.word := by
+  rw [List.disjoint_left]
+  intro h hhFirst hhSecond
+  obtain ⟨f, hf, hhf⟩ := first.sound h hhFirst
+  obtain ⟨g, hg, hhg⟩ := second.sound h hhSecond
+  have hfaceF := P.face_of_mem_faceDartWord f h hhf
+  have hfaceG := P.face_of_mem_faceDartWord g h hhg
+  have hfg : f = g := Option.some.inj (hfaceF.symm.trans hfaceG)
+  subst g
+  exact (Finset.disjoint_left.mp hfaces) hf hg
+
 /-- Disjoint physical blocks add their face areas exactly under a splice. -/
 theorem area_merge_of_disjoint
     (first second : P.PhysicalWordBlock eliminated)
