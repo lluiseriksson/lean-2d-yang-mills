@@ -170,6 +170,51 @@ local instance integralEdgeDecidableEq :
 local instance integralChordEdgeDecidableEq :
     DecidableEq D.boundary.ChordEdge := Classical.decEq _
 
+/-- Evaluating the inverse relabelling on the chord assigned to step `i`
+recovers coordinate `i` literally. -/
+theorem internalCoordinateEquiv_symm_apply_stepChord
+    (x : Fin D.elimination.n -> SU2) (i : Fin D.elimination.n) :
+    D.internalCoordinateEquiv.symm x (D.stepChord i) = x i := by
+  have h := D.internalCoordinateEquiv_apply
+    (D.internalCoordinateEquiv.symm x) i
+  rw [D.internalCoordinateEquiv.apply_symm_apply] at h
+  exact h.symm
+
+/-- Inverting the boundary shear changes only the distinguished exterior
+chord; every internal chord retains its supplied coordinate. -/
+theorem chordBoundaryEquiv_symm_apply_other
+    (r : D.OtherChord -> SU2) (g : SU2) (e : D.OtherChord) :
+    D.boundary.chordBoundaryEquiv.symm (r, g) e.1 = r e := by
+  let y := D.boundary.chordBoundaryEquiv.symm (r, g)
+  have h := D.boundary.chordBoundaryEquiv.apply_symm_apply (r, g)
+  have he := congrArg (fun p => p.1 e) h
+  change (D.boundary.chordBoundaryEquiv y).1 e = r e at he
+  change y e.1 = r e
+  calc
+    y e.1 = (D.boundary.chordSplitEquiv y).1 e := by
+      exact (su2PiSplitAtEquiv_apply_fst D.boundary.boundaryChord y e).symm
+    _ = (D.boundary.chordBoundaryEquiv y).1 e := by
+      rw [D.boundary.chordBoundaryEquiv_apply_fst]
+    _ = r e := he
+
+/-- **Physical coordinate identity.**  Step coordinate `i` is exactly the
+value of the original physical edge selected by that Migdal step in the
+conditioned gauge-fixed configuration. -/
+theorem conditionedGaugeFixed_selectedEdge
+    (g : SU2) (x : Fin D.elimination.n -> SU2)
+    (i : Fin D.elimination.n) :
+    D.boundary.tree.gaugeFixedEdgeConfiguration
+        (D.boundary.chordBoundaryEquiv.symm
+          (D.internalCoordinateEquiv.symm x, g))
+        (D.elimination.selectedEdge i) = x i := by
+  change D.boundary.tree.gaugeFixedEdgeConfiguration
+      (D.boundary.chordBoundaryEquiv.symm
+        (D.internalCoordinateEquiv.symm x, g))
+      (D.stepChord i).1.1 = x i
+  rw [D.boundary.tree.gaugeFixedEdgeConfiguration_chord]
+  rw [D.chordBoundaryEquiv_symm_apply_other]
+  exact D.internalCoordinateEquiv_symm_apply_stepChord x i
+
 /-- Every fixed-boundary slice is continuous in its internal chord
 coordinates. -/
 theorem continuous_conditionedChordDensity (g : SU2) :
