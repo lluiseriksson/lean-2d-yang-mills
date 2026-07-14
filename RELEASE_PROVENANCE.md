@@ -43,4 +43,4 @@ The exported manuscript and PDFs belong to the editorial commit at the bundle's
 checkpoint named above. The remaining frontier is geometric and topological:
 comparison with planar isotopy classes, nonsimple or intersecting Wilson loops,
 higher-topology surfaces, and continuum constructions. No conditioned
-edge-model bridge remains open.
+edge-model obligation is left unresolved.
