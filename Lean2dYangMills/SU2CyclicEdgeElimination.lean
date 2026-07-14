@@ -60,6 +60,57 @@ theorem evalDartWord_cons (C : SU2FiniteDiskCellulation)
       C.edgeValue U h * C.evalDartWord U w := by
   simp [evalDartWord]
 
+/-- A dart word whose every oriented edge value is the identity evaluates to
+the identity. -/
+theorem evalDartWord_eq_one_of_forall_edgeValue_eq_one
+    (C : SU2FiniteDiskCellulation) (U : C.Edge -> SU2)
+    (w : List C.HalfEdge)
+    (hone : ∀ h ∈ w, C.edgeValue U h = 1) :
+    C.evalDartWord U w = 1 := by
+  induction w with
+  | nil => rfl
+  | cons h w ih =>
+      rw [C.evalDartWord_cons, hone h (by simp)]
+      rw [ih]
+      · simp
+      · intro k hk
+        exact hone k (by simp [hk])
+
+/-- In a duplicate-free word, if all entries except one evaluate to the
+identity, the whole ordered product is the value of that unique entry. -/
+theorem evalDartWord_eq_of_unique
+    (C : SU2FiniteDiskCellulation) (U : C.Edge -> SU2)
+    {w : List C.HalfEdge} {h₀ : C.HalfEdge}
+    (hmem : h₀ ∈ w) (hnodup : w.Nodup)
+    (hone : ∀ h ∈ w, h ≠ h₀ -> C.edgeValue U h = 1) :
+    C.evalDartWord U w = C.edgeValue U h₀ := by
+  obtain ⟨before, after, hw⟩ := List.mem_iff_append.mp hmem
+  have hn := hnodup
+  rw [hw, List.nodup_middle] at hn
+  have hnot : h₀ ∉ before ++ after := (List.nodup_cons.mp hn).1
+  have hbefore : C.evalDartWord U before = 1 := by
+    apply C.evalDartWord_eq_one_of_forall_edgeValue_eq_one
+    intro h hh
+    apply hone h
+    · rw [hw]
+      simp [hh]
+    · intro heq
+      apply hnot
+      rw [← heq]
+      exact List.mem_append_left after hh
+  have hafter : C.evalDartWord U after = 1 := by
+    apply C.evalDartWord_eq_one_of_forall_edgeValue_eq_one
+    intro h hh
+    apply hone h
+    · rw [hw]
+      simp [hh]
+    · intro heq
+      apply hnot
+      rw [← heq]
+      exact List.mem_append_right before hh
+  rw [hw, C.evalDartWord_append, C.evalDartWord_cons, hbefore, hafter]
+  simp
+
 /-- Insert one distinguished physical-edge coordinate into the product of all
 remaining coordinates. -/
 def edgeInsert (C : SU2FiniteDiskCellulation) (e : C.Edge)

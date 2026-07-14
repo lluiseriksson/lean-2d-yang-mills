@@ -19,6 +19,25 @@ def su2HeatKernelPartial (N : Nat) (t : Real) (g : SU2) : Complex :=
 def su2HeatKernel (t : Real) (g : SU2) : Complex :=
   heatKernelCharacterSeries su2CharacterTable t g
 
+/-- Every concrete SU(2) character is invariant under inversion. -/
+theorem su2CharacterChebyshev_inv (n : Nat) (g : SU2) :
+    su2CharacterChebyshev n g⁻¹ = su2CharacterChebyshev n g := by
+  rw [su2CharacterChebyshev_eq_ofReal,
+    su2CharacterChebyshev_eq_ofReal, su2HalfTrace_inv]
+
+/-- The concrete SU(2) heat kernel is invariant under inversion. -/
+theorem su2HeatKernel_inv (t : Real) (g : SU2) :
+    su2HeatKernel t g⁻¹ = su2HeatKernel t g := by
+  unfold su2HeatKernel heatKernelCharacterSeries
+  change (∑' n : Nat, heatKernelTerm su2CharacterTable t g⁻¹ n) =
+    ∑' n : Nat, heatKernelTerm su2CharacterTable t g n
+  apply tsum_congr
+  intro n
+  unfold heatKernelTerm
+  change ((n + 1 : Nat) : Complex) * su2CharacterChebyshev n g⁻¹ * _ =
+    ((n + 1 : Nat) : Complex) * su2CharacterChebyshev n g * _
+  rw [su2CharacterChebyshev_inv]
+
 theorem su2HeatKernel_eq_class (t : Real) (g : SU2) :
     su2HeatKernel t g = su2ClassHeatKernel t g 1 := by
   exact (su2ClassHeatKernel_right_one t g).symm

@@ -44,6 +44,47 @@ structure SU2BoundaryDiskCellulation extends SU2EdgeConnectedDiskCellulation whe
       connected.cellulation.edgeOfHalfEdge
         ((connected.cellulation.next ^ (k : Nat)) exteriorBoundaryStart))
 
+namespace SU2BoundaryDiskCellulation
+
+/-- Every physical exterior edge has a bounded face on its opposite side.
+This is not an additional cellulation axiom: exterior completeness puts both
+orientations into the certified exterior word if both had exterior face, and
+physical-edge injectivity would then contradict reversal having no fixed
+points. -/
+theorem exists_face_reverse_of_exterior
+    (P : SU2BoundaryDiskCellulation)
+    (h : P.connected.cellulation.HalfEdge)
+    (hh : P.connected.cellulation.face h = none) :
+    ∃ f, P.connected.cellulation.face
+      (P.connected.cellulation.reverse h) = some f := by
+  have hne : P.connected.cellulation.face
+      (P.connected.cellulation.reverse h) ≠ none := by
+    intro hreverse
+    obtain ⟨i, hi⟩ := P.exteriorBoundary_complete h hh
+    obtain ⟨j, hj⟩ := P.exteriorBoundary_complete
+      (P.connected.cellulation.reverse h) hreverse
+    have hedge :
+        P.connected.cellulation.edgeOfHalfEdge
+            ((P.connected.cellulation.next ^ (i : Nat))
+              P.exteriorBoundaryStart) =
+          P.connected.cellulation.edgeOfHalfEdge
+            ((P.connected.cellulation.next ^ (j : Nat))
+              P.exteriorBoundaryStart) := by
+      rw [hi, hj, P.connected.cellulation.edgeOfHalfEdge_reverse]
+    have hij := P.exteriorBoundary_edge_injective hedge
+    have hdart : h = P.connected.cellulation.reverse h := by
+      calc
+        h = (P.connected.cellulation.next ^ (i : Nat))
+            P.exteriorBoundaryStart := hi.symm
+        _ = (P.connected.cellulation.next ^ (j : Nat))
+            P.exteriorBoundaryStart := by rw [hij]
+        _ = P.connected.cellulation.reverse h := hj
+    exact P.connected.cellulation.reverse_ne h hdart.symm
+  obtain ⟨f, hf⟩ := Option.ne_none_iff_exists.mp hne
+  exact ⟨f, hf.symm⟩
+
+end SU2BoundaryDiskCellulation
+
 namespace SU2FiniteDiskCellulation
 
 /-- Reading a path from its first dart agrees with the accumulator-oriented

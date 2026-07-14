@@ -549,6 +549,48 @@ local instance constructionIntegralEdgeDecidableEq :
 local instance constructionIntegralChordEdgeDecidableEq :
     DecidableEq D.boundary.ChordEdge := Classical.decEq _
 
+/-- The adaptive anchor dart lies on the certified exterior face. -/
+theorem anchorDart_face_none :
+    P.connected.cellulation.face D.boundary.anchorDart = none := by
+  rw [SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.anchorDart,
+    P.connected.cellulation.face_next_pow]
+  exact P.exteriorBoundaryStart_face
+
+/-- Its reverse therefore belongs to a genuine bounded face.  This is a
+derived consequence of exterior completeness and physical-edge injectivity,
+not an additional boundary axiom. -/
+theorem exists_anchorReverse_face :
+    ∃ f, P.connected.cellulation.face
+      (P.connected.cellulation.reverse D.boundary.anchorDart) = some f :=
+  P.exists_face_reverse_of_exterior D.boundary.anchorDart
+    D.anchorDart_face_none
+
+/-- No physical elimination step consumes the exterior anchor edge. -/
+theorem anchorEdge_not_eliminated :
+    D.boundary.anchorEdge ∉ D.elimination.constructionState.eliminated := by
+  rw [D.elimination.constructionState_eliminated_eq_range]
+  intro h
+  obtain ⟨i, hi⟩ := h
+  exact D.elimination.selectedEdge_ne_exteriorEdge i
+    D.boundary.anchorIndex (by
+      simpa [SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.anchorEdge,
+        SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.anchorDart]
+        using hi)
+
+/-- The bounded-face orientation of the exterior anchor survives in the
+final global physical word. -/
+theorem reverse_anchorDart_mem_constructionWord :
+    P.connected.cellulation.reverse D.boundary.anchorDart ∈
+      D.elimination.constructionState.block.word := by
+  obtain ⟨f, hf⟩ := D.exists_anchorReverse_face
+  apply D.elimination.constructionState.block.complete
+  · rw [D.elimination.constructionState_faces_eq_univ]
+    exact ⟨f, Finset.mem_univ f,
+      P.toSU2EdgeConnectedDiskCellulation.mem_faceDartWord_of_face f
+        (P.connected.cellulation.reverse D.boundary.anchorDart) hf⟩
+  · simpa [SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.anchorEdge]
+      using D.anchorEdge_not_eliminated
+
 /-- Every exterior edge other than the adaptive anchor belongs to the primal
 tree.  Otherwise it would define an `OtherChord`, hence one of the selected
 internal physical edges, contradicting exterior-edge exclusion. -/
@@ -666,11 +708,96 @@ def conditionedConfiguration (g : SU2)
     (D.boundary.chordBoundaryEquiv.symm
       (D.internalCoordinateEquiv.symm x, g))
 
+/-- On the fixed-boundary all-one slice, the stored physical anchor
+coordinate is the orientation-correct representative of `g`. -/
+theorem conditionedConfiguration_anchorEdge (g : SU2) :
+    D.conditionedConfiguration g (fun _ => 1) D.boundary.anchorEdge =
+      if P.connected.cellulation.halfEdgeSide D.boundary.anchorDart = true
+      then g⁻¹ else g := by
+  unfold conditionedConfiguration
+  change D.boundary.tree.gaugeFixedEdgeConfiguration
+      (D.boundary.chordBoundaryEquiv.symm
+        (D.internalCoordinateEquiv.symm (fun _ => 1), g))
+      D.boundary.boundaryChord.1 = _
+  rw [D.boundary.tree.gaugeFixedEdgeConfiguration_chord]
+  exact D.chordBoundaryEquiv_symm_apply_boundary
+    (D.internalCoordinateEquiv.symm (fun _ => 1)) g
+
+/-- The bounded-face orientation traverses the exterior anchor oppositely,
+so its oriented value is always `g⁻¹`, independently of the stored canonical
+edge orientation. -/
+theorem edgeValue_conditioned_reverse_anchorDart (g : SU2) :
+    P.connected.cellulation.edgeValue
+        (D.conditionedConfiguration g (fun _ => 1))
+        (P.connected.cellulation.reverse D.boundary.anchorDart) = g⁻¹ := by
+  unfold SU2FiniteDiskCellulation.edgeValue
+  rw [P.connected.cellulation.halfEdgeSide_reverse,
+    P.connected.cellulation.edgeOfHalfEdge_reverse]
+  change (if (!P.connected.cellulation.halfEdgeSide D.boundary.anchorDart) = true
+      then (D.conditionedConfiguration g (fun _ => 1)
+        D.boundary.anchorEdge)⁻¹
+      else D.conditionedConfiguration g (fun _ => 1)
+        D.boundary.anchorEdge) = g⁻¹
+  rw [D.conditionedConfiguration_anchorEdge g]
+  by_cases hs :
+      P.connected.cellulation.halfEdgeSide D.boundary.anchorDart = true
+  · simp [hs]
+  · have hb : P.connected.cellulation.halfEdgeSide
+        D.boundary.anchorDart = false := Bool.eq_false_iff.mpr hs
+    simp [hb]
+
 @[simp] theorem conditionedConfiguration_selectedEdge
     (g : SU2) (x : Fin D.elimination.n -> SU2)
     (i : Fin D.elimination.n) :
     D.conditionedConfiguration g x (D.elimination.selectedEdge i) = x i :=
   D.conditionedGaugeFixed_selectedEdge g x i
+
+/-- Every dart of the final physical word other than the unique bounded-face
+anchor orientation evaluates to the identity on the all-one conditioned
+slice. -/
+theorem edgeValue_conditioned_eq_one_of_ne_reverse_anchor
+    (g : SU2) (h : P.connected.cellulation.HalfEdge)
+    (hh : h ∈ D.elimination.constructionState.block.word)
+    (hne : h ≠ P.connected.cellulation.reverse D.boundary.anchorDart) :
+    P.connected.cellulation.edgeValue
+        (D.conditionedConfiguration g (fun _ => 1)) h = 1 := by
+  let e := P.connected.cellulation.edgeOfHalfEdge h
+  have hedge : e ≠ D.boundary.anchorEdge := by
+    intro he
+    rcases P.connected.cellulation.eq_or_eq_reverse_of_edgeOfHalfEdge_eq he
+      with hsame | hreverse
+    · have hsource := D.elimination.constructionState.block.sound h hh
+      change ∃ f ∈ D.elimination.constructionState.block.faces,
+          h ∈ P.toSU2EdgeConnectedDiskCellulation.faceDartWord f at hsource
+      obtain ⟨f, _, hf⟩ := hsource
+      have hface := P.toSU2EdgeConnectedDiskCellulation.face_of_mem_faceDartWord
+        f h hf
+      rw [hsame, D.anchorDart_face_none] at hface
+      simp at hface
+    · exact hne hreverse
+  have hU : D.conditionedConfiguration g (fun _ => 1) e = 1 := by
+    by_cases ht : e ∈ Set.range D.boundary.tree.treeEdge
+    · simp [conditionedConfiguration,
+        SU2FiniteDiskCellulation.RootedSpanningTree.gaugeFixedEdgeConfiguration,
+        ht]
+    · let c : D.boundary.ChordEdge := ⟨e, ht⟩
+      have hc : c ≠ D.boundary.boundaryChord := by
+        intro h
+        apply hedge
+        exact congrArg Subtype.val h
+      let oc : D.OtherChord := ⟨c, hc⟩
+      obtain ⟨i, hi⟩ := D.stepChord_bijective.2 oc
+      have hselected : D.elimination.selectedEdge i = e := by
+        have hv := congrArg (fun q : D.OtherChord => q.1.1) hi
+        simpa [SU2PhysicalBoundaryEliminationChart.stepChord, oc, c] using hv
+      rw [← hselected]
+      exact D.conditionedConfiguration_selectedEdge g (fun _ => 1) i
+  unfold SU2FiniteDiskCellulation.edgeValue
+  change (if P.connected.cellulation.halfEdgeSide h = true
+    then (D.conditionedConfiguration g (fun _ => 1) e)⁻¹
+    else D.conditionedConfiguration g (fun _ => 1) e) = 1
+  rw [hU]
+  simp
 
 /-- Away from the selected physical range, a fixed-boundary configuration is
 independent of every internal elimination coordinate. -/
@@ -741,6 +868,28 @@ theorem indexedConditionedChordDensity_eq_constructionDensity
   exact D.elimination.edgeHeatKernelDensity_assign_eq_constructionDensity
     (D.conditionedConfiguration g (fun _ => 1)) x
 
+/-- **Residual-word evaluation.**  After every internal physical coordinate
+has been set to the identity, the final bounded-face word carries exactly the
+inverse exterior holonomy. -/
+theorem evalDartWord_conditioned_one (g : SU2) :
+    P.connected.cellulation.evalDartWord
+        (D.conditionedConfiguration g (fun _ => 1))
+        D.elimination.constructionState.block.word = g⁻¹ := by
+  calc
+    P.connected.cellulation.evalDartWord
+        (D.conditionedConfiguration g (fun _ => 1))
+        D.elimination.constructionState.block.word =
+      P.connected.cellulation.edgeValue
+        (D.conditionedConfiguration g (fun _ => 1))
+        (P.connected.cellulation.reverse D.boundary.anchorDart) := by
+          exact P.connected.cellulation.evalDartWord_eq_of_unique
+            (D.conditionedConfiguration g (fun _ => 1))
+            D.reverse_anchorDart_mem_constructionWord
+            D.elimination.constructionState_word_nodup
+            (fun h hh hne =>
+              D.edgeValue_conditioned_eq_one_of_ne_reverse_anchor g h hh hne)
+    _ = g⁻¹ := D.edgeValue_conditioned_reverse_anchorDart g
+
 /-- **Conditioned integral through the global physical fold.**  The actual
 boundary-conditioned chord integral is already one heat kernel at the total
 physical area.  The only remaining geometric identification is the value of
@@ -762,6 +911,24 @@ theorem conditionedChordIntegral_eq_constructionState (g : SU2) :
         (D.conditionedConfiguration g (fun _ => 1))
         D.elimination.constructionState.block.word) = _
   rw [D.elimination.constructionState_area_eq_totalArea]
+
+/-- **Exact conditioned chord amplitude.**  The physical fixed-boundary chord
+integral is the SU(2) heat kernel at the total face area and retained exterior
+holonomy. -/
+theorem conditionedChordIntegral_eq_heatKernel (g : SU2) :
+    D.boundary.conditionedChordIntegral g =
+      su2HeatKernel P.connected.cellulation.totalArea g := by
+  rw [D.conditionedChordIntegral_eq_constructionState,
+    D.evalDartWord_conditioned_one, su2HeatKernel_inv]
+
+/-- **Exact conditioned original-edge amplitude.**  Combining global gauge
+fixing with physical Migdal elimination evaluates the original-edge model,
+with exterior holonomy retained, for every compatible boundary chart. -/
+theorem conditionedEdgeIntegral_eq_heatKernel (g : SU2) :
+    D.boundary.conditionedEdgeIntegral g =
+      su2HeatKernel P.connected.cellulation.totalArea g := by
+  rw [D.boundary.conditionedEdgeIntegral_eq_conditionedChordIntegral]
+  exact D.conditionedChordIntegral_eq_heatKernel g
 
 end SU2PhysicalBoundaryEliminationChart
 
