@@ -29,6 +29,31 @@ structure CyclicDartWordMerge (C : SU2FiniteDiskCellulation)
 
 namespace CyclicDartWordMerge
 
+/-- Canonical proof-relevant splice data extracted from membership of the
+selected dart and its reverse.  Proof irrelevance makes downstream values
+independent of the particular membership witnesses. -/
+noncomputable def ofMem {C : SU2FiniteDiskCellulation}
+    {dart : C.HalfEdge} {first second : List C.HalfEdge}
+    (hfirst : dart ∈ first) (hsecond : C.reverse dart ∈ second) :
+    C.CyclicDartWordMerge dart first second := by
+  let hsFirst := List.mem_iff_append.mp hfirst
+  let firstBefore := Classical.choose hsFirst
+  let hsFirstAfter := Classical.choose_spec hsFirst
+  let firstAfter := Classical.choose hsFirstAfter
+  have hfirstWord := Classical.choose_spec hsFirstAfter
+  let hsSecond := List.mem_iff_append.mp hsecond
+  let secondBefore := Classical.choose hsSecond
+  let hsSecondAfter := Classical.choose_spec hsSecond
+  let secondAfter := Classical.choose hsSecondAfter
+  have hsecondWord := Classical.choose_spec hsSecondAfter
+  exact {
+    firstBefore := firstBefore
+    firstAfter := firstAfter
+    first_word := hfirstWord
+    secondBefore := secondBefore
+    secondAfter := secondAfter
+    second_word := hsecondWord }
+
 variable {C : SU2FiniteDiskCellulation}
   {dart : C.HalfEdge} {first second : List C.HalfEdge}
   (M : C.CyclicDartWordMerge dart first second)
@@ -37,6 +62,12 @@ variable {C : SU2FiniteDiskCellulation}
 the one produced by the cyclic Migdal identity. -/
 def mergedWord : List C.HalfEdge :=
   M.firstAfter ++ M.firstBefore ++ M.secondAfter ++ M.secondBefore
+
+/-- Direct word-level splice obtained from two membership proofs. -/
+noncomputable def spliceAt
+    (hfirst : dart ∈ first) (hsecond : C.reverse dart ∈ second) :
+    List C.HalfEdge :=
+  (ofMem hfirst hsecond).mergedWord
 
 /-- Evaluation of the spliced word is exactly the four-factor expression
 appearing on the right-hand side of the local physical Migdal move. -/
@@ -108,6 +139,15 @@ theorem mem_mergedWord_iff_of_edge_ne
     k ∈ M.mergedWord ↔ k ∈ first ∨ k ∈ second := by
   exact ⟨M.mem_first_or_second_of_mem_mergedWord,
     M.mem_mergedWord_of_mem_of_edge_ne hedge⟩
+
+/-- Away from the selected physical edge, `spliceAt` preserves membership
+exactly. -/
+theorem mem_spliceAt_iff_of_edge_ne
+    (hfirst : dart ∈ first) (hsecond : C.reverse dart ∈ second)
+    {k : C.HalfEdge}
+    (hedge : C.edgeOfHalfEdge k ≠ C.edgeOfHalfEdge dart) :
+    k ∈ spliceAt hfirst hsecond ↔ k ∈ first ∨ k ∈ second := by
+  exact (ofMem hfirst hsecond).mem_mergedWord_iff_of_edge_ne hedge
 
 /-- If the selected physical edge occurs only through the distinguished dart
 pair in the input words, it is completely absent from the spliced word. -/
