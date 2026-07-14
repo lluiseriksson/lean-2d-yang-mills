@@ -473,9 +473,9 @@ theorem nonempty_adaptiveBoundaryGaugeChart
 
 /-- A rooted spanning-tree chart compatible with the exterior coordinate.
 The root is the exterior basepoint and the anchor edge is retained as a chord.
-Existence for every physical disk is the remaining combinatorial tree--cotree
-problem; once such a chart is supplied, the conditioned measure theory below
-contains no further topological assumption. -/
+The later adaptive chart removes the fixed-anchor requirement, and universal
+physical compatibility for that adaptive object is proved by the tree--cotree
+construction in `SU2PhysicalBoundaryElimination`. -/
 structure BoundaryGaugeChart (P : SU2BoundaryDiskCellulation) where
   tree : P.connected.cellulation.RootedSpanningTree
   root_eq_exterior_source :

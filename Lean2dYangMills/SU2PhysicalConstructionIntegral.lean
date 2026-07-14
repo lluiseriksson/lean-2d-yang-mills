@@ -932,4 +932,41 @@ theorem conditionedEdgeIntegral_eq_heatKernel (g : SU2) :
 
 end SU2PhysicalBoundaryEliminationChart
 
+namespace SU2BoundaryDiskCellulation
+
+/-- A canonical compatible physical chart, chosen from the universal
+tree--cotree existence theorem.  Its downstream amplitude is independent of
+this classical choice by the exact evaluation theorem below. -/
+noncomputable def canonicalPhysicalBoundaryEliminationChart
+    (P : SU2BoundaryDiskCellulation) :
+    SU2PhysicalBoundaryEliminationChart P :=
+  Classical.choice P.nonempty_physicalBoundaryEliminationChart
+
+/-- The original-edge heat-kernel model with exterior holonomy fixed, now
+defined for every certified physical disk without an auxiliary chart argument. -/
+noncomputable def conditionedEdgeModelAmplitude
+    (P : SU2BoundaryDiskCellulation) (g : SU2) : Complex :=
+  P.canonicalPhysicalBoundaryEliminationChart.boundary.conditionedEdgeIntegral g
+
+/-- **Unconditional all-cellulation conditioned edge theorem.**  For every
+certified finite disk cellulation in the physical edge model, the fixed
+exterior-holonomy amplitude is exactly the SU(2) heat kernel at total area. -/
+theorem conditionedEdgeModelAmplitude_eq_heatKernel
+    (P : SU2BoundaryDiskCellulation) (g : SU2) :
+    P.conditionedEdgeModelAmplitude g =
+      su2HeatKernel P.connected.cellulation.totalArea g :=
+  P.canonicalPhysicalBoundaryEliminationChart.conditionedEdgeIntegral_eq_heatKernel g
+
+/-- Every compatible chart computes the same canonical conditioned edge
+amplitude; chart choice has disappeared from the physical answer. -/
+theorem conditionedEdgeIntegral_eq_conditionedEdgeModelAmplitude
+    (P : SU2BoundaryDiskCellulation)
+    (D : SU2PhysicalBoundaryEliminationChart P) (g : SU2) :
+    D.boundary.conditionedEdgeIntegral g =
+      P.conditionedEdgeModelAmplitude g := by
+  rw [D.conditionedEdgeIntegral_eq_heatKernel,
+    P.conditionedEdgeModelAmplitude_eq_heatKernel]
+
+end SU2BoundaryDiskCellulation
+
 end Lean2dYangMills

@@ -16,6 +16,7 @@ import Lean2dYangMills.SU2FiniteCellulation
 import Lean2dYangMills.SU2EdgeGaugeFixing
 import Lean2dYangMills.SU2CyclicEdgeElimination
 import Lean2dYangMills.SU2PhysicalEliminationTree
+import Lean2dYangMills.SU2TreeCotreeConnectivity
 import Lean2dYangMills.SU2PhysicalBoundaryElimination
 import Lean2dYangMills.SU2CyclicWordSplicing
 import Lean2dYangMills.SU2PhysicalEliminationSchedule

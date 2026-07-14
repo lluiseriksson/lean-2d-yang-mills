@@ -1,5 +1,5 @@
 import Lean2dYangMills.SU2BoundaryConditionedGaugeFixing
-import Lean2dYangMills.SU2PhysicalEliminationTree
+import Lean2dYangMills.SU2TreeCotreeConnectivity
 
 /-!
 # Compatibility of boundary gauge coordinates with physical elimination
@@ -195,9 +195,10 @@ theorem exists_internalChordCyclicFaceMerge
       (P.connected.cellulation.reverse h) hhg
   exact ⟨⟨h, hhf, hhg, fb, fa, hfw, gb, ga, hgw⟩, htree⟩
 
-/-- Connectivity of the dual graph carried by internal chords is exactly the
-remaining tree--cotree statement needed to construct a fully compatible
-physical boundary-elimination chart. -/
+/-- Connectivity of the dual graph carried by internal chords is a local
+sufficient criterion for constructing a fully compatible physical
+boundary-elimination chart.  The unconditional theorem below later produces
+such a chart directly for every certified physical disk. -/
 theorem nonempty_physicalBoundaryEliminationChart_of_connected
     (hconn : B.internalChordDualGraph.Connected) :
     Nonempty (SU2PhysicalBoundaryEliminationChart P) := by
@@ -237,5 +238,29 @@ theorem nonempty_physicalBoundaryEliminationChart_of_connected
   exact Classical.choose_spec (hm i)
 
 end SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart
+
+namespace SU2BoundaryDiskCellulation
+
+/-- **Universal tree--cotree existence.** Every certified physical disk
+cellulation admits a primal boundary gauge chart whose retained internal
+chords contain a complete physical dual elimination tree.  No compatibility
+or connectedness hypothesis is supplied by the caller. -/
+theorem nonempty_physicalBoundaryEliminationChart
+    (P : SU2BoundaryDiskCellulation) :
+    Nonempty (SU2PhysicalBoundaryEliminationChart P) := by
+  obtain ⟨T⟩ :=
+    P.toSU2EdgeConnectedDiskCellulation.nonempty_dualRootedEliminationTree
+  have hconn := T.primalGraphAvoiding_selectedEdgeRange_connected
+  obtain ⟨S, hS⟩ :=
+    P.connected.cellulation.exists_rootedSpanningTree_avoiding_of_connected
+      (Set.range T.selectedEdge) hconn
+  obtain ⟨k, hk⟩ := P.exists_exterior_edge_not_tree S
+  let B : P.AdaptiveBoundaryGaugeChart := ⟨S, k, hk⟩
+  refine ⟨⟨B, T, fun i hi => ?_⟩⟩
+  rcases hi with ⟨j, hj⟩
+  apply hS j
+  exact ⟨i, hj.symm⟩
+
+end SU2BoundaryDiskCellulation
 
 end Lean2dYangMills
