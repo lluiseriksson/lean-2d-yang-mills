@@ -100,6 +100,41 @@ def parentPairs : {n : Nat} -> SU2RootedTreeOrder n ->
         (fun p => (Fin.castSucc p.1, Fin.castSucc p.2)) ++
       [(Fin.castSucc parent, Fin.last (n + 1))]
 
+/-- The parent of the non-root vertex `i.succ`.  The construction order makes
+this parent strictly older than the child; that triangularity is what later
+prevents two tree steps from selecting the same physical edge. -/
+def parentIndex : {n : Nat} -> (tree : SU2RootedTreeOrder n) ->
+    Fin n -> Fin (n + 1)
+  | 0, .root => Fin.elim0
+  | n + 1, .grow tree parent => fun i =>
+      Fin.lastCases (Fin.castSucc parent)
+        (fun j => Fin.castSucc (tree.parentIndex j)) i
+
+theorem parentIndex_lt_child : {n : Nat} ->
+    (tree : SU2RootedTreeOrder n) -> (i : Fin n) ->
+      (tree.parentIndex i).val < (Fin.succ i).val
+  | 0, .root, i => Fin.elim0 i
+  | n + 1, .grow tree parent, i => by
+      refine Fin.lastCases ?_ (fun j => ?_) i
+      · simpa [parentIndex] using parent.isLt
+      · simpa [parentIndex] using tree.parentIndex_lt_child j
+
+/-- Every parent selected by `parentIndex` is one of the certified
+parent--child pairs stored by the construction tree. -/
+theorem parentIndex_pair_mem_parentPairs : {n : Nat} ->
+    (tree : SU2RootedTreeOrder n) -> (i : Fin n) ->
+      (tree.parentIndex i, Fin.succ i) ∈ tree.parentPairs
+  | 0, .root, i => Fin.elim0 i
+  | n + 1, .grow tree parent, i => by
+      refine Fin.lastCases ?_ (fun j => ?_) i
+      · simp [parentIndex, parentPairs]
+      · have hj := tree.parentIndex_pair_mem_parentPairs j
+        simp only [parentIndex, Fin.lastCases_castSucc, parentPairs,
+          List.mem_append, List.mem_map, List.mem_singleton]
+        left
+        refine ⟨(tree.parentIndex j, Fin.succ j), hj, ?_⟩
+        ext <;> rfl
+
 /-- A construction order realizes a finite simple graph when every recorded
 parent--child pair is an actual graph edge. -/
 def ValidForGraph {V : Type} {n : Nat} (G : SimpleGraph V)
@@ -193,6 +228,26 @@ theorem coordinateEquiv_grow_apply_castSucc {n : Nat}
   simp [coordinateEquiv, su2SplitLastEquiv, su2AttachLeafGaugeFixEquiv,
     MeasurableEquiv.prodComm, MeasurableEquiv.prodCongr, Fin.init_def]
 
+/-- At every non-root vertex, the global coordinate map is exactly the
+parent-to-child increment. -/
+theorem coordinateEquiv_apply_succ : {n : Nat} ->
+    (tree : SU2RootedTreeOrder n) -> (x : Fin (n + 1) -> SU2) ->
+      (i : Fin n) ->
+        tree.coordinateEquiv x (Fin.succ i) =
+          (x (tree.parentIndex i))⁻¹ * x (Fin.succ i)
+  | 0, .root, _, i => Fin.elim0 i
+  | n + 1, .grow tree parent, x, i => by
+      refine Fin.lastCases ?_ (fun j => ?_) i
+      · simpa [parentIndex] using
+          coordinateEquiv_grow_apply_last tree parent x
+      · have hidx : Fin.succ (Fin.castSucc j) =
+            Fin.castSucc (Fin.succ j) := by ext; rfl
+        rw [hidx]
+        rw [coordinateEquiv_grow_apply_castSucc]
+        simpa [parentIndex] using
+          tree.coordinateEquiv_apply_succ
+            (fun k => x (Fin.castSucc k)) j
+
 /-- The recursive global rooted-tree coordinate map preserves product Haar in
 every finite dimension. -/
 theorem coordinateEquiv_measurePreserving : {n : Nat} ->
@@ -283,14 +338,248 @@ def primalGraph (C : SU2FiniteDiskCellulation) : SimpleGraph C.Vertex where
 
 /-- A construction-ordered spanning tree certificate inside the primal
 one-skeleton of a finite disk cellulation.  The vertex equivalence supplies
-coverage and uniqueness; `parent_edges` proves that every growth edge is a
-genuine cellulation edge. -/
+coverage and uniqueness.  The physical parent dart is stored explicitly;
+this matters when parallel physical edges join the same pair of vertices,
+because later tree--cotree arguments must retain the selected edge itself,
+not merely the existence of some edge with the same endpoints. -/
 structure RootedSpanningTree (C : SU2FiniteDiskCellulation) where
   n : Nat
   vertexOrder : Fin (n + 1) ≃ C.Vertex
   order : SU2RootedTreeOrder n
-  parent_edges : ∀ p ∈ order.parentPairs,
-    C.primalAdj (vertexOrder p.1) (vertexOrder p.2)
+  treeDart : Fin n -> C.HalfEdge
+  treeDart_source_cert : ∀ i,
+    C.source (treeDart i) = vertexOrder (order.parentIndex i)
+  treeDart_target_cert : ∀ i,
+    C.target (treeDart i) = vertexOrder (Fin.succ i)
+
+/-- The physical edge underlying an oriented half-edge. -/
+def edgeOfHalfEdge (C : SU2FiniteDiskCellulation) (h : C.HalfEdge) : C.Edge :=
+  (C.edgeDarts.symm h).1
+
+/-- The orientation bit of a half-edge in the cellulation's chosen edge
+coordinates. -/
+def halfEdgeSide (C : SU2FiniteDiskCellulation) (h : C.HalfEdge) : Bool :=
+  (C.edgeDarts.symm h).2
+
+@[simp]
+theorem edgeDarts_edgeOfHalfEdge_halfEdgeSide
+    (C : SU2FiniteDiskCellulation) (h : C.HalfEdge) :
+    C.edgeDarts (C.edgeOfHalfEdge h, C.halfEdgeSide h) = h := by
+  exact C.edgeDarts.apply_symm_apply h
+
+@[simp]
+theorem edgeOfHalfEdge_reverse (C : SU2FiniteDiskCellulation)
+    (h : C.HalfEdge) :
+    C.edgeOfHalfEdge (C.reverse h) = C.edgeOfHalfEdge h := by
+  rcases hp : C.edgeDarts.symm h with ⟨e, b⟩
+  have hh : h = C.edgeDarts (e, b) := by
+    rw [← hp]
+    exact (C.edgeDarts.apply_symm_apply h).symm
+  subst h
+  simp [edgeOfHalfEdge, C.reverse_edgeDarts]
+
+/-- Primal adjacency witnessed by a physical edge outside a prescribed
+forbidden set.  Unlike deleting an edge of a `SimpleGraph`, this definition
+retains parallel allowed edges when one parallel physical edge is forbidden. -/
+def primalAdjAvoiding (C : SU2FiniteDiskCellulation)
+    (forbidden : Set C.Edge) (v w : C.Vertex) : Prop :=
+  v ≠ w ∧ ∃ h : C.HalfEdge,
+    C.source h = v ∧ C.target h = w ∧
+      C.edgeOfHalfEdge h ∉ forbidden
+
+theorem primalAdjAvoiding_symm (C : SU2FiniteDiskCellulation)
+    (forbidden : Set C.Edge) {v w : C.Vertex} :
+    C.primalAdjAvoiding forbidden v w ->
+      C.primalAdjAvoiding forbidden w v := by
+  rintro ⟨hvw, h, hsv, htv, hedge⟩
+  refine ⟨hvw.symm, C.reverse h, ?_, ?_, ?_⟩
+  · exact htv
+  · simpa [target, C.reverse_involutive h] using hsv
+  · simpa using hedge
+
+/-- The simple primal graph obtained after forbidding physical edges. -/
+def primalGraphAvoiding (C : SU2FiniteDiskCellulation)
+    (forbidden : Set C.Edge) : SimpleGraph C.Vertex where
+  Adj := C.primalAdjAvoiding forbidden
+  symm := by
+    intro v w
+    exact C.primalAdjAvoiding_symm forbidden
+  loopless := ⟨by
+    intro v hv
+    exact hv.1 rfl⟩
+
+theorem primalGraphAvoiding_mono (C : SU2FiniteDiskCellulation)
+    {s t : Set C.Edge} (hst : s ⊆ t) :
+    C.primalGraphAvoiding t ≤ C.primalGraphAvoiding s := by
+  intro v w hvw
+  rcases hvw with ⟨hne, h, hs, ht, hedge⟩
+  exact ⟨hne, h, hs, ht, fun he => hedge (hst he)⟩
+
+theorem primalGraphAvoiding_le_primalGraph
+    (C : SU2FiniteDiskCellulation) (forbidden : Set C.Edge) :
+    C.primalGraphAvoiding forbidden ≤ C.primalGraph := by
+  intro v w hvw
+  rcases hvw with ⟨hne, h, hs, ht, _⟩
+  exact ⟨hne, h, hs, ht⟩
+
+/-- Consecutive allowed darts along a face orbit give primal reachability in
+the physical-edge-deleted graph.  This is the local path lemma used to replace
+one dual-tree edge by the rest of the newly attached face boundary. -/
+theorem reachable_next_pow_of_forall_not_mem
+    (C : SU2FiniteDiskCellulation) (forbidden : Set C.Edge)
+    (h : C.HalfEdge) (n : Nat)
+    (hallowed : ∀ k < n,
+      C.edgeOfHalfEdge ((C.next ^ k) h) ∉ forbidden) :
+    (C.primalGraphAvoiding forbidden).Reachable
+      (C.source h) (C.source ((C.next ^ n) h)) := by
+  induction n with
+  | zero => exact .rfl
+  | succ n ih =>
+      have hprefix := ih (fun k hk => hallowed k (Nat.lt_succ_of_lt hk))
+      have hedge : C.edgeOfHalfEdge ((C.next ^ n) h) ∉ forbidden :=
+        hallowed n (Nat.lt_succ_self n)
+      have htarget :
+          C.target ((C.next ^ n) h) =
+            C.source ((C.next ^ (n + 1)) h) := by
+        simpa [pow_succ'] using
+          (C.next_source ((C.next ^ n) h)).symm
+      have hstep :
+          (C.primalGraphAvoiding forbidden).Reachable
+            (C.source ((C.next ^ n) h))
+            (C.source ((C.next ^ (n + 1)) h)) := by
+        by_cases heq : C.source ((C.next ^ n) h) =
+            C.source ((C.next ^ (n + 1)) h)
+        · simpa [heq]
+        · apply SimpleGraph.Adj.reachable
+          exact ⟨heq, (C.next ^ n) h, rfl, htarget, hedge⟩
+      exact hprefix.trans hstep
+
+/-- If every edge of one graph can be replaced by a reachable path in a
+second graph, reachability in the first graph lifts to the second. -/
+theorem reachable_of_reachable_of_adj_reachable
+    {V : Type} {G H : SimpleGraph V}
+    (hadj : ∀ {v w}, G.Adj v w -> H.Reachable v w)
+    {v w : V} (hvw : G.Reachable v w) : H.Reachable v w := by
+  obtain ⟨p⟩ := hvw
+  induction p with
+  | nil => exact .rfl
+  | cons h p ih => exact (hadj h).trans ih
+
+/-- Removing one additional physical edge preserves primal connectedness when
+both orientations of that edge can be bypassed in the smaller graph. -/
+theorem primalGraphAvoiding_insert_connected
+    (C : SU2FiniteDiskCellulation) (forbidden : Set C.Edge) (e : C.Edge)
+    (hconn : (C.primalGraphAvoiding forbidden).Connected)
+    (hbypass : ∀ h : C.HalfEdge, C.edgeOfHalfEdge h = e ->
+      (C.primalGraphAvoiding (Set.insert e forbidden)).Reachable
+        (C.source h) (C.target h)) :
+    (C.primalGraphAvoiding (Set.insert e forbidden)).Connected := by
+  letI : Nonempty C.Vertex := hconn.nonempty
+  refine ⟨?_⟩
+  intro v w
+  apply reachable_of_reachable_of_adj_reachable (G :=
+    C.primalGraphAvoiding forbidden) (H :=
+    C.primalGraphAvoiding (Set.insert e forbidden)) ?_ (hconn v w)
+  intro a b hab
+  rcases hab with ⟨hne, h, hs, ht, hedge⟩
+  by_cases he : C.edgeOfHalfEdge h = e
+  · simpa [hs, ht] using hbypass h he
+  · apply SimpleGraph.Adj.reachable
+    exact ⟨hne, h, hs, ht, by
+      intro hin
+      rcases Set.mem_insert_iff.mp hin with heq | hmem
+      · exact he heq
+      · exact hedge hmem⟩
+
+/-- Two oriented half-edges over the same physical edge are either equal or
+reverse to one another. -/
+theorem eq_or_eq_reverse_of_edgeOfHalfEdge_eq
+    (C : SU2FiniteDiskCellulation) {h k : C.HalfEdge}
+    (hedge : C.edgeOfHalfEdge h = C.edgeOfHalfEdge k) :
+    h = k ∨ h = C.reverse k := by
+  rcases hp : C.edgeDarts.symm h with ⟨e, b⟩
+  rcases hq : C.edgeDarts.symm k with ⟨f, c⟩
+  have hh : h = C.edgeDarts (e, b) := by
+    rw [← hp]
+    exact (C.edgeDarts.apply_symm_apply h).symm
+  have hk : k = C.edgeDarts (f, c) := by
+    rw [← hq]
+    exact (C.edgeDarts.apply_symm_apply k).symm
+  have hef : e = f := by
+    simpa [edgeOfHalfEdge, hp, hq] using hedge
+  subst f
+  subst h
+  subst k
+  cases b <;> cases c
+  · exact Or.inl rfl
+  · exact Or.inr (by simp [C.reverse_edgeDarts])
+  · exact Or.inr (by simp [C.reverse_edgeDarts])
+  · exact Or.inl rfl
+
+/-- The certified primal adjacency attached to a non-root construction
+vertex. -/
+theorem RootedSpanningTree.parentAdj
+    {C : SU2FiniteDiskCellulation} (T : C.RootedSpanningTree) (i : Fin T.n) :
+    C.primalAdj
+      (T.vertexOrder (T.order.parentIndex i))
+      (T.vertexOrder (Fin.succ i)) := by
+  refine ⟨?_, T.treeDart i, T.treeDart_source_cert i,
+    T.treeDart_target_cert i⟩
+  intro h
+  have hp := T.order.parentIndex_lt_child i
+  exact (Nat.ne_of_lt hp) (Fin.ext_iff.mp (T.vertexOrder.injective h))
+
+@[simp]
+theorem RootedSpanningTree.treeDart_source
+    {C : SU2FiniteDiskCellulation} (T : C.RootedSpanningTree) (i : Fin T.n) :
+    C.source (T.treeDart i) =
+      T.vertexOrder (T.order.parentIndex i) :=
+  T.treeDart_source_cert i
+
+@[simp]
+theorem RootedSpanningTree.treeDart_target
+    {C : SU2FiniteDiskCellulation} (T : C.RootedSpanningTree) (i : Fin T.n) :
+    C.target (T.treeDart i) = T.vertexOrder (Fin.succ i) :=
+  T.treeDart_target_cert i
+
+/-- The physical tree edge selected at a non-root construction vertex. -/
+def RootedSpanningTree.treeEdge
+    {C : SU2FiniteDiskCellulation} (T : C.RootedSpanningTree) (i : Fin T.n) :
+    C.Edge :=
+  C.edgeOfHalfEdge (T.treeDart i)
+
+/-- Distinct non-root vertices select distinct physical tree edges.  The key
+point is that a reversed collision would force a strict cycle in the
+construction order. -/
+theorem RootedSpanningTree.treeEdge_injective
+    {C : SU2FiniteDiskCellulation} (T : C.RootedSpanningTree) :
+    Function.Injective T.treeEdge := by
+  intro i j hij
+  rcases C.eq_or_eq_reverse_of_edgeOfHalfEdge_eq hij with hsame | hrev
+  · have ht := congrArg C.target hsame
+    rw [T.treeDart_target, T.treeDart_target] at ht
+    exact Fin.succ_injective _ (T.vertexOrder.injective ht)
+  · have hparentChild : T.order.parentIndex i = Fin.succ j := by
+      apply T.vertexOrder.injective
+      calc
+        T.vertexOrder (T.order.parentIndex i) = C.source (T.treeDart i) := by
+          simp
+        _ = C.source (C.reverse (T.treeDart j)) := by rw [hrev]
+        _ = C.target (T.treeDart j) := rfl
+        _ = T.vertexOrder (Fin.succ j) := by simp
+    have hchildParent : Fin.succ i = T.order.parentIndex j := by
+      apply T.vertexOrder.injective
+      calc
+        T.vertexOrder (Fin.succ i) = C.target (T.treeDart i) := by simp
+        _ = C.target (C.reverse (T.treeDart j)) := by rw [hrev]
+        _ = C.source (T.treeDart j) := by
+          exact congrArg C.source (C.reverse_involutive (T.treeDart j))
+        _ = T.vertexOrder (T.order.parentIndex j) := by simp
+    have hi := T.order.parentIndex_lt_child i
+    have hj := T.order.parentIndex_lt_child j
+    rw [hparentChild] at hi
+    rw [← hchildParent] at hj
+    exact (Nat.lt_asymm hi hj).elim
 
 /-- Primal connectedness is precisely the extra geometric hypothesis needed
 to construct a certified rooted spanning tree from the present cellulation
@@ -302,11 +591,49 @@ theorem exists_rootedSpanningTree_of_primal_connected
   letI : DecidableRel C.primalGraph.Adj := Classical.decRel _
   obtain ⟨n, tree, vertexOrder, hvalid⟩ :=
     SU2RootedTreeOrder.exists_validForGraph_of_connected C.primalGraph hC
+  let hadj : ∀ i : Fin n,
+      C.primalAdj
+        (vertexOrder (tree.parentIndex i))
+        (vertexOrder (Fin.succ i)) := fun i =>
+    hvalid _ (tree.parentIndex_pair_mem_parentPairs i)
   exact ⟨{
     n := n
     vertexOrder := vertexOrder
     order := tree
-    parent_edges := hvalid }⟩
+    treeDart := fun i => Classical.choose (hadj i).2
+    treeDart_source_cert := fun i => (Classical.choose_spec (hadj i).2).1
+    treeDart_target_cert := fun i => (Classical.choose_spec (hadj i).2).2 }⟩
+
+/-- Connectedness after removing a set of physical edges supplies a rooted
+spanning tree whose *stored physical darts* all avoid that set.  The explicit
+dart field prevents an unrelated parallel edge from being re-selected by
+classical choice downstream. -/
+theorem exists_rootedSpanningTree_avoiding_of_connected
+    (C : SU2FiniteDiskCellulation) (forbidden : Set C.Edge)
+    (hC : (C.primalGraphAvoiding forbidden).Connected) :
+    ∃ T : C.RootedSpanningTree,
+      ∀ i : Fin T.n, T.treeEdge i ∉ forbidden := by
+  classical
+  letI : DecidableRel (C.primalGraphAvoiding forbidden).Adj :=
+    Classical.decRel _
+  obtain ⟨n, tree, vertexOrder, hvalid⟩ :=
+    SU2RootedTreeOrder.exists_validForGraph_of_connected
+      (C.primalGraphAvoiding forbidden) hC
+  let hadj : ∀ i : Fin n,
+      C.primalAdjAvoiding forbidden
+        (vertexOrder (tree.parentIndex i))
+        (vertexOrder (Fin.succ i)) := fun i =>
+    hvalid _ (tree.parentIndex_pair_mem_parentPairs i)
+  let T : C.RootedSpanningTree := {
+    n := n
+    vertexOrder := vertexOrder
+    order := tree
+    treeDart := fun i => Classical.choose (hadj i).2
+    treeDart_source_cert := fun i => (Classical.choose_spec (hadj i).2).1
+    treeDart_target_cert := fun i => (Classical.choose_spec (hadj i).2).2.1 }
+  refine ⟨T, fun i => ?_⟩
+  change C.edgeOfHalfEdge (Classical.choose (hadj i).2) ∉ forbidden
+  exact (Classical.choose_spec (hadj i).2).2.2
 
 /-- Global rooted-tree coordinates on the vertex variables of a finite disk
 cellulation.  `vertexOrder` labels every cellulation vertex by the construction

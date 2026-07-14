@@ -41,6 +41,12 @@ instance instIsMulLeftInvariantSU2FiniteProductHaar
   unfold su2FiniteProductHaar
   infer_instance
 
+instance instIsMulRightInvariantSU2FiniteProductHaar
+    (I : Type) [Fintype I] :
+    Measure.IsMulRightInvariant (su2FiniteProductHaar I) := by
+  unfold su2FiniteProductHaar
+  infer_instance
+
 /-- Product Haar on one anchor variable and an arbitrary finite family of
 incident edge variables. -/
 def su2FiniteStarHaar (I : Type) [Fintype I] :

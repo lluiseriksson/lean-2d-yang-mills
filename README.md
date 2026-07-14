@@ -93,10 +93,22 @@ tree is certified by actual half-edge incidences, and one measurable
 equivalence replaces all vertex variables by the root variable and the ordered
 parent--child increments.  The map and its inverse are explicit, its coordinate
 formulas are theorems, and it preserves the literal `Measure.pi` product Haar
-probability.  What remains open is the stronger edge-model equivalence
-`SU(2)^E ≃ SU(2)^{V\setminus\{r\}} × SU(2)^{E\setminus T}`, the induced formula
-for every face holonomy, and the comparison with embedded planar isotopy
-classes.
+probability.
+
+`SU2GlobalEdgeGaugeFixing.lean` closes the stronger edge-model layer.  It
+selects `V-1` distinct physical tree edges, partitions every original edge
+configuration into oriented tree increments and complementary chords, and
+constructs the explicit measurable equivalence
+`SU(2)^E ≃ SU(2)^{V\setminus\{r\}} × SU(2)^{E\setminus T}`.  The equivalence
+preserves literal normalized product Haar.  Reconstructed vertex potentials
+set all tree edges to the identity, every facial holonomy transforms by its
+basepoint conjugation, the full heat-kernel density loses every tree/gauge
+coordinate, and the unreduced edge integral equals the chord integral exactly.
+This integral includes the exterior edge variables and is a scalar; it is not
+the boundary-dependent schedule amplitude.  The next physical bridge is a
+boundary-conditioned original-edge integral, followed by comparison with
+embedded planar isotopy classes and continuum constructions.  Release and
+commit authentication details are recorded in `RELEASE_PROVENANCE.md`.
 
 ## Public Interface
 
