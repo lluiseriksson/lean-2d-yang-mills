@@ -63,9 +63,12 @@ namespace PhysicalWordBlock
 variable {P : SU2EdgeConnectedDiskCellulation}
   {eliminated : Set P.connected.cellulation.Edge}
 
-/-- The initial block associated with one bounded face. -/
-def singleton (f : P.connected.cellulation.Face) :
-    P.PhysicalWordBlock ∅ where
+/-- A singleton face block viewed relative to any global eliminated-edge set.
+Completeness only asks for still-live source darts, all of which occur in the
+original facial word. -/
+def singletonAt (eliminated : Set P.connected.cellulation.Edge)
+    (f : P.connected.cellulation.Face) :
+    P.PhysicalWordBlock eliminated where
   faces := {f}
   word := P.faceDartWord f
   complete := by
@@ -74,6 +77,10 @@ def singleton (f : P.connected.cellulation.Face) :
   sound := by
     intro h hh
     simpa [P.faceDartSource_singleton f] using hh
+
+/-- The initial singleton block before any edge has been eliminated. -/
+def singleton (f : P.connected.cellulation.Face) :
+    P.PhysicalWordBlock ∅ := singletonAt ∅ f
 
 /-- Total physical area carried by a block. -/
 def area (B : P.PhysicalWordBlock eliminated) : Real :=

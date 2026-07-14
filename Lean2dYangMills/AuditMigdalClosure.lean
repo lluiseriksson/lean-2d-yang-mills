@@ -7,6 +7,7 @@ import Lean2dYangMills.SU2PhysicalEliminationIntegral
 import Lean2dYangMills.SU2PhysicalBlockInvariant
 import Lean2dYangMills.SU2PhysicalWordBlocks
 import Lean2dYangMills.SU2PhysicalBlockMigdal
+import Lean2dYangMills.SU2PhysicalBlockGrowth
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -133,5 +134,10 @@ namespace Lean2dYangMills
 #print axioms SU2FiniteDiskCellulation.CyclicDartWordMerge.nodup_mergedWord_of_nodup_disjoint
 #print axioms SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.nodup_merge
 #print axioms SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.integrate_merge_of_nodup
+#print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.dart_mem_block
+#print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.grow_faces
+#print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.grow_nodup
+#print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.grow_area
+#print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.integrate_grow
 
 end Lean2dYangMills
