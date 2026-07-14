@@ -355,6 +355,161 @@ theorem prefix_assign_edgeInsert {n : Nat}
         P.connected.cellulation.edgeInsert_other
           D.lastMerge.selectedEdge _ 1 he]
 
+/-- **Recursive physical-density evaluation.**  Integrating every selected
+construction coordinate collapses the original face product to the single
+heat kernel carried by the global physical word block.  The surviving edge
+configuration is obtained by setting every eliminated coordinate to the
+identity. -/
+theorem integral_density_eq_build : {n : Nat} ->
+    (tree : SU2RootedTreeOrder n) ->
+    (D : SU2PhysicalConstructionData P tree) ->
+    (U : P.EdgeConfiguration) ->
+    (∫ x, D.density U x ∂su2FiniteProductHaar (Fin n)) =
+      su2HeatKernel (SU2PhysicalConstructionState.build tree D).block.area
+        (P.connected.cellulation.evalDartWord
+          (D.assign U (fun _ => 1))
+          (SU2PhysicalConstructionState.build tree D).block.word)
+  | 0, .root, D, U => by
+      simp [density, assign, SU2PhysicalConstructionState.build,
+        SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.singleton,
+        SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.singletonAt,
+        SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.area,
+        P.eval_faceDartWord]
+  | n + 1, .grow tree parent, D, U => by
+      let oldD := D.prefixData
+      let oldS := SU2PhysicalConstructionState.build tree oldD
+      let M := D.lastMerge
+      let child := D.label (Fin.last (n + 1))
+      have hparent : D.label (Fin.castSucc parent) ∈ oldS.block.faces := by
+        rw [oldS.faces_eq]
+        exact Finset.mem_image.mpr ⟨parent, Finset.mem_univ parent, rfl⟩
+      have hchild : child ∉ oldS.block.faces := by
+        rw [oldS.faces_eq]
+        intro h
+        obtain ⟨i, _, hi⟩ := Finset.mem_image.mp h
+        have hidx : Fin.castSucc i = Fin.last (n + 1) :=
+          D.label_injective hi
+        have hv := congrArg (fun k : Fin (n + 2) => k.val) hidx
+        simp at hv
+        omega
+      have hlive : M.selectedEdge ∉ oldS.eliminated := by
+        rw [oldS.eliminated_eq]
+        intro h
+        obtain ⟨i, hi⟩ := h
+        have hedge : (D.merge (Fin.castSucc i)).selectedEdge =
+            (D.merge (Fin.last n)).selectedEdge := by
+          simpa [oldD, M] using hi
+        have hidx := D.selectedEdge_injective hedge
+        have hv := congrArg (fun k : Fin (n + 1) => k.val) hidx
+        simp at hv
+        omega
+      let r : {e : P.connected.cellulation.Edge // e ≠ M.selectedEdge} -> SU2 :=
+        fun e => oldD.assign
+          (P.connected.cellulation.edgeInsert M.selectedEdge
+            (fun e => U e) 1) (fun _ => 1) e
+      have hcfg (x : SU2) :
+          oldD.assign
+              (P.connected.cellulation.edgeInsert M.selectedEdge
+                (fun e => U e) x) (fun _ => 1) =
+            P.connected.cellulation.edgeInsert M.selectedEdge r x := by
+        simpa [oldD, M, r] using
+          (D.prefix_assign_edgeInsert U (fun _ => 1) x)
+      have hface (x : SU2) :
+          P.faceHolonomy
+              (P.connected.cellulation.edgeInsert M.selectedEdge
+                (fun e => U e) x) child =
+            P.connected.cellulation.evalDartWord
+              (P.connected.cellulation.edgeInsert M.selectedEdge r x)
+              (SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.singletonAt
+                oldS.eliminated child).word := by
+        rw [show P.connected.cellulation.evalDartWord
+              (P.connected.cellulation.edgeInsert M.selectedEdge r x)
+              (SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.singletonAt
+                oldS.eliminated child).word =
+            P.faceHolonomy
+              (P.connected.cellulation.edgeInsert M.selectedEdge r x) child by
+          exact P.eval_faceDartWord _ _]
+        rw [← hcfg x]
+        exact (D.lastFaceHolonomy_assign_prefix
+          (P.connected.cellulation.edgeInsert M.selectedEdge
+            (fun e => U e) x) (fun _ => 1)).symm
+      rw [su2FiniteProductHaar_integral_iteratedPrefix (n := n)
+        (f := D.density U) (D.integrable_density U)]
+      calc
+        (∫ x : SU2,
+            ∫ q : Fin n -> SU2,
+              D.density U ((su2SplitLastEquiv n).symm (x, q))
+              ∂su2FiniteProductHaar (Fin n)
+            ∂su2HaarProb) =
+            ∫ x : SU2,
+              su2HeatKernel oldS.block.area
+                  (P.connected.cellulation.evalDartWord
+                    (P.connected.cellulation.edgeInsert M.selectedEdge r x)
+                    oldS.block.word) *
+                su2HeatKernel (P.connected.cellulation.faceArea child)
+                  (P.connected.cellulation.evalDartWord
+                    (P.connected.cellulation.edgeInsert M.selectedEdge r x)
+                    (SU2EdgeConnectedDiskCellulation.PhysicalWordBlock.singletonAt
+                      oldS.eliminated child).word)
+              ∂su2HaarProb := by
+          apply integral_congr_ae
+          filter_upwards with x
+          simp only [D.density_grow_split]
+          simp [su2SplitLastEquiv]
+          let Ux := P.connected.cellulation.edgeInsert M.selectedEdge
+            (fun e => U e) x
+          let c := su2HeatKernel (P.connected.cellulation.faceArea child)
+            (P.faceHolonomy Ux child)
+          change (∫ q, oldD.density Ux q * c
+              ∂su2FiniteProductHaar (Fin n)) = _
+          have hfactor :
+              (∫ q, oldD.density Ux q * c
+                ∂su2FiniteProductHaar (Fin n)) =
+                (∫ q, oldD.density Ux q
+                  ∂su2FiniteProductHaar (Fin n)) * c := by
+            calc
+              (∫ q, oldD.density Ux q * c
+                  ∂su2FiniteProductHaar (Fin n)) =
+                  ∫ q, c * oldD.density Ux q
+                    ∂su2FiniteProductHaar (Fin n) := by
+                apply integral_congr_ae
+                filter_upwards with q
+                exact mul_comm _ _
+              _ = c * ∫ q, oldD.density Ux q
+                    ∂su2FiniteProductHaar (Fin n) := by
+                exact MeasureTheory.integral_const_mul c (oldD.density Ux)
+              _ = (∫ q, oldD.density Ux q
+                    ∂su2FiniteProductHaar (Fin n)) * c := by
+                exact mul_comm _ _
+          rw [hfactor]
+          rw [integral_density_eq_build tree oldD
+            (P.connected.cellulation.edgeInsert M.selectedEdge
+              (fun e => U e) x)]
+          change _ * c = _
+          rw [hcfg x]
+          change _ * su2HeatKernel (P.connected.cellulation.faceArea child)
+            (P.faceHolonomy Ux child) = _
+          rw [show Ux = P.connected.cellulation.edgeInsert M.selectedEdge
+              (fun e => U e) x by rfl, hface x]
+        _ = su2HeatKernel (M.grow oldS.block hparent hlive).area
+              (P.connected.cellulation.evalDartWord
+                (P.connected.cellulation.edgeInsert M.selectedEdge r 1)
+                (M.grow oldS.block hparent hlive).word) :=
+          M.integrate_grow oldS.block hparent hlive hchild oldS.area_pos
+            oldS.word_nodup r
+        _ = su2HeatKernel
+              (SU2PhysicalConstructionState.build (.grow tree parent) D).block.area
+              (P.connected.cellulation.evalDartWord
+                (D.assign U (fun _ => 1))
+                (SU2PhysicalConstructionState.build (.grow tree parent) D).block.word) := by
+          have hassign : D.assign U (fun _ => 1) =
+              oldD.assign
+                (P.connected.cellulation.edgeInsert M.selectedEdge
+                  (fun e => U e) 1) (fun _ => 1) := by
+            rfl
+          rw [hassign, hcfg 1]
+          simp [SU2PhysicalConstructionState.build, oldD, oldS, M]
+
 end SU2PhysicalConstructionData
 
 namespace SU2DualRootedEliminationTree
@@ -585,6 +740,28 @@ theorem indexedConditionedChordDensity_eq_constructionDensity
   rw [D.conditionedConfiguration_eq_assign_one g x]
   exact D.elimination.edgeHeatKernelDensity_assign_eq_constructionDensity
     (D.conditionedConfiguration g (fun _ => 1)) x
+
+/-- **Conditioned integral through the global physical fold.**  The actual
+boundary-conditioned chord integral is already one heat kernel at the total
+physical area.  The only remaining geometric identification is the value of
+the final residual block word on the fixed-boundary all-one slice. -/
+theorem conditionedChordIntegral_eq_constructionState (g : SU2) :
+    D.boundary.conditionedChordIntegral g =
+      su2HeatKernel P.connected.cellulation.totalArea
+        (P.connected.cellulation.evalDartWord
+          (D.conditionedConfiguration g (fun _ => 1))
+          D.elimination.constructionState.block.word) := by
+  rw [D.conditionedChordIntegral_eq_indexedIntegral]
+  simp_rw [D.indexedConditionedChordDensity_eq_constructionDensity g]
+  rw [D.elimination.constructionData.integral_density_eq_build
+    D.elimination.order
+    (D.conditionedConfiguration g (fun _ => 1))]
+  rw [← D.conditionedConfiguration_eq_assign_one g (fun _ => 1)]
+  change su2HeatKernel D.elimination.constructionState.block.area
+      (P.connected.cellulation.evalDartWord
+        (D.conditionedConfiguration g (fun _ => 1))
+        D.elimination.constructionState.block.word) = _
+  rw [D.elimination.constructionState_area_eq_totalArea]
 
 end SU2PhysicalBoundaryEliminationChart
 
