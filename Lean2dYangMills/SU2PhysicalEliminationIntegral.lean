@@ -46,6 +46,76 @@ theorem su2FiniteProductHaar_integral_splitLast (n : Nat)
       (su2SplitLastEquiv_measurePreserving n)
   exact (hinv.integral_comp' f).symm
 
+namespace SU2FiniteDiskCellulation.RootedSpanningTree
+
+variable {C : SU2FiniteDiskCellulation}
+  (T : C.RootedSpanningTree)
+
+/-- The insertion of chord coordinates with all tree edges fixed to one is
+continuous. -/
+@[fun_prop]
+theorem continuous_gaugeFixedEdgeConfiguration :
+    Continuous T.gaugeFixedEdgeConfiguration := by
+  refine continuous_pi fun e => ?_
+  unfold gaugeFixedEdgeConfiguration
+  split
+  · exact continuous_const
+  · exact continuous_apply _
+
+end SU2FiniteDiskCellulation.RootedSpanningTree
+
+namespace SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart
+
+variable {P : SU2BoundaryDiskCellulation}
+  (B : P.AdaptiveBoundaryGaugeChart)
+
+local instance continuousChordEdgeDecidableEq :
+    DecidableEq B.ChordEdge := Classical.decEq _
+
+@[fun_prop]
+theorem continuous_chordWithAnchorOne : Continuous B.chordWithAnchorOne := by
+  unfold chordWithAnchorOne chordSplitEquiv su2PiSplitAtEquiv
+  change Continuous (fun r =>
+    (Homeomorph.funSplitAt SU2 B.boundaryChord).symm (1, r))
+  exact (Homeomorph.funSplitAt SU2 B.boundaryChord).symm.continuous.comp
+    (continuous_const.prodMk continuous_id)
+
+@[fun_prop]
+theorem continuous_chordExteriorPrefix : Continuous B.chordExteriorPrefix := by
+  unfold chordExteriorPrefix
+  apply P.connected.cellulation.continuous_dartHolonomy_comp
+  exact B.tree.continuous_gaugeFixedEdgeConfiguration.comp
+    B.continuous_chordWithAnchorOne
+
+@[fun_prop]
+theorem continuous_chordExteriorSuffix : Continuous B.chordExteriorSuffix := by
+  unfold chordExteriorSuffix
+  apply P.connected.cellulation.continuous_dartHolonomy_comp
+  exact B.tree.continuous_gaugeFixedEdgeConfiguration.comp
+    B.continuous_chordWithAnchorOne
+
+/-- For fixed physical exterior holonomy, reconstruction of all chord
+coordinates through the adaptive boundary chart is continuous. -/
+theorem continuous_chordBoundaryEquiv_symm_const (g : SU2) :
+    Continuous (fun r => B.chordBoundaryEquiv.symm (r, g)) := by
+  unfold chordBoundaryEquiv boundaryHolonomyShearEquiv chordSplitEquiv
+    su2PiSplitAtEquiv
+  change Continuous (fun r =>
+    (Homeomorph.funSplitAt SU2 B.boundaryChord).symm
+      ((if P.connected.cellulation.halfEdgeSide B.anchorDart = true
+        then B.chordExteriorSuffix r * g⁻¹ * B.chordExteriorPrefix r
+        else (B.chordExteriorPrefix r)⁻¹ * g *
+          (B.chordExteriorSuffix r)⁻¹), r))
+  apply (Homeomorph.funSplitAt SU2 B.boundaryChord).symm.continuous.comp
+  by_cases hs :
+      P.connected.cellulation.halfEdgeSide B.anchorDart = true
+  · simp [hs]
+    constructor <;> fun_prop
+  · simp [hs]
+    constructor <;> fun_prop
+
+end SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart
+
 namespace SU2PhysicalBoundaryEliminationChart
 
 variable {P : SU2BoundaryDiskCellulation}
@@ -57,12 +127,43 @@ local instance integralEdgeDecidableEq :
 local instance integralChordEdgeDecidableEq :
     DecidableEq D.boundary.ChordEdge := Classical.decEq _
 
+/-- Every fixed-boundary slice is continuous in its internal chord
+coordinates. -/
+theorem continuous_conditionedChordDensity (g : SU2) :
+    Continuous (D.boundary.conditionedChordDensity g) := by
+  unfold SU2BoundaryDiskCellulation.AdaptiveBoundaryGaugeChart.conditionedChordDensity
+    SU2EdgeConnectedDiskCellulation.chordGaugeFixedDensity
+  exact P.toSU2EdgeConnectedDiskCellulation.continuous_edgeHeatKernelDensity.comp
+    (D.boundary.tree.continuous_gaugeFixedEdgeConfiguration.comp
+      (D.boundary.continuous_chordBoundaryEquiv_symm_const g))
+
+/-- Compactness of finite SU(2) products makes every fixed-boundary slice
+Bochner integrable, not merely almost-everywhere integrable. -/
+theorem integrable_conditionedChordDensity (g : SU2) :
+    Integrable (D.boundary.conditionedChordDensity g)
+      (su2FiniteProductHaar D.OtherChord) := by
+  exact integrable_of_continuous_compact
+    (D.continuous_conditionedChordDensity g)
+
 /-- Conditioned chord density after relabelling every internal physical chord
 by its unique elimination step. -/
 def indexedConditionedChordDensity (g : SU2)
     (x : Fin D.elimination.n -> SU2) : Complex :=
   D.boundary.conditionedChordDensity g
     (D.internalCoordinateEquiv.symm x)
+
+/-- Integrability survives the Haar-preserving relabelling by elimination
+steps. -/
+theorem integrable_indexedConditionedChordDensity (g : SU2) :
+    Integrable (D.indexedConditionedChordDensity g)
+      (su2FiniteProductHaar (Fin D.elimination.n)) := by
+  have hinv : MeasurePreserving D.internalCoordinateEquiv.symm
+      (su2FiniteProductHaar (Fin D.elimination.n))
+      (su2FiniteProductHaar D.OtherChord) :=
+    MeasurePreserving.symm D.internalCoordinateEquiv
+      D.internalCoordinateEquiv_measurePreserving
+  exact hinv.integrable_comp_of_integrable
+    (D.integrable_conditionedChordDensity g)
 
 /-- The actual conditioned chord integral is exactly the integral of the
 step-indexed density over `Fin n` product Haar. -/
