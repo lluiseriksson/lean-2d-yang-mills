@@ -46,6 +46,49 @@ theorem su2FiniteProductHaar_integral_splitLast (n : Nat)
       (su2SplitLastEquiv_measurePreserving n)
   exact (hinv.integral_comp' f).symm
 
+/-- Last-coordinate splitting with the untouched coordinates placed first,
+the order needed for a pointwise application of the local Migdal integral. -/
+def su2SplitLastRestFirstEquiv (n : Nat) :
+    (Fin (n + 1) -> SU2) ≃ᵐ ((Fin n -> SU2) × SU2) :=
+  (su2SplitLastEquiv n).trans MeasurableEquiv.prodComm
+
+theorem su2SplitLastRestFirstEquiv_measurePreserving (n : Nat) :
+    MeasurePreserving (su2SplitLastRestFirstEquiv n)
+      (su2FiniteProductHaar (Fin (n + 1)))
+      ((su2FiniteProductHaar (Fin n)).prod su2HaarProb) := by
+  exact Measure.measurePreserving_swap.comp
+    (su2SplitLastEquiv_measurePreserving n)
+
+/-- **Fubini in physical-elimination order.**  The final coordinate is the
+inner Haar integral, while all earlier coordinates remain fixed outside. -/
+theorem su2FiniteProductHaar_integral_iteratedLast (n : Nat)
+    (f : (Fin (n + 1) -> SU2) -> Complex)
+    (hf : Integrable f (su2FiniteProductHaar (Fin (n + 1)))) :
+    (∫ z, f z ∂su2FiniteProductHaar (Fin (n + 1))) =
+      ∫ r : Fin n -> SU2,
+        ∫ x : SU2,
+          f ((su2SplitLastRestFirstEquiv n).symm (r, x))
+          ∂su2HaarProb
+        ∂su2FiniteProductHaar (Fin n) := by
+  let E := su2SplitLastRestFirstEquiv n
+  have hinv : MeasurePreserving E.symm
+      ((su2FiniteProductHaar (Fin n)).prod su2HaarProb)
+      (su2FiniteProductHaar (Fin (n + 1))) :=
+    MeasurePreserving.symm E
+      (su2SplitLastRestFirstEquiv_measurePreserving n)
+  have hcomp : Integrable (fun p => f (E.symm p))
+      ((su2FiniteProductHaar (Fin n)).prod su2HaarProb) :=
+    hinv.integrable_comp_of_integrable hf
+  calc
+    (∫ z, f z ∂su2FiniteProductHaar (Fin (n + 1))) =
+        ∫ p, f (E.symm p)
+          ∂((su2FiniteProductHaar (Fin n)).prod su2HaarProb) := by
+      exact (hinv.integral_comp' f).symm
+    _ = ∫ r : Fin n -> SU2,
+          ∫ x : SU2, f (E.symm (r, x)) ∂su2HaarProb
+          ∂su2FiniteProductHaar (Fin n) := by
+      exact integral_prod (fun p => f (E.symm p)) hcomp
+
 namespace SU2FiniteDiskCellulation.RootedSpanningTree
 
 variable {C : SU2FiniteDiskCellulation}
