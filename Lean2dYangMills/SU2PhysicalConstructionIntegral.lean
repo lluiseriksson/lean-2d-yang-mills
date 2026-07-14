@@ -144,6 +144,217 @@ def density {n : Nat} {tree : SU2RootedTreeOrder n}
     su2HeatKernel (P.connected.cellulation.faceArea (D.label i))
       (P.faceHolonomy (D.assign U x) (D.label i))
 
+/-- Joint continuity of the simultaneous physical-coordinate assignment in
+the untouched base configuration and all selected coordinates. -/
+theorem continuous_assign : {n : Nat} ->
+    {tree : SU2RootedTreeOrder n} ->
+    (D : SU2PhysicalConstructionData P tree) ->
+    Continuous (fun p : P.EdgeConfiguration × (Fin n -> SU2) =>
+      D.assign p.1 p.2)
+  | 0, .root, _ => continuous_fst
+  | n + 1, .grow tree parent, D => by
+      let M := D.lastMerge
+      have hUlast : Continuous
+          (fun p : P.EdgeConfiguration × (Fin (n + 1) -> SU2) =>
+            P.connected.cellulation.edgeInsert M.selectedEdge
+              (fun e => p.1 e) (p.2 (Fin.last n))) := by
+        refine continuous_pi fun e => ?_
+        by_cases he : e = M.selectedEdge
+        · simp [SU2FiniteDiskCellulation.edgeInsert, he]
+          exact (continuous_apply (Fin.last n)).comp continuous_snd
+        · simp [SU2FiniteDiskCellulation.edgeInsert, he]
+          exact (continuous_apply e).comp continuous_fst
+      have hprefix : Continuous
+          (fun p : P.EdgeConfiguration × (Fin (n + 1) -> SU2) =>
+            fun i : Fin n => p.2 (Fin.castSucc i)) := by
+        refine continuous_pi fun i => ?_
+        exact (continuous_apply (Fin.castSucc i)).comp continuous_snd
+      have hcomp := D.prefixData.continuous_assign.comp
+        (hUlast.prodMk hprefix)
+      simpa [assign, M] using hcomp
+
+/-- Continuity in all selected coordinates for a fixed untouched base
+configuration. -/
+theorem continuous_assign_fixed {n : Nat}
+    {tree : SU2RootedTreeOrder n}
+    (D : SU2PhysicalConstructionData P tree) (U : P.EdgeConfiguration) :
+    Continuous (D.assign U) := by
+  exact D.continuous_assign.comp (continuous_const.prodMk continuous_id)
+
+/-- The construction-ordered physical face density is continuous. -/
+theorem continuous_density {n : Nat} {tree : SU2RootedTreeOrder n}
+    (D : SU2PhysicalConstructionData P tree) (U : P.EdgeConfiguration) :
+    Continuous (D.density U) := by
+  unfold density
+  refine continuous_finset_prod Finset.univ fun i _ => ?_
+  exact (continuous_su2HeatKernelCharacterSeries
+    (P.connected.cellulation.faceArea_pos (D.label i))).comp
+      ((P.continuous_faceHolonomy (D.label i)).comp
+        (D.continuous_assign_fixed U))
+
+/-- Compactness of the finite SU(2) coordinate product gives integrability
+of every construction density. -/
+theorem integrable_density {n : Nat} {tree : SU2RootedTreeOrder n}
+    (D : SU2PhysicalConstructionData P tree) (U : P.EdgeConfiguration) :
+    Integrable (D.density U) (su2FiniteProductHaar (Fin n)) := by
+  exact integrable_of_continuous_compact (D.continuous_density U)
+
+/-- No edge of the newly attached final face was selected by an earlier
+construction step. -/
+theorem lastFace_edge_ne_prefixSelected {n : Nat}
+    {tree : SU2RootedTreeOrder n} {parent : Fin (n + 1)}
+    (D : SU2PhysicalConstructionData P (.grow tree parent))
+    (i : Fin n) (h : P.connected.cellulation.HalfEdge)
+    (hh : h ∈ P.faceDartWord (D.label (Fin.last (n + 1)))) :
+    P.connected.cellulation.edgeOfHalfEdge h ≠
+      (D.prefixData.merge i).selectedEdge := by
+  intro hedge
+  let Mi := D.merge (Fin.castSucc i)
+  have hface := P.face_of_mem_faceDartWord
+    (D.label (Fin.last (n + 1))) h hh
+  have hedge' : P.connected.cellulation.edgeOfHalfEdge h =
+      P.connected.cellulation.edgeOfHalfEdge Mi.dart := by
+    simpa [Mi] using hedge
+  rcases P.connected.cellulation.eq_or_eq_reverse_of_edgeOfHalfEdge_eq hedge'
+      with hsame | hrev
+  · rw [hsame, Mi.dart_face] at hface
+    have hidx := D.label_injective (Option.some.inj hface)
+    have hv := congrArg (fun k : Fin (n + 2) => k.val) hidx
+    simp [Mi, SU2RootedTreeOrder.parentIndex] at hv
+    have hlt := tree.parentIndex_lt_child i
+    omega
+  · rw [hrev, Mi.reverse_face] at hface
+    have hidx := D.label_injective (Option.some.inj hface)
+    have hv := congrArg (fun k : Fin (n + 2) => k.val) hidx
+    simp [Mi] at hv
+    omega
+
+/-- Hence assigning all old-prefix coordinates leaves the new face holonomy
+unchanged. -/
+theorem lastFaceHolonomy_assign_prefix {n : Nat}
+    {tree : SU2RootedTreeOrder n} {parent : Fin (n + 1)}
+    (D : SU2PhysicalConstructionData P (.grow tree parent))
+    (U : P.EdgeConfiguration) (r : Fin n -> SU2) :
+    P.faceHolonomy (D.prefixData.assign U r)
+        (D.label (Fin.last (n + 1))) =
+      P.faceHolonomy U (D.label (Fin.last (n + 1))) := by
+  unfold SU2EdgeConnectedDiskCellulation.faceHolonomy
+  apply P.connected.cellulation.dartHolonomy_congr
+  intro k
+  let h := (P.connected.cellulation.next ^ (k : Nat))
+    (P.faceBoundaryStart (D.label (Fin.last (n + 1))))
+  have hh : h ∈ P.faceDartWord (D.label (Fin.last (n + 1))) := by
+    rw [SU2EdgeConnectedDiskCellulation.faceDartWord,
+      SU2FiniteDiskCellulation.dartWord, List.mem_ofFn]
+    exact ⟨k, rfl⟩
+  have hnot : P.connected.cellulation.edgeOfHalfEdge h ∉ Set.range
+      (fun i : Fin n => (D.prefixData.merge i).selectedEdge) := by
+    intro hm
+    obtain ⟨i, hi⟩ := hm
+    exact D.lastFace_edge_ne_prefixSelected i h hh hi.symm
+  have heq := D.prefixData.assign_of_not_mem_range U r
+    (P.connected.cellulation.edgeOfHalfEdge h) hnot
+  unfold SU2FiniteDiskCellulation.edgeValue
+  split <;> rw [heq]
+
+/-- Exact factorization of a grown construction density into its old prefix
+and the single new face. -/
+theorem density_grow_split {n : Nat}
+    {tree : SU2RootedTreeOrder n} {parent : Fin (n + 1)}
+    (D : SU2PhysicalConstructionData P (.grow tree parent))
+    (U : P.EdgeConfiguration) (x : Fin (n + 1) -> SU2) :
+    D.density U x =
+      D.prefixData.density
+        (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+          (fun e => U e) (x (Fin.last n)))
+        (fun i => x (Fin.castSucc i)) *
+      su2HeatKernel
+        (P.connected.cellulation.faceArea (D.label (Fin.last (n + 1))))
+        (P.faceHolonomy
+          (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+            (fun e => U e) (x (Fin.last n)))
+          (D.label (Fin.last (n + 1)))) := by
+  unfold density
+  rw [Fin.prod_univ_castSucc]
+  let Ulast := P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+    (fun e => U e) (x (Fin.last n))
+  change
+    (∏ i : Fin (n + 1),
+      su2HeatKernel
+        (P.connected.cellulation.faceArea (D.label (Fin.castSucc i)))
+        (P.faceHolonomy
+          (D.prefixData.assign Ulast (fun j => x (Fin.castSucc j)))
+          (D.label (Fin.castSucc i)))) *
+      su2HeatKernel
+        (P.connected.cellulation.faceArea (D.label (Fin.last (n + 1))))
+        (P.faceHolonomy
+          (D.prefixData.assign Ulast (fun j => x (Fin.castSucc j)))
+          (D.label (Fin.last (n + 1)))) = _
+  rw [D.lastFaceHolonomy_assign_prefix Ulast
+    (fun j => x (Fin.castSucc j))]
+  rfl
+
+/-- Assigning old-prefix coordinates commutes with insertion of the new edge:
+the new edge remains the distinguished coordinate and all other edges carry
+the prefix-assigned base configuration. -/
+theorem prefix_assign_edgeInsert {n : Nat}
+    {tree : SU2RootedTreeOrder n} {parent : Fin (n + 1)}
+    (D : SU2PhysicalConstructionData P (.grow tree parent))
+    (U : P.EdgeConfiguration) (r : Fin n -> SU2) (x : SU2) :
+    D.prefixData.assign
+        (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+          (fun e => U e) x) r =
+      P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+        (fun e => D.prefixData.assign
+          (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+            (fun e' => U e') 1) r e) x := by
+  funext e
+  have hlive : D.lastMerge.selectedEdge ∉ Set.range
+      (fun i : Fin n => (D.prefixData.merge i).selectedEdge) := by
+    intro h
+    obtain ⟨i, hi⟩ := h
+    have hedge : (D.merge (Fin.castSucc i)).selectedEdge =
+        (D.merge (Fin.last n)).selectedEdge := by
+      simpa using hi
+    have hidx := D.selectedEdge_injective hedge
+    have hv := congrArg (fun k : Fin (n + 1) => k.val) hidx
+    simp at hv
+    omega
+  by_cases he : e = D.lastMerge.selectedEdge
+  · subst e
+    rw [D.prefixData.assign_of_not_mem_range _ r _ hlive]
+    simp
+  · rw [P.connected.cellulation.edgeInsert_other
+      D.lastMerge.selectedEdge _ x he]
+    by_cases hsel : e ∈ Set.range
+        (fun i : Fin n => (D.prefixData.merge i).selectedEdge)
+    · obtain ⟨i, hi⟩ := hsel
+      change (D.prefixData.merge i).selectedEdge = e at hi
+      change D.prefixData.assign
+          (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+            (fun e' => U e') x) r e =
+        D.prefixData.assign
+          (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+            (fun e' => U e') 1) r e
+      calc
+        _ = D.prefixData.assign
+            (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+              (fun e' => U e') x) r
+              (D.prefixData.merge i).selectedEdge := by rw [hi]
+        _ = r i := D.prefixData.assign_selectedEdge _ r i
+        _ = D.prefixData.assign
+            (P.connected.cellulation.edgeInsert D.lastMerge.selectedEdge
+              (fun e' => U e') 1) r
+              (D.prefixData.merge i).selectedEdge :=
+          (D.prefixData.assign_selectedEdge _ r i).symm
+        _ = _ := by rw [hi]
+    · rw [D.prefixData.assign_of_not_mem_range _ r e hsel,
+        D.prefixData.assign_of_not_mem_range _ r e hsel]
+      rw [P.connected.cellulation.edgeInsert_other
+          D.lastMerge.selectedEdge _ x he,
+        P.connected.cellulation.edgeInsert_other
+          D.lastMerge.selectedEdge _ 1 he]
+
 end SU2PhysicalConstructionData
 
 namespace SU2DualRootedEliminationTree
