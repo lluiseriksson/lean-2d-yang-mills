@@ -7,7 +7,7 @@ import Lean2dYangMills.SU2PhysicalEliminationIntegral
 import Lean2dYangMills.SU2PhysicalBlockInvariant
 import Lean2dYangMills.SU2PhysicalWordBlocks
 import Lean2dYangMills.SU2PhysicalBlockMigdal
-import Lean2dYangMills.SU2PhysicalBlockGrowth
+import Lean2dYangMills.SU2PhysicalConstructionFold
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -139,5 +139,16 @@ namespace Lean2dYangMills
 #print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.grow_nodup
 #print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.grow_area
 #print axioms SU2EdgeConnectedDiskCellulation.CyclicFaceMerge.integrate_grow
+#print axioms SU2PhysicalConstructionData.prefixData
+#print axioms SU2PhysicalConstructionData.lastMerge
+#print axioms SU2PhysicalConstructionData.image_prefix_insert_last
+#print axioms SU2PhysicalConstructionData.range_prefix_insert_last
+#print axioms SU2DualRootedEliminationTree.constructionData
+#print axioms SU2PhysicalConstructionState.build
+#print axioms SU2DualRootedEliminationTree.constructionState
+#print axioms SU2DualRootedEliminationTree.constructionState_faces_eq_univ
+#print axioms SU2DualRootedEliminationTree.constructionState_eliminated_eq_range
+#print axioms SU2DualRootedEliminationTree.constructionState_word_nodup
+#print axioms SU2DualRootedEliminationTree.constructionState_area_eq_totalArea
 
 end Lean2dYangMills
