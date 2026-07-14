@@ -20,6 +20,7 @@ import Lean2dYangMills.SU2PhysicalBoundaryElimination
 import Lean2dYangMills.SU2CyclicWordSplicing
 import Lean2dYangMills.SU2PhysicalEliminationSchedule
 import Lean2dYangMills.SU2PhysicalEliminationIntegral
+import Lean2dYangMills.SU2PhysicalBlockInvariant
 import Lean2dYangMills.SU2FiniteGaugeFixing
 import Lean2dYangMills.SU2RootedTreeGaugeFixing
 import Lean2dYangMills.SU2GlobalEdgeGaugeFixing

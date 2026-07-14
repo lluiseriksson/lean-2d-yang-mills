@@ -4,6 +4,7 @@ import Lean2dYangMills.SU2PhysicalBoundaryElimination
 import Lean2dYangMills.SU2CyclicWordSplicing
 import Lean2dYangMills.SU2PhysicalEliminationSchedule
 import Lean2dYangMills.SU2PhysicalEliminationIntegral
+import Lean2dYangMills.SU2PhysicalBlockInvariant
 
 /-!
 # Kernel dependency audit for the exact SU(2) Migdal closure
@@ -117,5 +118,7 @@ namespace Lean2dYangMills
 #print axioms SU2PhysicalBoundaryEliminationChart.internalCoordinateEquiv_symm_apply_stepChord
 #print axioms SU2PhysicalBoundaryEliminationChart.chordBoundaryEquiv_symm_apply_other
 #print axioms SU2PhysicalBoundaryEliminationChart.conditionedGaugeFixed_selectedEdge
+#print axioms SU2FiniteDiskCellulation.CyclicDartWordMerge.wordCompleteAwayFrom_spliceAt
+#print axioms SU2FiniteDiskCellulation.CyclicDartWordMerge.wordSound_spliceAt
 
 end Lean2dYangMills
