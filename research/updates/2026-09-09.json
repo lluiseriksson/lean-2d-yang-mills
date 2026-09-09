@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "reviewed_on": "2026-09-09",
+  "window": {
+    "start": "2026-09-03",
+    "end": "2026-09-09",
+    "calendar_week_start": "2026-09-07"
+  },
+  "coverage": "targeted, non-exhaustive",
+  "repository_card": {
+    "repository": "lluiseriksson/lean-2d-yang-mills",
+    "source_ids": [
+      "2608.27267",
+      "2609.04117"
+    ],
+    "local_anchors": [
+      "README.md",
+      "CLAIM_SCOPE.md",
+      "Lean2dYangMills/SU2RootedTreeGaugeFixing.lean"
+    ],
+    "frontier": "The README records vertex-coordinate tree gauge fixing; the stronger full edge-coordinate equivalence, every face-holonomy formula and planar embedding comparison remain open.",
+    "bridge_hypothesis": "The maximal-tree simulation paper gives a concrete comparison target for the edge-model frontier. Dictionary: tree edges -> vertex gauge coordinates, complementary edges -> reduced physical coordinates. Preserve product Haar, root convention and boundary holonomies; algorithmic digitization does not establish the exact measure equivalence.",
+    "next_finite_task": "Write the edge map and inverse for the three-face cyclic-dual disk; count E=(V-1)+(E-V+1), derive each face word and test reconstruction before attempting the general product-Haar proof.",
+    "falsifier": "Reject the proposed map if any edge cannot be reconstructed, if a residual global gauge freedom is silently removed, or if face orientation changes the holonomy.",
+    "related_repositories": [
+      "THE-ERIKSSON-PROGRAMME",
+      "lean-os-positivity",
+      "ym-lattice-numerics"
+    ],
+    "proposal_status": "speculative; not executed or formally verified",
+    "eliminated_hypotheses": [],
+    "inspected_commit": "05c4ec316cb9aa295416670a2578b1c2e77e1c36"
+  },
+  "sources": [
+    {
+      "id": "arxiv:2608.27267",
+      "arxiv_id": "2608.27267",
+      "title": "Efficient Quantum Simulations of Yang-Mills theory with Maximal-tree Gauge",
+      "authors": [
+        "Li, Tianyin",
+        "Li, Ying-Ying",
+        "Wang, Xiaoyang",
+        "Xing, Hongxi"
+      ],
+      "first_submitted": "2026-08-27",
+      "latest_revision": "2026-08-27",
+      "reviewed_version": "v1",
+      "url": "https://arxiv.org/abs/2608.27267v1",
+      "doi": "10.48550/arXiv.2608.27267",
+      "verified_on": "2026-09-09",
+      "recency": "background",
+      "publication_status": "preprint; peer-review status not established in this sweep",
+      "evidence_level": "literature",
+      "review_depth": "v1: abstract and maximal-tree gauge construction",
+      "source_claim": "Li and collaborators use maximal-tree gauge and field-amplitude digitization to obtain polynomial resource bounds for Hamiltonian Yang-Mills simulation through QSVT.",
+      "limits": "Hamiltonian simulation complexity is distinct from an exact Haar edge-coordinate equivalence, Euclidean reflection positivity, and a continuum mass gap. First posted 27 August; a September news mention is not a new submission.",
+      "tags": [
+        "gauge-fixing",
+        "spanning-trees",
+        "yang-mills",
+        "quantum-simulation"
+      ],
+      "abstract_page_sha256": "8fa19bcafeebf9e933c70192ace6a9b2ff01e8e6d04fd2e98295d10ef400f233",
+      "reviewed_full_text_sha256": "05f7e0cd23badc54c61dc3bafa5237f4126a6c2bcdda0d97b621cd3bb719dd1c",
+      "reuse": "Bibliographic metadata and original synthesis only; no permission to train on linked full text is inferred."
+    },
+    {
+      "id": "arxiv:2609.04117",
+      "arxiv_id": "2609.04117",
+      "title": "Non-Abelian string melting and thermalization in an open lattice gauge theory",
+      "authors": [
+        "Verde, Erick Parra",
+        "Cataldi, Giovanni",
+        "Kühn, Stefan",
+        "Magnifico, Giuseppe",
+        "Halimeh, Jad C."
+      ],
+      "first_submitted": "2026-09-03",
+      "latest_revision": "2026-09-03",
+      "reviewed_version": "v1",
+      "url": "https://arxiv.org/abs/2609.04117v1",
+      "doi": "10.48550/arXiv.2609.04117",
+      "verified_on": "2026-09-09",
+      "recency": "new-in-trailing-week",
+      "publication_status": "preprint; peer-review status not established in this sweep",
+      "evidence_level": "literature",
+      "review_depth": "v1: model, thermalization discussion and strong-dephasing reduction",
+      "source_claim": "A tensor-network study couples 1+1D SU(2) gauge theory with matter to a gauge-preserving Lindblad bath. It finds nonmonotonic relaxation and derives an exclusion-process description in a strong-dephasing limit.",
+      "limits": "This is an open-system finite/truncated lattice setting, not pure 4D Euclidean Yang-Mills. A Liouvillian relaxation rate is not automatically a Hamiltonian gap, and the strong-dephasing expansion has its own regime.",
+      "tags": [
+        "yang-mills",
+        "lindblad",
+        "zeno",
+        "tensor-networks"
+      ],
+      "abstract_page_sha256": "5bd8e4f32445c083e75584d29d5ef41d78ed422d5c848b77e706f123fb496a82",
+      "reviewed_full_text_sha256": "7eec747973d16173df4cf1775f12720a3e7ba56b4fcdf158063e15d681b8fa00",
+      "reuse": "Bibliographic metadata and original synthesis only; no permission to train on linked full text is inferred."
+    }
+  ]
+}

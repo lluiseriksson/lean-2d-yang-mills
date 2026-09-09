@@ -1,5 +1,8 @@
 # lean-2d-yang-mills
 
+<!-- RESEARCH-UPDATE-2026-09-09 -->
+> **Research update · 9 September 2026:** [verified source cards, limits and next experiments](research/updates/2026-09-09.md) · [machine-readable dossier](research/updates/2026-09-09.json).
+
 Lean 4 + Mathlib satellite for the THE-ERIKSSON-PROGRAMME 2D Yang-Mills sandbox.
 
 This repository is about the exactly soluble two-dimensional model: heat-kernel lattice Yang-Mills, Migdal subdivision self-similarity, exact Wilson loop area law for simple planar loops, continuum-limit statements, and the Witten zeta/partition-function bridge.
