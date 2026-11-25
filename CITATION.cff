@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the paper below."
+title: "lean-2d-yang-mills"
+type: software
+authors:
+  - family-names: Eriksson
+    given-names: Lluis
+repository-code: "https://github.com/lluiseriksson/lean-2d-yang-mills"
+preferred-citation:
+  type: generic
+  title: "Exact Two-Dimensional SU(2) Yang-Mills in Lean: Weyl Integration, Heat-Kernel Convolution, Migdal Invariance, and the Exact Simple-Loop Area Law"
+  authors:
+    - family-names: Eriksson
+      given-names: Lluis
+  year: 2026
+  url: "https://airr.science/papers/ARR-2026-1DNF7Z9F579X8SQA/"
+  notes: "AIRR ARR-2026-1DNF7Z9F579X8SQA; ai.viXra 2607.0035"
