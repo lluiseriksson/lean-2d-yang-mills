@@ -117,7 +117,7 @@ The stable signatures are listed in `INTERFACES.md`, re-exported by `Interfaces.
 This repository accompanies the following paper by Lluis Eriksson.
 AIRR status is the archive's own label for the record; it is not peer review.
 
-| Title | AIRR | ai.viXra | AIRR status |
-|---|---|---|---|
-| Exact Two-Dimensional SU(2) Yang-Mills in Lean: Weyl Integration, Heat-Kernel Convolution, Migdal Invariance, and the Exact Simple-Loop Area Law | [ARR-2026-1DNF7Z9F579X8SQA](https://airr.science/papers/ARR-2026-1DNF7Z9F579X8SQA/) | [2607.0035](https://www.ai.vixra.org/abs/2607.0035) | archived |
+| Title | AIRR | AIRR status |
+|---|---|---|
+| Exact Two-Dimensional SU(2) Yang-Mills in Lean: Weyl Integration, Heat-Kernel Convolution, Migdal Invariance, and the Exact Simple-Loop Area Law | [ARR-2026-1DNF7Z9F579X8SQA](https://airr.science/papers/ARR-2026-1DNF7Z9F579X8SQA/) | archived |
 <!-- papers-index:end -->
